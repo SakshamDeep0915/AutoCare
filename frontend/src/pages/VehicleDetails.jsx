@@ -122,26 +122,40 @@ function VehicleDetails() {
 
           {/* Action Buttons */}
           <div className="mt-8 flex flex-wrap gap-4">
+            {/* Add Service */}
             <button
-              onClick={() =>
-                navigate(`/vehicles/${vehicle._id}/add-service`)
-              }
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg transition"
+            onClick={()=>
+              navigate(`/vehicles/${vehicle._id}/add-service`)
+
+            }
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg transition"
             >
               <Wrench size={20} />
               Add Service
             </button>
 
+            {/* View Service History */}
             <button
-              onClick={() =>
-                navigate(`/vehicles/${vehicle._id}/services`)
-              }
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg transition"
+            onClick={() =>
+              navigate(`/vehicles/${vehicle._id}/services`)
+            }
+
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg transition"
             >
               <History size={20} />
               View Service History
             </button>
-          </div>
+
+            {/* AI Analyze Vehicle */}
+  <button
+    onClick={() =>
+      navigate(`/ai-report/${vehicle._id}`)
+    }
+    className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-lg transition"
+  >
+    🤖 Analyze Vehicle
+  </button>
+            </div>
         </div>
       </div>
     </>

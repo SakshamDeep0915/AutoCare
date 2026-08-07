@@ -9,6 +9,7 @@ import VehicleDetails from "./pages/VehicleDetails";
 import AddService from "./pages/AddService";
 import ServiceHistory from "./pages/ServiceHistory";
 import EditService from "./pages/EditService";
+import AIReport from "./pages/AIReport";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -53,16 +54,36 @@ function App() {
       />
       <Route
       path="/vehicles/:vehicleId/add-service"
-      element={<AddService />}
+      element={
+      <ProtectedRoute>
+      <AddService />
+      </ProtectedRoute>
+
+      }
       />
 
       <Route
       path="/vehicles/:vehicleId/services"
-      element={<ServiceHistory />}
+      element={ <ProtectedRoute>
+      <ServiceHistory />
+    </ProtectedRoute>}
+      />
+
+      <Route
+      path="/ai-report/:vehicleId"
+      element={<ProtectedRoute>
+        <AIReport/>
+        </ProtectedRoute>
+        }
       />
 
       <Route 
-      path="/services/edit/:id" element={<EditService />} />
+      path="/services/edit/:id" 
+      element={
+      <ProtectedRoute>
+      <EditService />
+      </ProtectedRoute>
+      } />
       
     </Routes>
   );
