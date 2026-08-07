@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Vehicle = require("../models/Vehicle");
 const Service = require("../models/Service");
 
+// Dashboard
 exports.getDashboard = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -23,6 +24,7 @@ exports.getDashboard = async (req, res) => {
           user: new mongoose.Types.ObjectId(userId),
         },
       },
+
       {
         $group: {
           _id: null,
@@ -33,26 +35,30 @@ exports.getDashboard = async (req, res) => {
       },
     ]);
 
-    const totalCost =
-      costResult.length > 0 ? costResult[0].totalCost : 0;
+    const totalCost = 
+    costResult.length > 0 ? costResult[0].totalCost : 0;
 
-    // Recent Services
+    const vehicles = await Vehicle.find({
+      user: userId,
+    }).sort({ createdAt: -1 });
+    
     const recentServices = await Service.find({
       user: userId,
     })
-      .populate("vehicle", "brand model")
-      .sort({ createdAt: -1 })
-      .limit(5);
+    .populate("vehicle", "brand model")
+    .sort({ createdAt: -1 })
+    .limit(5);
 
     res.status(200).json({
       success: true,
       totalVehicles,
       totalServices,
       totalCost,
+      vehicles,
       recentServices,
     });
   } catch (error) {
-    console.error("Dashboard Error:", error);
+    console.error("Dashboard Error: ", error);
 
     res.status(500).json({
       success: false,
@@ -61,27 +67,26 @@ exports.getDashboard = async (req, res) => {
   }
 };
 
-
 exports.getMonthlyExpenses = async (req, res) => {
   try {
-    console.log("Decoded User:", req.user);
-
+    const userId = req.user.id;
     const monthlyExpenses = await Service.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(userId),
+        },
+      },
+
       {
         $group: {
           _id: {
             year: { $year: "$serviceDate" },
             month: { $month: "$serviceDate" },
           },
+
           totalExpense: {
             $sum: "$cost",
           },
-        },
-      },
-      {
-        $sort: {
-          "_id.year": 1,
-          "_id.month": 1,
         },
       },
     ]);
