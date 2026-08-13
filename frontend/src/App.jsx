@@ -14,6 +14,7 @@ import AddFuel from "./pages/AddFuel";
 import FuelHistory from "./pages/FuelHistory";
 import VehicleChatbot from "./pages/vehicleChatbot";
 import Chatbot from "./pages/Chatbot";
+import NearbyServices from "./pages/NearbyServices";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -113,6 +114,15 @@ function App() {
   element={
     <ProtectedRoute>
       <Chatbot />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/nearby-services"
+  element={
+    <ProtectedRoute>
+      <NearbyServices />
     </ProtectedRoute>
   }
 />
