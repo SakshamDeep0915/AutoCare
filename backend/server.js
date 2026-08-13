@@ -21,6 +21,7 @@ const serviceRoutes = require("./routes/serviceRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const fuelRoutes = require("./routes/fuelRoutes");
+const chatbotRoutes = require("./routes/chatbotRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/vehicles", vehicleRoutes);
@@ -28,6 +29,7 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/fuel", fuelRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 
 const authMiddleware = require("./middleware/authMiddleware");
 

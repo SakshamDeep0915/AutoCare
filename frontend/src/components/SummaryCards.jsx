@@ -1,62 +1,118 @@
 import {
-    Car,
-    Wrench,
-    IndianRupee,
+  Car,
+  Wrench,
+  IndianRupee,
+  Fuel,
 } from "lucide-react";
 
 function SummaryCards({
-    totalVehicles,
-    totalServices,
-    totalCost,
+  totalVehicles,
+  totalServices,
+  maintenanceCost,
+  fuelExpense,
 }) {
-    const cards = [
-        {
-            title: "Total Vehicles",
-            value: totalVehicles,
-            icon: <Car size={32} />,
-            bg: "bg-blue-100",
-            text: "text-blue-600",
-        },
-        {
-            title: "Total Services",
-            value: totalServices,
-            icon: <Wrench size={32} />,
-            bg: "bg-green-100",
-            text: "text-green-600",
-        },
-        {
-            title: "Maintenance Cost",
-            value: `₹${totalCost}`,
-            icon: <IndianRupee size={32} />,
-            bg: "bg-yellow-100",
-            text: "text-yellow-600",
-        },
-    ];
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-    return (
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {cards.map((card, index) => (
-                <div
-                key={index}
-                className="bg-white shadow-lg rounded-xl p-6 flex justify-between items-center hover:shadow-xl transition"
-                >
-                    <div>
-                        <h3 className="text-grey-500 text-sm">
-                            {card.title}
-                        </h3>
+      {/* Total Vehicles */}
+      <div className="bg-white rounded-xl shadow-md p-6 flex items-center justify-between">
 
-                        <p className="text-3xl font-bold mt-2">
-                            {card.value}
-                        </p>
-                </div>
+        <div>
+          <p className="text-gray-500 text-sm">
+            Total Vehicles
+          </p>
 
-                <div className={`${card.bg} ${card.text} p-4 rounded-full`} >
-                    {card.icon}
-                </div>
-                </div>
-            ))}
+          <h2 className="text-3xl font-bold mt-2">
+            {totalVehicles}
+          </h2>
         </div>
-    );
+
+        <div className="bg-blue-100 p-4 rounded-full">
+          <Car
+            className="text-blue-600"
+            size={28}
+          />
+        </div>
+
+      </div>
+
+
+      {/* Total Services */}
+      <div className="bg-white rounded-xl shadow-md p-6 flex items-center justify-between">
+
+        <div>
+          <p className="text-gray-500 text-sm">
+            Total Services
+          </p>
+
+          <h2 className="text-3xl font-bold mt-2">
+            {totalServices}
+          </h2>
+        </div>
+
+        <div className="bg-green-100 p-4 rounded-full">
+          <Wrench
+            className="text-green-600"
+            size={28}
+          />
+        </div>
+
+      </div>
+
+
+      {/* Maintenance Cost */}
+      <div className="bg-white rounded-xl shadow-md p-6 flex items-center justify-between">
+
+        <div>
+          <p className="text-gray-500 text-sm">
+            Maintenance Cost
+          </p>
+
+          <h2 className="text-3xl font-bold mt-2">
+            ₹
+            {Number(
+              maintenanceCost || 0
+            ).toLocaleString("en-IN")}
+          </h2>
+        </div>
+
+        <div className="bg-orange-100 p-4 rounded-full">
+          <IndianRupee
+            className="text-orange-600"
+            size={28}
+          />
+        </div>
+
+      </div>
+
+
+      {/* Fuel Cost */}
+      <div className="bg-white rounded-xl shadow-md p-6 flex items-center justify-between">
+
+        <div>
+          <p className="text-gray-500 text-sm">
+            Fuel Cost
+          </p>
+
+          <h2 className="text-3xl font-bold mt-2">
+            ₹
+            {Number(
+              fuelExpense || 0
+            ).toLocaleString("en-IN")}
+          </h2>
+        </div>
+
+        <div className="bg-purple-100 p-4 rounded-full">
+          <Fuel
+            className="text-purple-600"
+            size={28}
+          />
+        </div>
+
+      </div>
+
+    </div>
+  );
 }
 
 export default SummaryCards;

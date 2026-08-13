@@ -44,15 +44,27 @@ function Dashboard() {
     <>
     <Navbar />
     <div className="max-w-7xl mx-autop p-6">
-      <h1 className="text-4xl font-bold mb-8">
-        Dashboard
-      </h1>
+      <div className="flex items-center justify-between mb-8">
+
+  <h1 className="text-4xl font-bold">
+    Dashboard
+  </h1>
+
+  <button
+    onClick={() => navigate("/chatbot")}
+    className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-lg font-semibold transition"
+  >
+    🤖 Ask AutoCare AI
+  </button>
+
+</div>
 
       <SummaryCards
-      totalVehicles={dashboard.totalVehicles}
-      totalServices={dashboard.totalServices}
-      totalCost={dashboard.totalCost}
-      />
+  totalVehicles={dashboard.totalVehicles}
+  totalServices={dashboard.totalServices}
+  maintenanceCost={dashboard.maintenanceCost}
+  fuelExpense={dashboard.fuelExpense}
+/>
 
       <div className="my-8">
         <ExpenseChart />

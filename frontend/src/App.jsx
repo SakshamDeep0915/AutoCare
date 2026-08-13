@@ -10,6 +10,10 @@ import AddService from "./pages/AddService";
 import ServiceHistory from "./pages/ServiceHistory";
 import EditService from "./pages/EditService";
 import AIReport from "./pages/AIReport";
+import AddFuel from "./pages/AddFuel";
+import FuelHistory from "./pages/FuelHistory";
+import VehicleChatbot from "./pages/vehicleChatbot";
+import Chatbot from "./pages/Chatbot";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -84,6 +88,34 @@ function App() {
       <EditService />
       </ProtectedRoute>
       } />
+
+      <Route
+  path="/vehicles/:vehicleId/add-fuel"
+  element={
+    <ProtectedRoute>
+      <AddFuel />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/vehicles/:vehicleId/fuel-history"
+  element={
+    <ProtectedRoute>
+      <FuelHistory />
+    </ProtectedRoute>
+  }
+/>
+
+
+
+<Route
+  path="/chatbot"
+  element={
+    <ProtectedRoute>
+      <Chatbot />
+    </ProtectedRoute>
+  }
+/>
       
     </Routes>
   );

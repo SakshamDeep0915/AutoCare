@@ -6,6 +6,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const {
     addFuelExpense,
     getFuelHistory,
+    getFuelEfficiency,
     deleteFuelExpense,
 } = require("../controllers/fuelController");
 
@@ -22,6 +23,12 @@ router.get(
     "/vehicle/:vehicleId",
     authMiddleware,
     getFuelHistory,
+);
+
+router.get(
+  "/vehicle/:vehicleId/efficiency",
+  authMiddleware,
+  getFuelEfficiency
 );
 
 router.delete(

@@ -155,6 +155,25 @@ function VehicleDetails() {
   >
     🤖 Analyze Vehicle
   </button>
+
+  <button
+  onClick={() =>
+    navigate(`/vehicles/${vehicle._id}/add-fuel`)
+  }
+  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg transition"
+>
+  ⛽ Add Fuel
+</button>
+
+<button
+  onClick={() =>
+    navigate(`/vehicles/${vehicle._id}/fuel-history`)
+  }
+  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg transition"
+>
+  ⛽ Fuel History
+</button>
+
             </div>
         </div>
       </div>
