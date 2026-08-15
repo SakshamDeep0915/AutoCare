@@ -5,6 +5,7 @@ import SummaryCards from "../components/SummaryCards";
 import RecentServices from "../components/RecentServices";
 import ExpenseChart from "../components/ExpenseChart";
 import { getDashboard } from "../services/dashboardService";
+import HealthAlerts from "../components/HealthAlerts";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -69,6 +70,44 @@ function Dashboard() {
       <div className="my-8">
         <ExpenseChart />
       </div>
+      <HealthAlerts /> 
+
+      {/* Nearby Services / GPS */}
+
+<div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+
+  <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+
+    <div className="flex items-center gap-4">
+
+      <div className="bg-blue-100 p-4 rounded-full text-3xl">
+        📍
+      </div>
+
+      <div>
+        <h2 className="text-2xl font-bold">
+          Nearby Vehicle Services
+        </h2>
+
+        <p className="text-gray-500 mt-1">
+          Find nearby fuel stations, service centers,
+          tyre shops, EV charging stations and more.
+        </p>
+      </div>
+
+    </div>
+
+
+    <button
+      onClick={() => navigate("/nearby-services")}
+      className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap"
+    >
+      📍 Find Nearby Services
+    </button>
+
+  </div>
+
+</div>
 
       { /* My Vehicles */ }
 

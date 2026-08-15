@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
 import {
   MapContainer,
   TileLayer,
   Marker,
   Popup,
 } from "react-leaflet";
+
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -14,19 +16,16 @@ import {
   ArrowLeft,
   MapPin,
   Navigation,
-  Fuel,
-  Wrench,
-  BatteryCharging,
-  Car,
-  Droplets,
   LocateFixed,
+  Search,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 
-// ==========================================
-// Fix Leaflet Marker Icons
-// ==========================================
+
+// ======================================================
+// Leaflet Default Marker Fix
+// ======================================================
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -42,9 +41,9 @@ L.Icon.Default.mergeOptions({
 });
 
 
-// ==========================================
-// Helper: Calculate Distance
-// ==========================================
+// ======================================================
+// Calculate Distance
+// ======================================================
 
 const calculateDistance = (
   lat1,
@@ -79,12 +78,96 @@ const calculateDistance = (
 };
 
 
-// ==========================================
+// ======================================================
+// Create Custom Marker
+// ======================================================
+
+const createMarkerIcon = (
+  emoji,
+  background
+) => {
+  return L.divIcon({
+    className: "custom-marker",
+
+    html: `
+      <div
+        style="
+          width: 40px;
+          height: 40px;
+          background: ${background};
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 21px;
+          border: 3px solid white;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+        "
+      >
+        ${emoji}
+      </div>
+    `,
+
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    popupAnchor: [0, -20],
+  });
+};
+
+
+// ======================================================
+// Marker Icons
+// ======================================================
+
+const markerIcons = {
+  fuel: createMarkerIcon(
+    "⛽",
+    "#fee2e2"
+  ),
+
+  service: createMarkerIcon(
+    "🔧",
+    "#dbeafe"
+  ),
+
+  tyres: createMarkerIcon(
+    "🛞",
+    "#e5e7eb"
+  ),
+
+  ev: createMarkerIcon(
+    "⚡",
+    "#dcfce7"
+  ),
+
+  wash: createMarkerIcon(
+    "🚿",
+    "#dbeafe"
+  ),
+
+  car: createMarkerIcon(
+    "🚗",
+    "#fef3c7"
+  ),
+
+  default: createMarkerIcon(
+    "📍",
+    "#e0e7ff"
+  ),
+};
+
+
+// ======================================================
 // Component
-// ==========================================
+// ======================================================
 
 function NearbyServices() {
   const navigate = useNavigate();
+
+
+  // ====================================================
+  // States
+  // ====================================================
 
   const [location, setLocation] =
     useState(null);
@@ -104,10 +187,143 @@ function NearbyServices() {
   const [placesError, setPlacesError] =
     useState("");
 
+  const [selectedCategory, setSelectedCategory] =
+    useState("All");
 
-  // ==========================================
-  // Get Nearby Services
-  // ==========================================
+
+  // ====================================================
+  // Get Place Information
+  // ====================================================
+
+  const getPlaceInfo = (place) => {
+    const tags = place.tags || {};
+
+
+    // Fuel
+    if (tags.amenity === "fuel") {
+      return {
+        name:
+          tags.name || "Fuel Station",
+
+        category: "Fuel Station",
+
+        type: "fuel",
+
+        icon: "⛽",
+      };
+    }
+
+
+    // Car Repair
+    if (
+      tags.shop === "car_repair" ||
+      tags.amenity === "car_repair"
+    ) {
+      return {
+        name:
+          tags.name ||
+          "Car Service Center",
+
+        category: "Car Repair / Service",
+
+        type: "service",
+
+        icon: "🔧",
+      };
+    }
+
+
+    // Tyres
+    if (
+      tags.shop === "tyres"
+    ) {
+      return {
+        name:
+          tags.name ||
+          "Tyre Shop",
+
+        category: "Tyre Shop",
+
+        type: "tyres",
+
+        icon: "🛞",
+      };
+    }
+
+
+    // EV Charging
+    if (
+      tags.amenity ===
+      "charging_station"
+    ) {
+      return {
+        name:
+          tags.name ||
+          "EV Charging Station",
+
+        category: "EV Charging",
+
+        type: "ev",
+
+        icon: "⚡",
+      };
+    }
+
+
+    // Car Wash
+    if (
+      tags.amenity === "car_wash"
+    ) {
+      return {
+        name:
+          tags.name ||
+          "Car Wash",
+
+        category: "Car Wash",
+
+        type: "wash",
+
+        icon: "🚿",
+      };
+    }
+
+
+    // Car Shop
+    if (
+      tags.shop === "car"
+    ) {
+      return {
+        name:
+          tags.name ||
+          "Car Shop",
+
+        category: "Car Shop",
+
+        type: "car",
+
+        icon: "🚗",
+      };
+    }
+
+
+    return {
+      name:
+        tags.name ||
+        "Vehicle Service",
+
+      category:
+        "Vehicle Service",
+
+      type: "default",
+
+      icon: "📍",
+    };
+  };
+
+
+  // ====================================================
+  // Fetch Nearby Services
+  // ====================================================
 
   const fetchNearbyServices = async (
     latitude,
@@ -115,9 +331,12 @@ function NearbyServices() {
   ) => {
     try {
       setPlacesLoading(true);
+
       setPlacesError("");
 
+
       const radius = 5000;
+
 
       const query = `
         [out:json][timeout:30];
@@ -127,6 +346,9 @@ function NearbyServices() {
             (around:${radius},${latitude},${longitude});
 
           nwr["shop"="car_repair"]
+            (around:${radius},${latitude},${longitude});
+
+          nwr["amenity"="car_repair"]
             (around:${radius},${latitude},${longitude});
 
           nwr["shop"="tyres"]
@@ -145,13 +367,21 @@ function NearbyServices() {
         out center;
       `;
 
+
       const response = await fetch(
         "https://overpass-api.de/api/interpreter",
         {
           method: "POST",
+
+          headers: {
+            "Content-Type":
+              "text/plain",
+          },
+
           body: query,
         }
       );
+
 
       if (!response.ok) {
         throw new Error(
@@ -159,21 +389,21 @@ function NearbyServices() {
         );
       }
 
+
       const data =
         await response.json();
 
+
       console.log(
-        "Nearby OSM Data:",
+        "OpenStreetMap Data:",
         data.elements
       );
 
-      // ==========================================
-      // Add coordinates + distance
-      // ==========================================
 
       const formattedPlaces =
         data.elements
           .map((place) => {
+
             const lat =
               place.lat ??
               place.center?.lat;
@@ -182,12 +412,14 @@ function NearbyServices() {
               place.lon ??
               place.center?.lon;
 
+
             if (
               lat === undefined ||
               lon === undefined
             ) {
               return null;
             }
+
 
             const distance =
               calculateDistance(
@@ -197,25 +429,39 @@ function NearbyServices() {
                 lon
               );
 
+
             return {
               ...place,
+
               latitude: lat,
+
               longitude: lon,
+
               distance,
+
+              info:
+                getPlaceInfo(place),
             };
           })
+
           .filter(Boolean)
+
           .sort(
             (a, b) =>
-              a.distance - b.distance
+              a.distance -
+              b.distance
           );
 
-      setPlaces(formattedPlaces);
 
-    } catch (error) {
+      setPlaces(
+        formattedPlaces
+      );
+
+    } catch (err) {
+
       console.error(
         "Nearby Services Error:",
-        error
+        err
       );
 
       setPlacesError(
@@ -223,36 +469,46 @@ function NearbyServices() {
       );
 
     } finally {
+
       setPlacesLoading(false);
     }
   };
 
 
-  // ==========================================
-  // Get User GPS Location
-  // ==========================================
+  // ====================================================
+  // Get User Location
+  // ====================================================
 
   useEffect(() => {
+
     const getLocation = () => {
+
       if (
-        typeof navigator === "undefined" ||
+        typeof navigator ===
+          "undefined" ||
         !navigator.geolocation
       ) {
+
         setError(
           "Geolocation is not available in this browser."
         );
 
         setLoading(false);
+
         return;
       }
 
+
       navigator.geolocation.getCurrentPosition(
+
         (position) => {
+
           const latitude =
             position.coords.latitude;
 
           const longitude =
             position.coords.longitude;
+
 
           console.log(
             "Latitude:",
@@ -264,146 +520,138 @@ function NearbyServices() {
             longitude
           );
 
+
           setLocation({
             latitude,
             longitude,
           });
 
+
           setLoading(false);
 
-          // Fetch nearby places
+
           fetchNearbyServices(
             latitude,
             longitude
           );
         },
 
-        (error) => {
+
+        (gpsError) => {
+
           console.error(
             "GPS Error:",
-            error
+            gpsError
           );
+
 
           let message =
             "Unable to get your location.";
 
-          if (error.code === 1) {
+
+          if (
+            gpsError.code === 1
+          ) {
+
             message =
               "Location permission denied. Please allow location access.";
           }
 
-          if (error.code === 2) {
+
+          if (
+            gpsError.code === 2
+          ) {
+
             message =
               "Location information is unavailable.";
           }
 
-          if (error.code === 3) {
+
+          if (
+            gpsError.code === 3
+          ) {
+
             message =
               "Location request timed out. Please try again.";
           }
 
+
           setError(message);
+
           setLoading(false);
         },
 
+
         {
           enableHighAccuracy: true,
+
           timeout: 15000,
+
           maximumAge: 0,
         }
       );
     };
 
+
     getLocation();
+
   }, []);
 
 
-  // ==========================================
-  // Get Place Category
-  // ==========================================
+  // ====================================================
+  // Filter Places
+  // ====================================================
 
-  const getPlaceInfo = (place) => {
-    const tags = place.tags || {};
-
-    if (tags.amenity === "fuel") {
-      return {
-        name: tags.name || "Fuel Station",
-        category: "Fuel Station",
-        icon: "⛽",
-      };
-    }
+  const filteredPlaces = useMemo(() => {
 
     if (
-      tags.shop === "car_repair"
+      selectedCategory ===
+      "All"
     ) {
-      return {
-        name:
-          tags.name || "Car Service Center",
-        category: "Car Repair / Service",
-        icon: "🔧",
-      };
+      return places;
     }
 
-    if (
-      tags.shop === "tyres"
-    ) {
-      return {
-        name:
-          tags.name || "Tyre Shop",
-        category: "Tyre Shop",
-        icon: "🛞",
-      };
-    }
 
-    if (
-      tags.amenity ===
-      "charging_station"
-    ) {
-      return {
-        name:
-          tags.name ||
-          "EV Charging Station",
-        category: "EV Charging",
-        icon: "⚡",
-      };
-    }
+    return places.filter(
+      (place) =>
+        place.info.type ===
+        selectedCategory
+    );
 
-    if (
-      tags.amenity === "car_wash"
-    ) {
-      return {
-        name:
-          tags.name || "Car Wash",
-        category: "Car Wash",
-        icon: "🚿",
-      };
-    }
+  }, [
+    places,
+    selectedCategory,
+  ]);
 
-    if (
-      tags.shop === "car"
-    ) {
-      return {
-        name:
-          tags.name || "Car Shop",
-        category: "Car Shop",
-        icon: "🚗",
-      };
-    }
 
-    return {
-      name:
-        tags.name || "Vehicle Service",
-      category: "Vehicle Service",
-      icon: "📍",
-    };
+  // ====================================================
+  // Nearest Place
+  // ====================================================
+
+  const nearestPlace =
+    filteredPlaces.length > 0
+      ? filteredPlaces[0]
+      : null;
+
+
+  // ====================================================
+  // Directions
+  // ====================================================
+
+  const getDirectionsUrl = (
+    place
+  ) => {
+
+    return `https://www.openstreetmap.org/directions?from=${location.latitude},${location.longitude}&to=${place.latitude},${place.longitude}`;
   };
 
 
-  // ==========================================
-  // Loading
-  // ==========================================
+  // ====================================================
+  // Loading Screen
+  // ====================================================
 
   if (loading) {
+
     return (
       <>
         <Navbar />
@@ -437,11 +685,12 @@ function NearbyServices() {
   }
 
 
-  // ==========================================
-  // Error
-  // ==========================================
+  // ====================================================
+  // GPS Error
+  // ====================================================
 
   if (error) {
+
     return (
       <>
         <Navbar />
@@ -452,13 +701,17 @@ function NearbyServices() {
 
             <button
               onClick={() =>
-                navigate("/dashboard")
+                navigate(
+                  "/dashboard"
+                )
               }
-              className="flex items-center gap-2 text-blue-600 hover:underline mb-6"
+              className="flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline mb-6 font-medium"
             >
               <ArrowLeft size={20} />
+
               Back to Home
             </button>
+
 
             <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
 
@@ -485,32 +738,41 @@ function NearbyServices() {
   }
 
 
-  // ==========================================
+  // ====================================================
   // Main UI
-  // ==========================================
+  // ====================================================
 
   return (
     <>
       <Navbar />
 
+
       <div className="min-h-screen bg-gray-50 py-8 px-4">
 
         <div className="max-w-7xl mx-auto">
 
-          {/* Back Button */}
+
+          {/* ============================================
+              Back Button
+          ============================================ */}
 
           <button
             onClick={() =>
-              navigate("/dashboard")
+              navigate(
+                "/dashboard"
+              )
             }
             className="flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline mb-6 font-medium"
           >
             <ArrowLeft size={20} />
+
             Back to Home
           </button>
 
 
-          {/* Header */}
+          {/* ============================================
+              Header
+          ============================================ */}
 
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
 
@@ -524,6 +786,7 @@ function NearbyServices() {
                 />
 
               </div>
+
 
               <div>
 
@@ -542,7 +805,9 @@ function NearbyServices() {
           </div>
 
 
-          {/* Location */}
+          {/* ============================================
+              Location Information
+          ============================================ */}
 
           <div className="bg-white rounded-2xl shadow-lg p-5 mb-6">
 
@@ -553,6 +818,7 @@ function NearbyServices() {
                 size={25}
               />
 
+
               <div>
 
                 <h2 className="font-bold text-lg">
@@ -562,12 +828,18 @@ function NearbyServices() {
                 <p className="text-sm text-gray-500">
 
                   Latitude:{" "}
-                  {location.latitude.toFixed(6)}
+
+                  {location.latitude.toFixed(
+                    6
+                  )}
 
                   {" | "}
 
                   Longitude:{" "}
-                  {location.longitude.toFixed(6)}
+
+                  {location.longitude.toFixed(
+                    6
+                  )}
 
                 </p>
 
@@ -578,7 +850,248 @@ function NearbyServices() {
           </div>
 
 
-          {/* Map */}
+          {/* ============================================
+              Category Filters
+          ============================================ */}
+
+          <div className="bg-white rounded-2xl shadow-lg p-5 mb-6">
+
+            <div className="flex items-center gap-2 mb-4">
+
+              <Search
+                size={20}
+                className="text-blue-600"
+              />
+
+              <h2 className="text-lg font-bold">
+                Find Services
+              </h2>
+
+            </div>
+
+
+            <div className="flex flex-wrap gap-3">
+
+
+              {/* All */}
+
+              <button
+                onClick={() =>
+                  setSelectedCategory(
+                    "All"
+                  )
+                }
+                className={`px-5 py-2.5 rounded-full font-semibold transition ${
+                  selectedCategory ===
+                  "All"
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                📍 All
+              </button>
+
+
+              {/* Fuel */}
+
+              <button
+                onClick={() =>
+                  setSelectedCategory(
+                    "fuel"
+                  )
+                }
+                className={`px-5 py-2.5 rounded-full font-semibold transition ${
+                  selectedCategory ===
+                  "fuel"
+                    ? "bg-red-500 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                ⛽ Fuel
+              </button>
+
+
+              {/* Service */}
+
+              <button
+                onClick={() =>
+                  setSelectedCategory(
+                    "service"
+                  )
+                }
+                className={`px-5 py-2.5 rounded-full font-semibold transition ${
+                  selectedCategory ===
+                  "service"
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                🔧 Service
+              </button>
+
+
+              {/* Tyres */}
+
+              <button
+                onClick={() =>
+                  setSelectedCategory(
+                    "tyres"
+                  )
+                }
+                className={`px-5 py-2.5 rounded-full font-semibold transition ${
+                  selectedCategory ===
+                  "tyres"
+                    ? "bg-gray-700 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                🛞 Tyres
+              </button>
+
+
+              {/* EV */}
+
+              <button
+                onClick={() =>
+                  setSelectedCategory(
+                    "ev"
+                  )
+                }
+                className={`px-5 py-2.5 rounded-full font-semibold transition ${
+                  selectedCategory ===
+                  "ev"
+                    ? "bg-green-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                ⚡ EV Charging
+              </button>
+
+
+              {/* Car Wash */}
+
+              <button
+                onClick={() =>
+                  setSelectedCategory(
+                    "wash"
+                  )
+                }
+                className={`px-5 py-2.5 rounded-full font-semibold transition ${
+                  selectedCategory ===
+                  "wash"
+                    ? "bg-cyan-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                🚿 Car Wash
+              </button>
+
+
+              {/* Car Shop */}
+
+              <button
+                onClick={() =>
+                  setSelectedCategory(
+                    "car"
+                  )
+                }
+                className={`px-5 py-2.5 rounded-full font-semibold transition ${
+                  selectedCategory ===
+                  "car"
+                    ? "bg-yellow-500 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                🚗 Car Shop
+              </button>
+
+            </div>
+
+          </div>
+
+
+          {/* ============================================
+              Nearest Service Highlight
+          ============================================ */}
+
+          {nearestPlace && (
+
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-6 mb-6 text-white">
+
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+
+                <div>
+
+                  <div className="flex items-center gap-2 mb-2">
+
+                    <span className="text-2xl">
+                      🏆
+                    </span>
+
+                    <span className="font-semibold">
+                      Nearest{" "}
+                      {selectedCategory ===
+                      "All"
+                        ? "Service"
+                        : "Service"}
+                    </span>
+
+                  </div>
+
+
+                  <h2 className="text-2xl font-bold">
+
+                    {nearestPlace.info.icon}{" "}
+
+                    {nearestPlace.info.name}
+
+                  </h2>
+
+
+                  <p className="mt-1 opacity-90">
+
+                    {nearestPlace.info.category}
+
+                  </p>
+
+
+                  <p className="mt-2 font-semibold">
+
+                    📏{" "}
+                    {nearestPlace.distance.toFixed(
+                      2
+                    )}{" "}
+                    km away
+
+                  </p>
+
+                </div>
+
+
+                <a
+                  href={getDirectionsUrl(
+                    nearestPlace
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition"
+                >
+
+                  <Navigation size={19} />
+
+                  Get Directions
+
+                </a>
+
+              </div>
+
+            </div>
+          )}
+
+
+          {/* ============================================
+              Map
+          ============================================ */}
 
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
 
@@ -601,7 +1114,7 @@ function NearbyServices() {
               />
 
 
-              {/* User Location */}
+              {/* User Marker */}
 
               <Marker
                 position={[
@@ -629,61 +1142,99 @@ function NearbyServices() {
               </Marker>
 
 
-              {/* Nearby Places */}
+              {/* Filtered Service Markers */}
 
-              {places.map((place) => {
+              {filteredPlaces.map(
+                (place) => {
 
-                const info =
-                  getPlaceInfo(place);
+                  return (
+                    <Marker
+                      key={`${place.type}-${place.id}`}
+                      position={[
+                        place.latitude,
+                        place.longitude,
+                      ]}
+                      icon={
+                        markerIcons[
+                          place.info.type
+                        ] ||
+                        markerIcons.default
+                      }
+                    >
 
-                return (
-                  <Marker
-                    key={`${place.type}-${place.id}`}
-                    position={[
-                      place.latitude,
-                      place.longitude,
-                    ]}
-                  >
+                      <Popup>
 
-                    <Popup>
+                        <div className="min-w-[200px]">
 
-                      <div className="min-w-[180px]">
+                          <h3 className="font-bold text-base">
 
-                        <h3 className="font-bold text-base">
-                          {info.icon}{" "}
-                          {info.name}
-                        </h3>
+                            {
+                              place.info
+                                .icon
+                            }{" "}
 
-                        <p className="text-gray-500 text-sm mt-1">
-                          {info.category}
-                        </p>
+                            {
+                              place.info
+                                .name
+                            }
 
-                        <p className="text-blue-600 text-sm mt-2">
-                          📏{" "}
-                          {place.distance.toFixed(
-                            2
-                          )}{" "}
-                          km away
-                        </p>
+                          </h3>
 
-                      </div>
 
-                    </Popup>
+                          <p className="text-gray-500 text-sm mt-1">
 
-                  </Marker>
-                );
-              })}
+                            {
+                              place.info
+                                .category
+                            }
+
+                          </p>
+
+
+                          <p className="text-blue-600 text-sm mt-2 font-semibold">
+
+                            📏{" "}
+
+                            {place.distance.toFixed(
+                              2
+                            )}{" "}
+                            km away
+
+                          </p>
+
+
+                          <a
+                            href={getDirectionsUrl(
+                              place
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block mt-3 bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-semibold"
+                          >
+                            🧭 Directions
+                          </a>
+
+                        </div>
+
+                      </Popup>
+
+                    </Marker>
+                  );
+                }
+              )}
 
             </MapContainer>
 
           </div>
 
 
-          {/* Nearby Services */}
+          {/* ============================================
+              Service List
+          ============================================ */}
 
           <div className="bg-white rounded-2xl shadow-lg p-6">
 
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
 
               <div>
 
@@ -692,21 +1243,33 @@ function NearbyServices() {
                 </h2>
 
                 <p className="text-gray-500 mt-1">
-                  Services within 5 km of your location
+
+                  {selectedCategory ===
+                  "All"
+                    ? "All vehicle services"
+                    : `Showing ${nearestPlace?.info.category || "services"}`}
+
+                  {" "}within 5 km
+
                 </p>
 
               </div>
 
-              <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold">
-                {places.length} Found
+
+              <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold w-fit">
+
+                {filteredPlaces.length}{" "}
+                Found
+
               </span>
 
             </div>
 
 
-            {/* Loading */}
+            {/* API Loading */}
 
             {placesLoading && (
+
               <div className="text-center py-10">
 
                 <Navigation
@@ -722,11 +1285,14 @@ function NearbyServices() {
             )}
 
 
-            {/* Error */}
+            {/* API Error */}
 
             {placesError && (
-              <div className="bg-red-50 text-red-600 rounded-lg p-4">
+
+              <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-4 mb-5">
+
                 {placesError}
+
               </div>
             )}
 
@@ -735,7 +1301,8 @@ function NearbyServices() {
 
             {!placesLoading &&
               !placesError &&
-              places.length === 0 && (
+              filteredPlaces.length ===
+                0 && (
 
                 <div className="text-center py-12">
 
@@ -745,12 +1312,31 @@ function NearbyServices() {
                   />
 
                   <h3 className="text-xl font-semibold mt-4">
-                    No Nearby Services Found
+
+                    No Services Found
+
                   </h3>
 
                   <p className="text-gray-500 mt-2">
-                    Try searching from a different location.
+
+                    No services from this category were found within 5 km.
+
                   </p>
+
+                  {selectedCategory !==
+                    "All" && (
+
+                    <button
+                      onClick={() =>
+                        setSelectedCategory(
+                          "All"
+                        )
+                      }
+                      className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold"
+                    >
+                      Show All Services
+                    </button>
+                  )}
 
                 </div>
               )}
@@ -759,116 +1345,182 @@ function NearbyServices() {
             {/* Service Cards */}
 
             {!placesLoading &&
-              places.length > 0 && (
+              filteredPlaces.length >
+                0 && (
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
 
-                  {places.map((place) => {
+                  {filteredPlaces.map(
+                    (place, index) => {
 
-                    const info =
-                      getPlaceInfo(place);
-
-                    const address =
-                      [
-                        place.tags?.["addr:housenumber"],
-                        place.tags?.["addr:street"],
-                        place.tags?.["addr:city"],
-                      ]
-                        .filter(Boolean)
-                        .join(", ");
+                      const info =
+                        place.info;
 
 
-                    const directionsUrl =
-                      `https://www.openstreetmap.org/directions?from=${location.latitude},${location.longitude}&to=${place.latitude},${place.longitude}`;
+                      const address =
+                        [
+                          place.tags?.[
+                            "addr:housenumber"
+                          ],
+
+                          place.tags?.[
+                            "addr:street"
+                          ],
+
+                          place.tags?.[
+                            "addr:city"
+                          ],
+                        ]
+                          .filter(Boolean)
+                          .join(", ");
 
 
-                    return (
-                      <div
-                        key={`${place.type}-${place.id}`}
-                        className="border rounded-xl p-5 hover:shadow-lg transition bg-gray-50"
-                      >
+                      return (
 
-                        {/* Icon + Name */}
-
-                        <div className="flex items-start gap-4 mb-4">
-
-                          <div className="bg-blue-100 p-3 rounded-full text-2xl">
-                            {info.icon}
-                          </div>
-
-                          <div className="flex-1">
-
-                            <h3 className="font-bold text-lg">
-                              {info.name}
-                            </h3>
-
-                            <p className="text-sm text-gray-500">
-                              {info.category}
-                            </p>
-
-                          </div>
-
-                        </div>
-
-
-                        {/* Distance */}
-
-                        <div className="flex items-center gap-2 text-blue-600 font-semibold mb-3">
-
-                          <Navigation size={17} />
-
-                          {place.distance.toFixed(
-                            2
-                          )}{" "}
-                          km away
-
-                        </div>
-
-
-                        {/* Address */}
-
-                        {address && (
-                          <p className="text-sm text-gray-500 mb-2">
-                            📍 {address}
-                          </p>
-                        )}
-
-
-                        {/* Phone */}
-
-                        {place.tags?.phone && (
-                          <p className="text-sm text-gray-500 mb-3">
-                            📞{" "}
-                            {place.tags.phone}
-                          </p>
-                        )}
-
-
-                        {/* Opening Hours */}
-
-                        {place.tags?.opening_hours && (
-                          <p className="text-sm text-gray-500 mb-3">
-                            🕐{" "}
-                            {place.tags.opening_hours}
-                          </p>
-                        )}
-
-
-                        {/* Directions */}
-
-                        <a
-                          href={directionsUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold transition"
+                        <div
+                          key={`${place.type}-${place.id}`}
+                          className={`border rounded-xl p-5 transition bg-gray-50 ${
+                            index === 0
+                              ? "border-blue-500 shadow-md"
+                              : "hover:shadow-lg"
+                          }`}
                         >
-                          <Navigation size={18} />
-                          Get Directions
-                        </a>
 
-                      </div>
-                    );
-                  })}
+                          {/* Nearest Badge */}
+
+                          {index === 0 && (
+
+                            <div className="mb-3">
+
+                              <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">
+
+                                🏆 Nearest
+
+                              </span>
+
+                            </div>
+                          )}
+
+
+                          {/* Icon + Name */}
+
+                          <div className="flex items-start gap-4 mb-4">
+
+                            <div className="bg-blue-100 p-3 rounded-full text-2xl">
+
+                              {info.icon}
+
+                            </div>
+
+
+                            <div className="flex-1">
+
+                              <h3 className="font-bold text-lg">
+
+                                {info.name}
+
+                              </h3>
+
+
+                              <p className="text-sm text-gray-500">
+
+                                {info.category}
+
+                              </p>
+
+                            </div>
+
+                          </div>
+
+
+                          {/* Distance */}
+
+                          <div className="flex items-center gap-2 text-blue-600 font-semibold mb-3">
+
+                            <Navigation
+                              size={17}
+                            />
+
+                            {place.distance.toFixed(
+                              2
+                            )}{" "}
+                            km away
+
+                          </div>
+
+
+                          {/* Address */}
+
+                          {address && (
+
+                            <p className="text-sm text-gray-500 mb-2">
+
+                              📍{" "}
+                              {address}
+
+                            </p>
+                          )}
+
+
+                          {/* Phone */}
+
+                          {place.tags?.phone && (
+
+                            <p className="text-sm text-gray-500 mb-2">
+
+                              📞{" "}
+                              {
+                                place
+                                  .tags
+                                  .phone
+                              }
+
+                            </p>
+                          )}
+
+
+                          {/* Opening Hours */}
+
+                          {place.tags
+                            ?.opening_hours && (
+
+                            <p className="text-sm text-gray-500 mb-3">
+
+                              🕐{" "}
+                              {
+                                place
+                                  .tags
+                                  .opening_hours
+                              }
+
+                            </p>
+                          )}
+
+
+                          {/* Directions */}
+
+                          <a
+                            href={getDirectionsUrl(
+                              place
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold transition"
+                          >
+
+                            <Navigation
+                              size={18}
+                            />
+
+                            Get Directions
+
+                          </a>
+
+                        </div>
+
+                      );
+                    }
+                  )}
 
                 </div>
               )}
@@ -881,5 +1533,6 @@ function NearbyServices() {
     </>
   );
 }
+
 
 export default NearbyServices;
