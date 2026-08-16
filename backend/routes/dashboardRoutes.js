@@ -1,14 +1,33 @@
 const express = require("express");
 
 const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
 
-const {
-    getDashboard,
-    getMonthlyExpenses
-} = require("../controllers/dashboardController");
+const dashboardController = require("../controllers/dashboardController");
+const protect = require("../middleware/authMiddleware");
 
-router.get("/", authMiddleware, getDashboard);
+
+// Dashboard
+router.get(
+  "/",
+  protect,
+  dashboardController.getDashboard
+);
+
+
+// Monthly Expenses
+router.get(
+  "/monthly-expenses",
+  protect,
+  dashboardController.getMonthlyExpenses
+);
+
+
+// Expense Report
+router.get(
+  "/expense-report",
+  protect,
+  dashboardController.getExpenseReport
+);
+
+
 module.exports = router;
-
-router.get("/monthly-expenses", authMiddleware, getMonthlyExpenses);

@@ -15,6 +15,7 @@ import FuelHistory from "./pages/FuelHistory";
 import VehicleChatbot from "./pages/vehicleChatbot";
 import Chatbot from "./pages/Chatbot";
 import NearbyServices from "./pages/NearbyServices";
+import ExpenseReport from "./pages/ExpenseReport";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -125,6 +126,11 @@ function App() {
       <NearbyServices />
     </ProtectedRoute>
   }
+/>
+
+<Route
+  path="/expense-report"
+  element={<ExpenseReport />}
 />
       
     </Routes>
