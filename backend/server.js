@@ -23,6 +23,7 @@ const aiRoutes = require("./routes/aiRoutes");
 const fuelRoutes = require("./routes/fuelRoutes");
 const chatbotRoutes = require("./routes/chatbotRoutes");
 const alertRoutes = require("./routes/alertRoutes");
+const healthScoreRoutes = require("./routes/healthScoreRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/vehicles", vehicleRoutes);
@@ -32,6 +33,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/fuel", fuelRoutes);
 app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/alerts", alertRoutes);
+app.use("/api/health-score", healthScoreRoutes);
 
 const authMiddleware = require("./middleware/authMiddleware");
 
