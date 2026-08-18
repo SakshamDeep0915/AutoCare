@@ -15,7 +15,7 @@ async function testGroq() {
           content: "Give me 3 tips to maintain a car engine.",
         },
       ],
-      model: "llama-3.3-70b-versatile",
+      model: "llama-3.1-8b-instant",
     });
 
     console.log(chatCompletion.choices[0].message.content);
