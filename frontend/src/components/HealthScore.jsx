@@ -35,7 +35,6 @@ function HealthScore({ vehicleId }) {
       setData(res.data);
     } catch (err) {
       console.error("Health Score Error:", err);
-
       setError("Unable to calculate vehicle health score.");
     } finally {
       setLoading(false);
@@ -48,20 +47,20 @@ function HealthScore({ vehicleId }) {
     }
   }, [vehicleId]);
 
-  // ===============================
+  // =====================================================
   // Loading
-  // ===============================
+  // =====================================================
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
-        <div className="flex justify-center items-center py-8">
+      <div className="mt-8 rounded-2xl border border-zinc-800 bg-[#111111] p-8 shadow-xl shadow-black/20">
+        <div className="flex items-center justify-center py-8">
           <RefreshCw
-            className="animate-spin text-blue-600"
+            className="animate-spin text-orange-500"
             size={35}
           />
 
-          <span className="ml-3 text-gray-600">
+          <span className="ml-3 text-base font-medium text-zinc-400">
             Calculating vehicle health...
           </span>
         </div>
@@ -69,28 +68,32 @@ function HealthScore({ vehicleId }) {
     );
   }
 
-  // ===============================
+  // =====================================================
   // Error
-  // ===============================
+  // =====================================================
 
   if (error) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-6 mt-8">
-        <div className="flex items-center justify-between">
+      <div className="mt-8 rounded-2xl border border-zinc-800 bg-[#111111] p-6 shadow-xl shadow-black/20">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div className="flex items-center gap-3">
-            <AlertTriangle
-              className="text-red-500"
-              size={25}
-            />
+            <div className="rounded-full border border-red-500/25 bg-red-500/10 p-3">
+              <AlertTriangle
+                className="text-red-400"
+                size={25}
+              />
+            </div>
 
-            <p className="text-red-600 font-medium">
+            <p className="text-base font-medium text-red-400">
               {error}
             </p>
           </div>
 
+          {/* ORANGE RETRY BUTTON */}
+
           <button
             onClick={fetchHealthScore}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            className="flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-orange-950/30 transition-all duration-200 hover:bg-orange-400"
           >
             <RefreshCw size={18} />
             Retry
@@ -104,65 +107,69 @@ function HealthScore({ vehicleId }) {
     return null;
   }
 
-  // ===============================
+  // =====================================================
   // Score
-  // ===============================
+  // =====================================================
 
   const score = data.healthScore;
 
-  let scoreColor = "text-red-600";
+  let scoreColor = "text-red-400";
   let circleColor = "border-red-500";
-  let bgColor = "bg-red-50";
+  let bgColor = "bg-red-500/5";
 
   if (score >= 90) {
-    scoreColor = "text-green-600";
-    circleColor = "border-green-500";
-    bgColor = "bg-green-50";
+    scoreColor = "text-orange-500";
+    circleColor = "border-orange-500";
+    bgColor = "bg-orange-500/5";
   } else if (score >= 75) {
-    scoreColor = "text-green-600";
-    circleColor = "border-green-500";
-    bgColor = "bg-green-50";
+    scoreColor = "text-orange-500";
+    circleColor = "border-orange-500";
+    bgColor = "bg-orange-500/5";
   } else if (score >= 60) {
-    scoreColor = "text-yellow-600";
-    circleColor = "border-yellow-500";
-    bgColor = "bg-yellow-50";
+    scoreColor = "text-orange-400";
+    circleColor = "border-orange-400";
+    bgColor = "bg-orange-500/5";
   } else if (score >= 40) {
     scoreColor = "text-orange-600";
-    circleColor = "border-orange-500";
-    bgColor = "bg-orange-50";
+    circleColor = "border-orange-600";
+    bgColor = "bg-orange-500/5";
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
+    <div className="mt-8 rounded-2xl border border-zinc-800 bg-[#111111] p-6 shadow-xl shadow-black/20 sm:p-8">
 
-      {/* Header */}
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
         <div className="flex items-center gap-4">
 
-          <div className="bg-blue-100 p-3 rounded-full">
+          <div className="rounded-full border border-orange-500/30 bg-orange-500/10 p-3">
             <Activity
-              className="text-blue-600"
+              className="text-orange-500"
               size={30}
             />
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
               Vehicle Health Score
             </h2>
 
-            <p className="text-gray-500">
+            <p className="mt-1 text-base text-zinc-500">
               Overall condition based on your vehicle data
             </p>
           </div>
 
         </div>
 
+        {/* ORANGE REFRESH BUTTON */}
+
         <button
           onClick={fetchHealthScore}
-          className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium"
+          className="flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-orange-950/30 transition-all duration-200 hover:bg-orange-400"
         >
           <RefreshCw size={18} />
           Refresh
@@ -170,41 +177,39 @@ function HealthScore({ vehicleId }) {
 
       </div>
 
+      {/* =====================================================
+          SCORE SECTION
+      ===================================================== */}
 
-      {/* Score Section */}
+      <div className="mb-8 flex flex-col items-center gap-10 md:flex-row">
 
-      <div className="flex flex-col md:flex-row items-center gap-10 mb-8">
-
-        {/* Score Circle */}
+        {/* SCORE CIRCLE */}
 
         <div
-          className={`w-44 h-44 rounded-full border-[12px] ${circleColor} ${bgColor} flex flex-col items-center justify-center`}
+          className={`flex h-44 w-44 shrink-0 flex-col items-center justify-center rounded-full border-[12px] ${circleColor} ${bgColor}`}
         >
-
           <span
-            className={`text-5xl font-bold ${scoreColor}`}
+            className={`text-5xl font-black ${scoreColor}`}
           >
             {score}
           </span>
 
-          <span className="text-gray-500 font-medium">
+          <span className="font-medium text-zinc-500">
             / 100
           </span>
-
         </div>
 
-
-        {/* Status */}
+        {/* STATUS */}
 
         <div className="text-center md:text-left">
 
           <h3
-            className={`text-3xl font-bold ${scoreColor}`}
+            className={`text-3xl font-black sm:text-4xl ${scoreColor}`}
           >
             {data.status}
           </h3>
 
-          <p className="text-gray-600 mt-2 max-w-md">
+          <p className="mt-3 max-w-xl text-base leading-7 text-zinc-400">
             Your vehicle's health score is calculated
             using maintenance, fuel efficiency,
             expenses and insurance information.
@@ -214,19 +219,19 @@ function HealthScore({ vehicleId }) {
 
       </div>
 
-
-      {/* Score Breakdown */}
+      {/* =====================================================
+          HEALTH BREAKDOWN
+      ===================================================== */}
 
       <div>
 
-        <h3 className="text-xl font-bold mb-5">
+        <h3 className="mb-5 text-2xl font-black tracking-tight text-white">
           Health Breakdown
         </h3>
 
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-          {/* Maintenance */}
+          {/* MAINTENANCE */}
 
           <ScoreCard
             icon={<Wrench size={22} />}
@@ -237,11 +242,10 @@ function HealthScore({ vehicleId }) {
             maxScore={
               data.breakdown.maintenance.maxScore
             }
-            iconClass="bg-blue-100 text-blue-600"
+            iconClass="border border-orange-500/20 bg-orange-500/10 text-orange-500"
           />
 
-
-          {/* Fuel */}
+          {/* FUEL */}
 
           <ScoreCard
             icon={<Fuel size={22} />}
@@ -252,7 +256,7 @@ function HealthScore({ vehicleId }) {
             maxScore={
               data.breakdown.fuelEfficiency.maxScore
             }
-            iconClass="bg-orange-100 text-orange-600"
+            iconClass="border border-orange-500/20 bg-orange-500/10 text-orange-500"
             extra={
               data.breakdown.fuelEfficiency
                 .currentEfficiency
@@ -261,8 +265,7 @@ function HealthScore({ vehicleId }) {
             }
           />
 
-
-          {/* Expenses */}
+          {/* EXPENSES */}
 
           <ScoreCard
             icon={<Wallet size={22} />}
@@ -273,11 +276,10 @@ function HealthScore({ vehicleId }) {
             maxScore={
               data.breakdown.expenses.maxScore
             }
-            iconClass="bg-green-100 text-green-600"
+            iconClass="border border-orange-500/20 bg-orange-500/10 text-orange-500"
           />
 
-
-          {/* Insurance */}
+          {/* INSURANCE */}
 
           <ScoreCard
             icon={<Shield size={22} />}
@@ -288,7 +290,7 @@ function HealthScore({ vehicleId }) {
             maxScore={
               data.breakdown.insurance.maxScore
             }
-            iconClass="bg-purple-100 text-purple-600"
+            iconClass="border border-orange-500/20 bg-orange-500/10 text-orange-500"
             extra={
               data.breakdown.insurance
                 .daysRemaining !== null
@@ -304,15 +306,16 @@ function HealthScore({ vehicleId }) {
 
       </div>
 
-
-      {/* Recommendations */}
+      {/* =====================================================
+          RECOMMENDATIONS
+      ===================================================== */}
 
       {data.recommendations &&
         data.recommendations.length > 0 && (
 
         <div className="mt-8">
 
-          <h3 className="text-xl font-bold mb-4">
+          <h3 className="mb-4 text-2xl font-black tracking-tight text-white">
             💡 Recommendations
           </h3>
 
@@ -323,15 +326,15 @@ function HealthScore({ vehicleId }) {
 
               <div
                 key={index}
-                className="flex items-start gap-3 bg-yellow-50 border border-yellow-200 rounded-lg p-4"
+                className="flex items-start gap-3 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4 transition hover:border-orange-500/30 hover:bg-orange-500/10"
               >
 
                 <AlertTriangle
-                  className="text-yellow-600 mt-0.5 flex-shrink-0"
+                  className="mt-0.5 flex-shrink-0 text-orange-500"
                   size={20}
                 />
 
-                <p className="text-gray-700">
+                <p className="text-sm leading-6 text-zinc-300 sm:text-base">
                   {recommendation}
                 </p>
 
@@ -344,20 +347,25 @@ function HealthScore({ vehicleId }) {
         </div>
       )}
 
-
-      {/* Good Health Message */}
+      {/* =====================================================
+          GOOD HEALTH
+      ===================================================== */}
 
       {data.recommendations &&
         data.recommendations.length === 0 && (
 
-        <div className="mt-8 bg-green-50 border border-green-200 rounded-xl p-5 flex items-center gap-3">
+        <div className="mt-8 flex items-center gap-3 rounded-xl border border-orange-500/20 bg-orange-500/5 p-5">
 
-          <CheckCircle
-            className="text-green-600"
-            size={25}
-          />
+          <div className="rounded-full bg-orange-500/10 p-2">
 
-          <p className="text-green-700 font-medium">
+            <CheckCircle
+              className="text-orange-500"
+              size={25}
+            />
+
+          </div>
+
+          <p className="text-base font-semibold text-orange-400">
             Excellent! No immediate issues were detected
             with your vehicle.
           </p>
@@ -371,7 +379,7 @@ function HealthScore({ vehicleId }) {
 
 
 // =====================================================
-// Score Card
+// SCORE CARD
 // =====================================================
 
 function ScoreCard({
@@ -385,54 +393,52 @@ function ScoreCard({
   const percentage =
     (score / maxScore) * 100;
 
-  let progressColor =
-    "bg-red-500";
+  // Orange progress for every non-critical score
+  let progressColor = "bg-red-500";
 
-  if (percentage >= 75) {
-    progressColor = "bg-green-500";
-  } else if (percentage >= 50) {
-    progressColor = "bg-yellow-500";
-  } else if (percentage >= 40) {
+  if (percentage >= 40) {
     progressColor = "bg-orange-500";
   }
 
   return (
-    <div className="border rounded-xl p-5">
+    <div className="rounded-xl border border-zinc-800 bg-[#151515] p-5 transition-all duration-300 hover:border-orange-500/30 hover:bg-[#181818]">
 
-      <div className="flex items-center gap-3 mb-4">
+      {/* ICON + TITLE */}
+
+      <div className="mb-4 flex items-center gap-3">
 
         <div
-          className={`p-3 rounded-full ${iconClass}`}
+          className={`rounded-full p-3 ${iconClass}`}
         >
           {icon}
         </div>
 
-        <h4 className="font-semibold">
+        <h4 className="text-base font-bold text-zinc-200">
           {title}
         </h4>
 
       </div>
 
+      {/* SCORE */}
 
-      <div className="flex items-end justify-between mb-2">
+      <div className="mb-2 flex items-end justify-between">
 
-        <span className="text-2xl font-bold">
+        <span className="text-3xl font-black text-white">
           {score}
         </span>
 
-        <span className="text-gray-400 text-sm">
+        <span className="text-sm text-zinc-500">
           / {maxScore}
         </span>
 
       </div>
 
+      {/* PROGRESS BAR */}
 
-      {/* Progress Bar */}
-
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-800">
 
         <div
-          className={`${progressColor} h-2 rounded-full transition-all duration-500`}
+          className={`${progressColor} h-2 rounded-full transition-all duration-700`}
           style={{
             width: `${percentage}%`,
           }}
@@ -440,9 +446,10 @@ function ScoreCard({
 
       </div>
 
+      {/* EXTRA INFO */}
 
       {extra && (
-        <p className="text-xs text-gray-500 mt-3">
+        <p className="mt-3 text-xs font-medium text-zinc-500">
           {extra}
         </p>
       )}

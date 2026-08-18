@@ -108,7 +108,7 @@ const [otpSent, setOtpSent] = useState(false);
   
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-700 flex">
+    <div className="min-h-screen bg-gradient-to-br from-[#080808] via-[#121212] to-[#7c2d12] flex">
 
       {/* LEFT SIDE */}
 
@@ -136,14 +136,14 @@ const [otpSent, setOtpSent] = useState(false);
 
       <div className="flex-1 flex justify-center items-center p-8">
 
-        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8">
+        <div className="bg-[#111111] border border-zinc-800 rounded-3xl shadow-2xl shadow-black/40 w-full max-w-md p-8">
           <form onSubmit={handleSubmit}>  
 
           <h2 className="text-4xl font-bold text-center">
             Create Account
           </h2>
 
-          <p className="text-gray-500 text-center mt-2 mb-8">
+          <p className="text-zinc-500 text-center mt-2 mb-8">
             Welcome to AutoCare AI
           </p>
 
@@ -155,9 +155,9 @@ const [otpSent, setOtpSent] = useState(false);
               Full Name
             </label>
 
-            <div className="flex items-center border rounded-xl mt-2 px-4">
+            <div className="flex items-center border border-zinc-800 bg-[#0d0d0d] rounded-xl mt-2 px-4">
 
-              <User className="text-gray-400" size={20} />
+              <User className="text-zinc-500" size={20} />
 
               <input
                 type="text"
@@ -180,9 +180,9 @@ const [otpSent, setOtpSent] = useState(false);
               Phone Number
             </label>
 
-            <div className="flex items-center border rounded-xl mt-2 px-4">
+            <div className="flex items-center border border-zinc-800 bg-[#0d0d0d] rounded-xl mt-2 px-4">
 
-              <Phone className="text-gray-400" size={20} />
+              <Phone className="text-zinc-500" size={20} />
 
               <input
                 type="tel"
@@ -205,9 +205,9 @@ const [otpSent, setOtpSent] = useState(false);
               Email
             </label>
 
-            <div className="flex items-center border rounded-xl mt-2 px-4">
+            <div className="flex items-center border border-zinc-800 bg-[#0d0d0d] rounded-xl mt-2 px-4">
 
-              <Mail className="text-gray-400" size={20} />
+              <Mail className="text-zinc-500" size={20} />
 
               <input
                 type="email"
@@ -230,9 +230,9 @@ const [otpSent, setOtpSent] = useState(false);
               Password
             </label>
 
-            <div className="flex items-center border rounded-xl mt-2 px-4">
+            <div className="flex items-center border border-zinc-800 bg-[#0d0d0d] rounded-xl mt-2 px-4">
 
-              <Lock className="text-gray-400" size={20} />
+              <Lock className="text-zinc-500" size={20} />
 
               <input
                 type={showPassword ? "text" : "password"}
@@ -268,9 +268,9 @@ const [otpSent, setOtpSent] = useState(false);
               Confirm Password
             </label>
 
-            <div className="flex items-center border rounded-xl mt-2 px-4">
+            <div className="flex items-center border border-zinc-800 bg-[#0d0d0d] rounded-xl mt-2 px-4">
 
-              <Lock className="text-gray-400" size={20} />
+              <Lock className="text-zinc-500" size={20} />
 
               <input
                 type={showConfirm ? "text" : "password"}
@@ -309,20 +309,20 @@ const [otpSent, setOtpSent] = useState(false);
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                className="w-full border rounded-xl p-3 mt-2"
+                className="w-full border border-zinc-800 bg-[#0d0d0d] rounded-xl p-3 mt-2"
                 placeholder="Enter OTP"
                 />
                 </div>
             )}
 
           {error && (
-  <div className="bg-red-100 text-red-700 p-3 rounded-xl mb-4 text-center">
+  <div className="bg-red-500/10 text-red-300 border border-red-500/20 p-3 rounded-xl mb-4 text-center">
     {error}
   </div>
 )}
 
 {success && (
-  <div className="bg-green-100 text-green-700 p-3 rounded-xl mb-4 text-center">
+  <div className="bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 p-3 rounded-xl mb-4 text-center">
     {success}
   </div>
 )}
@@ -330,20 +330,20 @@ const [otpSent, setOtpSent] = useState(false);
 <button
   type="submit"
   disabled={loading}
-  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition"
+  className="w-full bg-orange-500 hover:bg-orange-400 text-white py-3 rounded-xl font-semibold transition"
 >
   {loading ? "Please Wait..." : otpSent ? "Verify OTP" : "Send OTP"}
 </button>
 
           {/* Button will come in Part 2 */}
 
-          <p className="text-center mt-8 text-gray-600">
+          <p className="text-center mt-8 text-zinc-400">
 
             Already have an account?{" "}
 
             <Link
               to="/login"
-              className="text-blue-600 font-semibold"
+              className="text-orange-500 font-semibold"
             >
               Login
             </Link>

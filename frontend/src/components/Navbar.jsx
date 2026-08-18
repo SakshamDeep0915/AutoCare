@@ -13,13 +13,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/90 backdrop-blur-xl border border-gray-200 shadow-xl rounded-3xl px-8 py-5 mb-8 flex justify-between items-center">
+    <nav className="bg-[#0d0d0d]/95 backdrop-blur-xl border border-zinc-800 shadow-2xl shadow-black/30 rounded-2xl px-6 py-4 mb-8 flex justify-between items-center">
 
       {/* Left */}
 
       <div className="flex items-center gap-4">
 
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 rounded-2xl shadow-lg">
+        <div className="bg-gradient-to-br from-orange-500 to-orange-700 p-4 rounded-2xl shadow-lg shadow-orange-950/40">
 
           <Car className="text-white" size={30} />
 
@@ -27,11 +27,11 @@ const Navbar = () => {
 
         <div>
 
-          <h1 className="text-3xl font-extrabold text-gray-800">
+          <h1 className="text-3xl font-extrabold text-white">
             AutoCare AI
           </h1>
 
-          <p className="text-gray-500">
+          <p className="text-zinc-500">
             AI Powered Vehicle Health Monitoring
           </p>
 
@@ -43,9 +43,9 @@ const Navbar = () => {
 
       <div className="flex items-center gap-5">
 
-        <div className="flex items-center gap-3 bg-gray-100 px-5 py-3 rounded-2xl">
+        <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 px-4 py-3 rounded-xl">
 
-          <div className="bg-blue-600 p-2 rounded-full">
+          <div className="bg-orange-500 p-2 rounded-lg">
 
             <User className="text-white" size={18} />
 
@@ -53,11 +53,11 @@ const Navbar = () => {
 
           <div>
 
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-zinc-500">
               Logged in as
             </p>
 
-            <p className="font-semibold text-gray-800">
+            <p className="font-semibold text-zinc-200">
               {user?.name || "User"}
             </p>
 
@@ -67,7 +67,7 @@ const Navbar = () => {
 
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 hover:scale-105 transition-all duration-300 text-white px-5 py-3 rounded-2xl shadow-lg"
+          className="flex items-center gap-2 bg-orange-500 hover:bg-orange-400 transition-all duration-300 text-white px-5 py-3 rounded-2xl shadow-lg"
         >
 
           <LogOut size={18} />

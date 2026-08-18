@@ -1,6 +1,6 @@
 const Vehicle = require("../models/Vehicle");
 const Service = require("../models/Service");
-const groq = require("../services/groqService");
+const openrouter = require("../services/openrouterService");
 
 exports.analyzeVehicle = async (req, res) => {
   try {
@@ -51,10 +51,10 @@ Recommendations:
 - Recommendation 4
 `;
 
-    console.log("Calling Groq...");
+    console.log("Calling OpenRouter...");
 
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+    const completion = await openrouter.chat.completions.create({
+      model: "openrouter/free",
       messages: [
         {
           role: "user",
@@ -64,7 +64,7 @@ Recommendations:
       temperature: 0.3,
     });
 
-    console.log("Groq Response Received");
+    console.log("OpenRouter Response Received");
 
     const analysis = completion.choices[0].message.content;
 

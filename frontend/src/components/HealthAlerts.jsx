@@ -13,14 +13,12 @@ import {
 
 import axios from "axios";
 
-
 function HealthAlerts() {
   const navigate = useNavigate();
 
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
 
   // =====================================================
   // Fetch Health Alerts
@@ -43,22 +41,14 @@ function HealthAlerts() {
       );
 
       setAlerts(res.data.alerts || []);
-
     } catch (err) {
-      console.error(
-        "Health Alerts Error:",
-        err
-      );
+      console.error("Health Alerts Error:", err);
 
-      setError(
-        "Unable to load vehicle health alerts."
-      );
-
+      setError("Unable to load vehicle health alerts.");
     } finally {
       setLoading(false);
     }
   };
-
 
   // =====================================================
   // Load Alerts
@@ -68,126 +58,113 @@ function HealthAlerts() {
     fetchAlerts();
   }, []);
 
-
   // =====================================================
   // Alert Icon
   // =====================================================
 
   const getAlertIcon = (alert) => {
-
     // Insurance
     if (alert.type === "insurance") {
       return (
         <ShieldAlert
-          size={28}
-          className="text-red-600"
+          size={27}
+          className="text-red-400"
         />
       );
     }
-
 
     // Service
     if (alert.type === "service") {
       return (
         <Wrench
-          size={28}
-          className="text-yellow-600"
+          size={27}
+          className="text-orange-400"
         />
       );
     }
-
 
     // Fuel Efficiency
-    if (
-      alert.type ===
-      "fuel-efficiency"
-    ) {
+    if (alert.type === "fuel-efficiency") {
       return (
         <Fuel
-          size={28}
-          className="text-orange-600"
+          size={27}
+          className="text-orange-400"
         />
       );
     }
-
 
     // Default
     return (
       <AlertTriangle
-        size={28}
-        className="text-orange-600"
+        size={27}
+        className="text-orange-400"
       />
     );
   };
-
 
   // =====================================================
   // Alert Styling
   // =====================================================
 
   const getAlertStyle = (severity) => {
-
     // Danger
     if (severity === "danger") {
       return {
         container:
-          "border-red-200 bg-red-50",
+          "border-red-500/25 bg-[#151515]",
 
         icon:
-          "bg-red-100",
+          "border border-red-500/25 bg-red-500/10",
 
         title:
-          "text-red-800",
+          "text-red-400",
 
         badge:
-          "bg-red-100 text-red-700",
+          "border border-red-500/25 bg-red-500/10 text-red-400",
 
         button:
-          "bg-red-600 hover:bg-red-700",
+          "bg-red-600 hover:bg-red-500 shadow-lg shadow-red-950/30",
       };
     }
-
 
     // Warning
     if (severity === "warning") {
       return {
         container:
-          "border-yellow-200 bg-yellow-50",
+          "border-zinc-800 bg-[#151515] hover:border-orange-500/40",
 
         icon:
-          "bg-yellow-100",
+          "border border-orange-500/25 bg-orange-500/10",
 
         title:
-          "text-yellow-800",
+          "text-white",
 
         badge:
-          "bg-yellow-100 text-yellow-700",
+          "border border-orange-500/25 bg-orange-500/10 text-orange-400",
 
         button:
-          "bg-yellow-500 hover:bg-yellow-600",
+          "bg-orange-500 hover:bg-orange-400 shadow-lg shadow-orange-950/30",
       };
     }
-
 
     // Info
     return {
       container:
-        "border-blue-200 bg-blue-50",
+        "border-zinc-800 bg-[#151515] hover:border-orange-500/30",
 
       icon:
-        "bg-blue-100",
+        "border border-sky-500/25 bg-sky-500/10",
 
       title:
-        "text-blue-800",
+        "text-sky-400",
 
       badge:
-        "bg-blue-100 text-blue-700",
+        "border border-sky-500/25 bg-sky-500/10 text-sky-400",
 
       button:
-        "bg-blue-600 hover:bg-blue-700",
+        "bg-sky-600 hover:bg-sky-500 shadow-lg shadow-sky-950/30",
     };
   };
-
 
   // =====================================================
   // Loading
@@ -195,27 +172,26 @@ function HealthAlerts() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-6">
+      <div className="rounded-2xl border border-zinc-800 bg-[#111111] p-6 shadow-xl shadow-black/20">
 
-        <div className="flex items-center gap-3 mb-6">
+        <div className="mb-6 flex items-center gap-4">
 
-          <div className="bg-red-100 p-3 rounded-full">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-orange-500/30 bg-orange-500/10">
 
             <AlertTriangle
-              className="text-red-600"
-              size={25}
+              className="text-orange-500"
+              size={27}
             />
 
           </div>
 
-
           <div>
 
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-2xl font-black tracking-tight text-white">
               Vehicle Health Alerts
             </h2>
 
-            <p className="text-gray-500">
+            <p className="mt-1 text-base text-zinc-500">
               Checking your vehicles...
             </p>
 
@@ -223,11 +199,10 @@ function HealthAlerts() {
 
         </div>
 
-
-        <div className="flex justify-center py-10">
+        <div className="flex justify-center py-12">
 
           <RefreshCw
-            className="text-blue-600 animate-spin"
+            className="animate-spin text-orange-500"
             size={35}
           />
 
@@ -237,36 +212,34 @@ function HealthAlerts() {
     );
   }
 
-
   // =====================================================
   // Error
   // =====================================================
 
   if (error) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-6">
+      <div className="rounded-2xl border border-zinc-800 bg-[#111111] p-6 shadow-xl shadow-black/20">
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
 
-            <div className="bg-red-100 p-3 rounded-full">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border border-red-500/25 bg-red-500/10">
 
               <AlertTriangle
-                className="text-red-600"
-                size={25}
+                className="text-red-400"
+                size={27}
               />
 
             </div>
 
-
             <div>
 
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-black tracking-tight text-white">
                 Vehicle Health Alerts
               </h2>
 
-              <p className="text-red-500">
+              <p className="mt-1 text-base text-red-400">
                 {error}
               </p>
 
@@ -274,10 +247,9 @@ function HealthAlerts() {
 
           </div>
 
-
           <button
             onClick={fetchAlerts}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold"
+            className="flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-orange-950/30 transition-all duration-200 hover:bg-orange-400"
           >
 
             <RefreshCw size={18} />
@@ -292,38 +264,36 @@ function HealthAlerts() {
     );
   }
 
-
   // =====================================================
   // No Alerts
   // =====================================================
 
   if (alerts.length === 0) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-6">
+      <div className="rounded-2xl border border-zinc-800 bg-[#111111] p-6 shadow-xl shadow-black/20">
 
         <div className="flex items-center gap-4">
 
-          <div className="bg-green-100 p-4 rounded-full">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-emerald-500/25 bg-emerald-500/10">
 
             <CheckCircle
-              className="text-green-600"
-              size={32}
+              className="text-emerald-400"
+              size={30}
             />
 
           </div>
 
-
           <div>
 
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-2xl font-black tracking-tight text-white">
               Vehicle Health Alerts
             </h2>
 
-            <p className="text-green-600 font-medium mt-1">
+            <p className="mt-1 text-base font-semibold text-emerald-400">
               ✓ All your vehicles are looking good!
             </p>
 
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="mt-1 text-sm leading-6 text-zinc-500">
               No maintenance, insurance or fuel-efficiency alerts at the moment.
             </p>
 
@@ -335,37 +305,35 @@ function HealthAlerts() {
     );
   }
 
-
   // =====================================================
   // Alerts
   // =====================================================
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="rounded-2xl border border-zinc-800 bg-[#111111] p-5 shadow-xl shadow-black/20 sm:p-6">
 
       {/* Header */}
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      <div className="mb-7 flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
         <div className="flex items-center gap-4">
 
-          <div className="bg-red-100 p-3 rounded-full">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-orange-500/30 bg-orange-500/10">
 
             <AlertTriangle
-              className="text-red-600"
+              className="text-orange-500"
               size={28}
             />
 
           </div>
 
-
           <div>
 
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
               Vehicle Health Alerts
             </h2>
 
-            <p className="text-gray-500">
+            <p className="mt-1 text-base text-zinc-500">
               Important things that need your attention
             </p>
 
@@ -373,10 +341,9 @@ function HealthAlerts() {
 
         </div>
 
-
         {/* Alert Count */}
 
-        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-full font-bold w-fit">
+        <div className="w-fit rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-sm font-bold text-orange-400">
 
           {alerts.length}{" "}
 
@@ -388,242 +355,248 @@ function HealthAlerts() {
 
       </div>
 
-
       {/* Alert Cards */}
 
       <div className="space-y-4">
 
-        {alerts.map(
-          (alert, index) => {
+        {alerts.map((alert, index) => {
 
-            const style =
-              getAlertStyle(
-                alert.severity
-              );
+          const style =
+            getAlertStyle(
+              alert.severity
+            );
 
+          return (
+            <div
+              key={`${alert.vehicleId}-${alert.type}-${index}`}
+              className={`group relative overflow-hidden rounded-2xl border p-5 transition-all duration-300 sm:p-6 ${style.container}`}
+            >
 
-            return (
-              <div
-                key={`${alert.vehicleId}-${alert.type}-${index}`}
-                className={`border rounded-xl p-5 ${style.container}`}
-              >
+              {/* Orange left accent */}
 
-                <div className="flex flex-col md:flex-row gap-4">
+              {alert.severity === "warning" && (
+                <div className="absolute left-0 top-0 h-full w-1 bg-orange-500" />
+              )}
 
-                  {/* Icon */}
+              {alert.severity === "danger" && (
+                <div className="absolute left-0 top-0 h-full w-1 bg-red-500" />
+              )}
 
-                  <div
-                    className={`p-3 rounded-full w-fit h-fit ${style.icon}`}
-                  >
+              {/* Content */}
 
-                    {getAlertIcon(
-                      alert
-                    )}
+              <div className="flex flex-col gap-5 md:flex-row">
+
+                {/* Icon */}
+
+                <div
+                  className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full ${style.icon}`}
+                >
+
+                  {getAlertIcon(alert)}
+
+                </div>
+
+                {/* Content */}
+
+                <div className="flex-1">
+
+                  {/* Title */}
+
+                  <div className="flex flex-wrap items-center gap-3">
+
+                    <h3
+                      className={`text-lg font-bold sm:text-xl ${style.title}`}
+                    >
+                      {alert.title}
+                    </h3>
+
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${style.badge}`}
+                    >
+                      {alert.severity}
+                    </span>
 
                   </div>
 
+                  {/* Vehicle */}
 
-                  {/* Content */}
+                  <p className="mt-3 flex items-center gap-2 text-base font-medium text-zinc-300">
 
-                  <div className="flex-1">
+                    🚗{" "}
+                    {alert.vehicleName}
 
-                    {/* Title */}
+                  </p>
 
-                    <div className="flex flex-wrap items-center gap-3">
+                  {/* Registration */}
 
-                      <h3
-                        className={`text-lg font-bold ${style.title}`}
-                      >
-                        {alert.title}
-                      </h3>
+                  <p className="mt-1 text-sm font-semibold text-zinc-500">
 
+                    Registration:
 
-                      <span
-                        className={`text-xs font-bold px-3 py-1 rounded-full uppercase ${style.badge}`}
-                      >
-                        {alert.severity}
-                      </span>
-
-                    </div>
-
-
-                    {/* Vehicle */}
-
-                    <p className="font-semibold text-gray-800 mt-2">
-
-                      🚗{" "}
-                      {alert.vehicleName}
-
-                    </p>
-
-
-                    {/* Registration */}
-
-                    <p className="text-sm text-gray-500 font-semibold">
-
-                      Registration:{" "}
-
+                    <span className="ml-1 text-zinc-300">
                       {alert.registrationNumber?.toUpperCase()}
+                    </span>
 
-                    </p>
+                  </p>
 
+                  {/* Message */}
 
-                    {/* Message */}
+                  <p className="mt-4 text-sm leading-6 text-zinc-400 sm:text-base">
 
-                    <p className="text-gray-700 mt-3 leading-6">
+                    {alert.message}
 
-                      {alert.message}
+                  </p>
 
-                    </p>
+                  {/* =================================================
+                      Fuel Efficiency Details
+                  ================================================= */}
 
+                  {alert.type ===
+                    "fuel-efficiency" && (
 
-                    {/* =================================================
-                        Fuel Efficiency Details
-                    ================================================= */}
+                    <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
 
-                    {alert.type ===
-                      "fuel-efficiency" && (
+                      {/* Previous Average */}
 
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                      <div className="rounded-xl border border-zinc-800 bg-[#101010] p-4">
 
+                        <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+                          Previous Average
+                        </p>
 
-                        {/* Previous Average */}
+                        <p className="mt-2 text-xl font-bold text-zinc-200">
 
-                        <div className="bg-white rounded-lg p-4 border border-gray-200">
+                          {alert.previousEfficiency}
 
-                          <p className="text-xs text-gray-500 font-medium">
-                            Previous Average
-                          </p>
+                          <span className="ml-1 text-sm font-medium text-zinc-500">
+                            {alert.unit}
+                          </span>
 
-                          <p className="text-xl font-bold text-gray-800 mt-1">
-
-                            {alert.previousEfficiency}
-
-                            <span className="text-sm font-medium ml-1">
-                              {alert.unit}
-                            </span>
-
-                          </p>
-
-                        </div>
-
-
-                        {/* Current Average */}
-
-                        <div className="bg-white rounded-lg p-4 border border-gray-200">
-
-                          <p className="text-xs text-gray-500 font-medium">
-                            Current Average
-                          </p>
-
-                          <p className="text-xl font-bold text-orange-600 mt-1">
-
-                            {alert.currentEfficiency}
-
-                            <span className="text-sm font-medium ml-1">
-                              {alert.unit}
-                            </span>
-
-                          </p>
-
-                        </div>
-
-
-                        {/* Efficiency Drop */}
-
-                        <div className="bg-white rounded-lg p-4 border border-red-200">
-
-                          <p className="text-xs text-gray-500 font-medium">
-                            Efficiency Drop
-                          </p>
-
-                          <p className="text-xl font-bold text-red-600 mt-1">
-
-                            ↓{" "}
-                            {alert.efficiencyDrop}%
-
-                          </p>
-
-                        </div>
+                        </p>
 
                       </div>
-                    )}
 
+                      {/* Current Average */}
 
-                    {/* =================================================
-                        Service Information
-                    ================================================= */}
+                      <div className="rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
 
-                    {alert.lastServiceOdometer !==
-                      undefined && (
+                        <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+                          Current Average
+                        </p>
 
-                      <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-600">
+                        <p className="mt-2 text-xl font-bold text-orange-400">
 
-                        <span>
+                          {alert.currentEfficiency}
 
-                          Last Service:{" "}
+                          <span className="ml-1 text-sm font-medium text-zinc-500">
+                            {alert.unit}
+                          </span>
+
+                        </p>
+
+                      </div>
+
+                      {/* Efficiency Drop */}
+
+                      <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
+
+                        <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+                          Efficiency Drop
+                        </p>
+
+                        <p className="mt-2 text-xl font-bold text-red-400">
+
+                          ↓{" "}
+                          {alert.efficiencyDrop}%
+
+                        </p>
+
+                      </div>
+
+                    </div>
+                  )}
+
+                  {/* =================================================
+                      Service Information
+                  ================================================= */}
+
+                  {alert.lastServiceOdometer !==
+                    undefined && (
+
+                    <div className="mt-4 flex flex-wrap gap-5 text-sm text-zinc-500">
+
+                      <span>
+
+                        Last Service:
+
+                        <strong className="ml-1 text-zinc-300">
 
                           {Number(
                             alert.lastServiceOdometer
                           ).toLocaleString(
                             "en-IN"
-                          )}{" "}
+                          )}
 
-                          km
+                          {" "}km
 
-                        </span>
+                        </strong>
 
+                      </span>
 
-                        <span>
+                      <span>
 
-                          Current:{" "}
+                        Current:
+
+                        <strong className="ml-1 text-zinc-300">
 
                           {Number(
                             alert.currentOdometer
                           ).toLocaleString(
                             "en-IN"
-                          )}{" "}
+                          )}
 
-                          km
+                          {" "}km
 
-                        </span>
+                        </strong>
 
-                      </div>
-                    )}
+                      </span>
 
+                    </div>
+                  )}
 
-                    {/* =================================================
-                        Remaining Service KM
-                    ================================================= */}
+                  {/* =================================================
+                      Remaining Service KM
+                  ================================================= */}
 
-                    {alert.remainingKm !==
-                      undefined && (
+                  {alert.remainingKm !==
+                    undefined && (
 
-                      <p className="text-sm text-yellow-700 font-semibold mt-3">
+                    <p className="mt-4 text-sm font-semibold text-orange-400">
 
-                        🔧 Service due in approximately{" "}
+                      🔧 Service due in approximately{" "}
 
-                        {Number(
-                          alert.remainingKm
-                        ).toLocaleString(
-                          "en-IN"
-                        )}{" "}
+                      {Number(
+                        alert.remainingKm
+                      ).toLocaleString(
+                        "en-IN"
+                      )}
 
-                        km
+                      {" "}km
 
-                      </p>
-                    )}
+                    </p>
+                  )}
 
+                  {/* =================================================
+                      Insurance Date
+                  ================================================= */}
 
-                    {/* =================================================
-                        Insurance Date
-                    ================================================= */}
+                  {alert.expiryDate && (
 
-                    {alert.expiryDate && (
+                    <p className="mt-4 text-sm text-zinc-500">
 
-                      <p className="text-sm text-gray-600 mt-3">
+                      🛡️ Insurance Expiry:
 
-                        🛡️ Insurance Expiry:{" "}
+                      <span className="ml-1 font-semibold text-zinc-300">
 
                         {new Date(
                           alert.expiryDate
@@ -631,65 +604,65 @@ function HealthAlerts() {
                           "en-IN"
                         )}
 
-                        {alert.daysRemaining !==
-                          undefined && (
-                          <span className="ml-2 font-semibold">
+                      </span>
 
-                            (
-                            {alert.daysRemaining >=
-                            0
-                              ? `${alert.daysRemaining} days remaining`
-                              : `${Math.abs(
-                                  alert.daysRemaining
-                                )} days overdue`}
-                            )
+                      {alert.daysRemaining !==
+                        undefined && (
 
-                          </span>
-                        )}
+                        <span className="ml-2 text-zinc-500">
 
-                      </p>
-                    )}
-
-
-                    {/* =================================================
-                        Action
-                    ================================================= */}
-
-                    <div className="mt-4">
-
-                      <button
-                        onClick={() =>
-                          navigate(
-                            `/vehicles/${alert.vehicleId}`
+                          (
+                          {alert.daysRemaining >=
+                          0
+                            ? `${alert.daysRemaining} days remaining`
+                            : `${Math.abs(
+                                alert.daysRemaining
+                              )} days overdue`}
                           )
-                        }
-                        className={`inline-flex items-center gap-2 text-white px-4 py-2 rounded-lg font-semibold transition ${style.button}`}
-                      >
 
-                        View Vehicle
+                        </span>
+                      )}
 
-                        <ArrowRight
-                          size={18}
-                        />
+                    </p>
+                  )}
 
-                      </button>
+                  {/* =================================================
+                      Action
+                  ================================================= */}
 
-                    </div>
+                  <div className="mt-5">
+
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/vehicles/${alert.vehicleId}`
+                        )
+                      }
+                      className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white transition-all duration-200 ${style.button}`}
+                    >
+
+                      View Vehicle
+
+                      <ArrowRight
+                        size={18}
+                      />
+
+                    </button>
 
                   </div>
 
                 </div>
 
               </div>
-            );
-          }
-        )}
+
+            </div>
+          );
+        })}
 
       </div>
 
     </div>
   );
 }
-
 
 export default HealthAlerts;

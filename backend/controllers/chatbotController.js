@@ -1,4 +1,4 @@
-const groq = require("../services/groqService");
+const openrouter = require("../services/openrouterService");
 
 exports.vehicleChatbot = async (req, res) => {
   try {
@@ -67,9 +67,10 @@ You are an AI assistant, so your response should feel like a real conversation.
       content: message.trim(),
     });
 
-    // Groq
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+    // Open Router
+
+    const completion = await openrouter.chat.completions.create ({
+      model: "openrouter/free",
       messages,
       temperature: 0.7,
     });
