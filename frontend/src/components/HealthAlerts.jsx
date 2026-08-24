@@ -11,7 +11,7 @@ import {
   Fuel,
 } from "lucide-react";
 
-import axios from "axios";
+import API from "../services/api";
 
 function HealthAlerts() {
   const navigate = useNavigate();
@@ -29,22 +29,18 @@ function HealthAlerts() {
       setLoading(true);
       setError("");
 
-      const token = localStorage.getItem("token");
-
-      const res = await axios.get(
-        "http://localhost:5000/api/alerts/vehicle-health",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await API.get(
+        "/alerts/vehicle-health"
       );
 
       setAlerts(res.data.alerts || []);
     } catch (err) {
       console.error("Health Alerts Error:", err);
 
-      setError("Unable to load vehicle health alerts.");
+      setError(
+        err.response?.data?.message ||
+          "Unable to load vehicle health alerts."
+      );
     } finally {
       setLoading(false);
     }
@@ -63,7 +59,6 @@ function HealthAlerts() {
   // =====================================================
 
   const getAlertIcon = (alert) => {
-    // Insurance
     if (alert.type === "insurance") {
       return (
         <ShieldAlert
@@ -73,7 +68,6 @@ function HealthAlerts() {
       );
     }
 
-    // Service
     if (alert.type === "service") {
       return (
         <Wrench
@@ -83,7 +77,6 @@ function HealthAlerts() {
       );
     }
 
-    // Fuel Efficiency
     if (alert.type === "fuel-efficiency") {
       return (
         <Fuel
@@ -93,7 +86,6 @@ function HealthAlerts() {
       );
     }
 
-    // Default
     return (
       <AlertTriangle
         size={27}
@@ -107,7 +99,6 @@ function HealthAlerts() {
   // =====================================================
 
   const getAlertStyle = (severity) => {
-    // Danger
     if (severity === "danger") {
       return {
         container:
@@ -127,7 +118,6 @@ function HealthAlerts() {
       };
     }
 
-    // Warning
     if (severity === "warning") {
       return {
         container:
@@ -147,7 +137,6 @@ function HealthAlerts() {
       };
     }
 
-    // Info
     return {
       container:
         "border-zinc-800 bg-[#151515] hover:border-orange-500/30",
@@ -456,8 +445,6 @@ function HealthAlerts() {
 
                     <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
 
-                      {/* Previous Average */}
-
                       <div className="rounded-xl border border-zinc-800 bg-[#101010] p-4">
 
                         <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
@@ -476,8 +463,6 @@ function HealthAlerts() {
 
                       </div>
 
-                      {/* Current Average */}
-
                       <div className="rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
 
                         <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
@@ -495,8 +480,6 @@ function HealthAlerts() {
                         </p>
 
                       </div>
-
-                      {/* Efficiency Drop */}
 
                       <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
 

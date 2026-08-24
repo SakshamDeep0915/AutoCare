@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import {
   Activity,
   Wrench,
@@ -11,35 +11,42 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
+import API from "../services/api";
+
 function HealthScore({ vehicleId }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // =====================================================
+  // FETCH HEALTH SCORE
+  // =====================================================
 
   const fetchHealthScore = async () => {
     try {
       setLoading(true);
       setError("");
 
-      const token = localStorage.getItem("token");
-
-      const res = await axios.get(
-        `http://localhost:5000/api/health-score/${vehicleId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await API.get(
+        `/health-score/${vehicleId}`
       );
 
       setData(res.data);
     } catch (err) {
       console.error("Health Score Error:", err);
-      setError("Unable to calculate vehicle health score.");
+
+      setError(
+        err.response?.data?.message ||
+          "Unable to calculate vehicle health score."
+      );
     } finally {
       setLoading(false);
     }
   };
+
+  // =====================================================
+  // LOAD HEALTH SCORE
+  // =====================================================
 
   useEffect(() => {
     if (vehicleId) {
@@ -48,13 +55,15 @@ function HealthScore({ vehicleId }) {
   }, [vehicleId]);
 
   // =====================================================
-  // Loading
+  // LOADING
   // =====================================================
 
   if (loading) {
     return (
       <div className="mt-8 rounded-2xl border border-zinc-800 bg-[#111111] p-8 shadow-xl shadow-black/20">
+
         <div className="flex items-center justify-center py-8">
+
           <RefreshCw
             className="animate-spin text-orange-500"
             size={35}
@@ -63,30 +72,38 @@ function HealthScore({ vehicleId }) {
           <span className="ml-3 text-base font-medium text-zinc-400">
             Calculating vehicle health...
           </span>
+
         </div>
+
       </div>
     );
   }
 
   // =====================================================
-  // Error
+  // ERROR
   // =====================================================
 
   if (error) {
     return (
       <div className="mt-8 rounded-2xl border border-zinc-800 bg-[#111111] p-6 shadow-xl shadow-black/20">
+
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+
           <div className="flex items-center gap-3">
+
             <div className="rounded-full border border-red-500/25 bg-red-500/10 p-3">
+
               <AlertTriangle
                 className="text-red-400"
                 size={25}
               />
+
             </div>
 
             <p className="text-base font-medium text-red-400">
               {error}
             </p>
+
           </div>
 
           {/* ORANGE RETRY BUTTON */}
@@ -95,20 +112,29 @@ function HealthScore({ vehicleId }) {
             onClick={fetchHealthScore}
             className="flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-orange-950/30 transition-all duration-200 hover:bg-orange-400"
           >
+
             <RefreshCw size={18} />
+
             Retry
+
           </button>
+
         </div>
+
       </div>
     );
   }
+
+  // =====================================================
+  // NO DATA
+  // =====================================================
 
   if (!data) {
     return null;
   }
 
   // =====================================================
-  // Score
+  // SCORE
   // =====================================================
 
   const score = data.healthScore;
@@ -147,13 +173,16 @@ function HealthScore({ vehicleId }) {
         <div className="flex items-center gap-4">
 
           <div className="rounded-full border border-orange-500/30 bg-orange-500/10 p-3">
+
             <Activity
               className="text-orange-500"
               size={30}
             />
+
           </div>
 
           <div>
+
             <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
               Vehicle Health Score
             </h2>
@@ -161,6 +190,7 @@ function HealthScore({ vehicleId }) {
             <p className="mt-1 text-base text-zinc-500">
               Overall condition based on your vehicle data
             </p>
+
           </div>
 
         </div>
@@ -171,8 +201,11 @@ function HealthScore({ vehicleId }) {
           onClick={fetchHealthScore}
           className="flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-orange-950/30 transition-all duration-200 hover:bg-orange-400"
         >
+
           <RefreshCw size={18} />
+
           Refresh
+
         </button>
 
       </div>
@@ -188,6 +221,7 @@ function HealthScore({ vehicleId }) {
         <div
           className={`flex h-44 w-44 shrink-0 flex-col items-center justify-center rounded-full border-[12px] ${circleColor} ${bgColor}`}
         >
+
           <span
             className={`text-5xl font-black ${scoreColor}`}
           >
@@ -197,6 +231,7 @@ function HealthScore({ vehicleId }) {
           <span className="font-medium text-zinc-500">
             / 100
           </span>
+
         </div>
 
         {/* STATUS */}

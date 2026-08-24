@@ -11,12 +11,19 @@ import {
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 
+// ==========================================
+// API BASE URL
+// ==========================================
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 function VehicleChatbot() {
   const { vehicleId } = useParams();
   const navigate = useNavigate();
 
   const [vehicle, setVehicle] = useState(null);
   const [problem, setProblem] = useState("");
+
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -32,6 +39,7 @@ function VehicleChatbot() {
   // =========================
   // Fetch Vehicle
   // =========================
+
   useEffect(() => {
     fetchVehicle();
   }, [vehicleId]);
@@ -41,7 +49,7 @@ function VehicleChatbot() {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `http://localhost:5000/api/vehicles/${vehicleId}`,
+        `${API_URL}/api/vehicles/${vehicleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,6 +71,7 @@ function VehicleChatbot() {
   // =========================
   // Auto Scroll
   // =========================
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -72,6 +81,7 @@ function VehicleChatbot() {
   // =========================
   // Send Problem
   // =========================
+
   const sendProblem = async () => {
     const trimmedProblem = problem.trim();
 
@@ -95,7 +105,7 @@ function VehicleChatbot() {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        `http://localhost:5000/api/chatbot/${vehicleId}`,
+        `${API_URL}/api/chatbot/${vehicleId}`,
         {
           problem: trimmedProblem,
         },
@@ -134,6 +144,7 @@ function VehicleChatbot() {
   // =========================
   // Enter Key
   // =========================
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -144,6 +155,7 @@ function VehicleChatbot() {
   // =========================
   // Clear Chat
   // =========================
+
   const clearChat = () => {
     setMessages([
       {
@@ -179,6 +191,7 @@ function VehicleChatbot() {
             {/* =========================
                 Header
             ========================= */}
+
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
 
               <div className="flex items-center justify-between">
@@ -212,6 +225,7 @@ function VehicleChatbot() {
               </div>
 
               {/* Vehicle Information */}
+
               {vehicle && (
                 <div className="mt-5 bg-white/10 rounded-xl p-4">
 
@@ -245,6 +259,7 @@ function VehicleChatbot() {
             {/* =========================
                 Chat Area
             ========================= */}
+
             <div className="h-[550px] overflow-y-auto p-5 md:p-6 bg-gray-50">
 
               {messages.map((message, index) => (
@@ -267,6 +282,7 @@ function VehicleChatbot() {
                   >
 
                     {/* Avatar */}
+
                     <div
                       className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
                         message.role === "user"
@@ -282,6 +298,7 @@ function VehicleChatbot() {
                     </div>
 
                     {/* Message */}
+
                     <div
                       className={`px-4 py-3 rounded-2xl whitespace-pre-wrap leading-7 ${
                         message.role === "user"
@@ -301,6 +318,7 @@ function VehicleChatbot() {
               ))}
 
               {/* Loading */}
+
               {loading && (
                 <div className="flex items-start gap-3 mb-5">
 
@@ -342,6 +360,7 @@ function VehicleChatbot() {
             {/* =========================
                 Input
             ========================= */}
+
             <div className="border-t bg-white p-4">
 
               <div className="flex items-end gap-3">
@@ -378,6 +397,7 @@ function VehicleChatbot() {
           </div>
 
           {/* Disclaimer */}
+
           <p className="text-center text-xs text-gray-400 mt-4">
             ⚠️ AutoCare AI provides a preliminary assessment
             and does not replace professional mechanical
