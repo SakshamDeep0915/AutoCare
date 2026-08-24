@@ -1,5 +1,9 @@
+import "./App.css";
+
 import { Routes, Route, Navigate } from "react-router-dom";
 
+// Pages
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -17,20 +21,51 @@ import Chatbot from "./pages/Chatbot";
 import NearbyServices from "./pages/NearbyServices";
 import ExpenseReport from "./pages/ExpenseReport";
 
+// Components
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <Routes>
-      {/* Redirect Root */}
-      <Route path="/" element={<Navigate to="/login" />} />
 
-      {/* Public Routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      {/* ==========================================
+          LANDING PAGE
+          ========================================== */}
+      <Route path="/" element={<Landing />} />
 
-      {/* Protected Routes */}
-      <Route path="/dashboard" element={<Dashboard />} />
+
+      {/* ==========================================
+          PUBLIC ROUTES
+          ========================================== */}
+
+      <Route
+        path="/login"
+        element={<Login />}
+      />
+
+      <Route
+        path="/register"
+        element={<Register />}
+      />
+
+
+      {/* ==========================================
+          DASHBOARD
+          ========================================== */}
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+
+      {/* ==========================================
+          VEHICLE ROUTES
+          ========================================== */}
 
       <Route
         path="/add-vehicle"
@@ -58,81 +93,128 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route
-      path="/vehicles/:vehicleId/add-service"
-      element={
-      <ProtectedRoute>
-      <AddService />
-      </ProtectedRoute>
 
-      }
-      />
+
+      {/* ==========================================
+          SERVICE ROUTES
+          ========================================== */}
 
       <Route
-      path="/vehicles/:vehicleId/services"
-      element={ <ProtectedRoute>
-      <ServiceHistory />
-    </ProtectedRoute>}
-      />
-
-      <Route
-      path="/ai-report/:vehicleId"
-      element={<ProtectedRoute>
-        <AIReport/>
-        </ProtectedRoute>
+        path="/vehicles/:vehicleId/add-service"
+        element={
+          <ProtectedRoute>
+            <AddService />
+          </ProtectedRoute>
         }
       />
 
-      <Route 
-      path="/services/edit/:id" 
-      element={
-      <ProtectedRoute>
-      <EditService />
-      </ProtectedRoute>
-      } />
+      <Route
+        path="/vehicles/:vehicleId/services"
+        element={
+          <ProtectedRoute>
+            <ServiceHistory />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
-  path="/vehicles/:vehicleId/add-fuel"
-  element={
-    <ProtectedRoute>
-      <AddFuel />
-    </ProtectedRoute>
-  }
-/>
-<Route
-  path="/vehicles/:vehicleId/fuel-history"
-  element={
-    <ProtectedRoute>
-      <FuelHistory />
-    </ProtectedRoute>
-  }
-/>
+        path="/services/edit/:id"
+        element={
+          <ProtectedRoute>
+            <EditService />
+          </ProtectedRoute>
+        }
+      />
 
 
+      {/* ==========================================
+          AI REPORT
+          ========================================== */}
 
-<Route
-  path="/chatbot"
-  element={
-    <ProtectedRoute>
-      <Chatbot />
-    </ProtectedRoute>
-  }
-/>
+      <Route
+        path="/ai-report/:vehicleId"
+        element={
+          <ProtectedRoute>
+            <AIReport />
+          </ProtectedRoute>
+        }
+      />
 
-<Route
-  path="/nearby-services"
-  element={
-    <ProtectedRoute>
-      <NearbyServices />
-    </ProtectedRoute>
-  }
-/>
 
-<Route
-  path="/expense-report"
-  element={<ExpenseReport />}
-/>
-      
+      {/* ==========================================
+          FUEL ROUTES
+          ========================================== */}
+
+      <Route
+        path="/vehicles/:vehicleId/add-fuel"
+        element={
+          <ProtectedRoute>
+            <AddFuel />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/vehicles/:vehicleId/fuel-history"
+        element={
+          <ProtectedRoute>
+            <FuelHistory />
+          </ProtectedRoute>
+        }
+      />
+
+
+      {/* ==========================================
+          CHATBOT
+          ========================================== */}
+
+      <Route
+        path="/chatbot"
+        element={
+          <ProtectedRoute>
+            <Chatbot />
+          </ProtectedRoute>
+        }
+      />
+
+
+      {/* ==========================================
+          NEARBY SERVICES
+          ========================================== */}
+
+      <Route
+        path="/nearby-services"
+        element={
+          <ProtectedRoute>
+            <NearbyServices />
+          </ProtectedRoute>
+        }
+      />
+
+
+      {/* ==========================================
+          EXPENSE REPORT
+          ========================================== */}
+
+      <Route
+        path="/expense-report"
+        element={
+          <ProtectedRoute>
+            <ExpenseReport />
+          </ProtectedRoute>
+        }
+      />
+
+
+      {/* ==========================================
+          FALLBACK
+          ========================================== */}
+
+      <Route
+        path="*"
+        element={<Navigate to="/" replace />}
+      />
+
     </Routes>
   );
 }
