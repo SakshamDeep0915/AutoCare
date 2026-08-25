@@ -1,26 +1,11 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
 // ==========================================
-// GMAIL SMTP TRANSPORTER
+// RESEND EMAIL CLIENT
 // ==========================================
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-  family: 4,
-
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
-
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
 // ==========================================
 // SEND EMAIL
@@ -28,20 +13,28 @@ const transporter = nodemailer.createTransport({
 
 const sendEmail = async (to, subject, html) => {
   try {
-    console.log("Connecting to Gmail SMTP...");
+    console.log("Sending email through Resend...");
 
-    await transporter.sendMail({
-      from: `"AutoCare AI" <${process.env.EMAIL_USER}>`,
-      to,
+    const { data, error } = await resend.emails.send({
+      from: "AutoCare AI <onboarding@resend.dev>",
+      to: [to],
       subject,
       html,
     });
 
-    console.log(`Email sent successfully to ${to}`);
+    if (error) {
+      console.error("RESEND EMAIL ERROR:", error);
+      throw new Error(error.message || "Failed to send email");
+    }
+
+    console.log("Email sent successfully:", data);
+
+    return data;
   } catch (error) {
     console.error("EMAIL ERROR:", error);
     throw error;
   }
 };
+
 
 module.exports = sendEmail;

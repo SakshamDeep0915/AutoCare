@@ -23,7 +23,8 @@
     "multer": "^2.2.0",
     "nodemailer": "^9.0.3",
     "openai": "^7.5.0",
-    "otp-generator": "^4.0.1"
+    "otp-generator": "^4.0.1",
+    "resend": "^6.22.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
