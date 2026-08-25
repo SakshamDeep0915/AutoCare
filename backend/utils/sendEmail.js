@@ -10,6 +10,8 @@ const transporter = nodemailer.createTransport({
   secure: false,
   requireTLS: true,
 
+  family: 4,
+
   connectionTimeout: 10000,
   greetingTimeout: 10000,
   socketTimeout: 15000,
@@ -27,7 +29,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, html) => {
   try {
     console.log("Connecting to Gmail SMTP...");
-    
+
     await transporter.sendMail({
       from: `"AutoCare AI" <${process.env.EMAIL_USER}>`,
       to,
