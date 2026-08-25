@@ -1,40 +1,51 @@
-const { Resend } = require("resend");
+const axios = require("axios");
 
 // ==========================================
-// RESEND EMAIL CLIENT
-// ==========================================
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-
-// ==========================================
-// SEND EMAIL
+// BREVO EMAIL API
 // ==========================================
 
 const sendEmail = async (to, subject, html) => {
   try {
-    console.log("Sending email through Resend...");
+    console.log(`Sending email to ${to} through Brevo...`);
 
-    const { data, error } = await resend.emails.send({
-      from: "AutoCare AI <onboarding@resend.dev>",
-      to: [to],
-      subject,
-      html,
-    });
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: "AutoCare AI",
+          email: process.env.EMAIL_USER,
+        },
 
-    if (error) {
-      console.error("RESEND EMAIL ERROR:", error);
-      throw new Error(error.message || "Failed to send email");
-    }
+        to: [
+          {
+            email: to,
+          },
+        ],
 
-    console.log("Email sent successfully:", data);
+        subject: subject,
 
-    return data;
+        htmlContent: html,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "api-key": process.env.BREVO_API_KEY,
+          "content-type": "application/json",
+        },
+      }
+    );
+
+    console.log("Email sent successfully:", response.data);
+
+    return response.data;
   } catch (error) {
-    console.error("EMAIL ERROR:", error);
+    console.error(
+      "BREVO EMAIL ERROR:",
+      error.response?.data || error.message
+    );
+
     throw error;
   }
 };
-
 
 module.exports = sendEmail;
