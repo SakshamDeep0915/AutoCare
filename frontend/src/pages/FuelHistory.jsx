@@ -9,10 +9,15 @@ import {
   Fuel,
   Trash2,
   Plus,
-  Calendar,
+  CalendarDays,
   Gauge,
   IndianRupee,
   TrendingUp,
+  MapPin,
+  CarFront,
+  Receipt,
+  Droplets,
+  CircleDollarSign,
 } from "lucide-react";
 
 function FuelHistory() {
@@ -21,13 +26,17 @@ function FuelHistory() {
 
   const [vehicle, setVehicle] = useState(null);
   const [fuelExpenses, setFuelExpenses] = useState([]);
-  const [fuelEfficiency, setFuelEfficiency] = useState(null);
-  const [efficiencyMessage, setEfficiencyMessage] = useState("");
+  const [fuelEfficiency, setFuelEfficiency] =
+    useState(null);
+  const [efficiencyMessage, setEfficiencyMessage] =
+    useState("");
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] =
+    useState(null);
 
-  // =========================
-  // Fetch Vehicle + Fuel History + Efficiency
-  // =========================
+  // =====================================================
+  // FETCH DATA
+  // =====================================================
 
   useEffect(() => {
     fetchData();
@@ -37,20 +46,14 @@ function FuelHistory() {
     try {
       setLoading(true);
 
-      // =========================
-      // Get Vehicle
-      // =========================
-
+      // Vehicle
       const vehicleRes = await API.get(
         `/vehicles/${vehicleId}`
       );
 
       setVehicle(vehicleRes.data.vehicle);
 
-      // =========================
-      // Get Fuel History
-      // =========================
-
+      // Fuel history
       const fuelRes = await API.get(
         `/fuel/vehicle/${vehicleId}`
       );
@@ -59,16 +62,14 @@ function FuelHistory() {
         fuelRes.data.fuelExpenses || []
       );
 
-      // =========================
-      // Get Fuel Efficiency
-      // =========================
-
+      // Efficiency
       const efficiencyRes = await API.get(
         `/fuel/vehicle/${vehicleId}/efficiency`
       );
 
       if (
-        efficiencyRes.data.fuelEfficiency !== null
+        efficiencyRes.data.fuelEfficiency !==
+        null
       ) {
         setFuelEfficiency(
           efficiencyRes.data.fuelEfficiency
@@ -98,28 +99,26 @@ function FuelHistory() {
     }
   };
 
-  // =========================
-  // Delete Fuel Entry
-  // =========================
+  // =====================================================
+  // DELETE FUEL ENTRY
+  // =====================================================
 
   const handleDelete = async (fuelId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this fuel record?"
-    );
+    const confirmDelete =
+      window.confirm(
+        "Are you sure you want to delete this fuel record?"
+      );
 
     if (!confirmDelete) return;
 
     try {
+      setDeletingId(fuelId);
+
       await API.delete(
         `/fuel/${fuelId}`
       );
 
-      alert(
-        "Fuel record deleted successfully"
-      );
-
-      // Reload everything so efficiency updates
-      fetchData();
+      await fetchData();
     } catch (error) {
       console.error(
         "Delete Fuel Error:",
@@ -130,78 +129,129 @@ function FuelHistory() {
         error.response?.data?.message ||
           "Failed to delete fuel record"
       );
+    } finally {
+      setDeletingId(null);
     }
   };
 
-  // =========================
-  // Total Fuel Expense
-  // =========================
+  // =====================================================
+  // TOTAL FUEL EXPENSE
+  // =====================================================
 
-  const totalExpense = fuelExpenses.reduce(
-    (total, fuel) =>
-      total + Number(fuel.totalCost || 0),
-    0
-  );
+  const totalExpense =
+    fuelExpenses.reduce(
+      (total, fuel) =>
+        total +
+        Number(fuel.totalCost || 0),
+      0
+    );
 
-  // =========================
-  // Total Fuel Quantity
-  // =========================
+  // =====================================================
+  // TOTAL FUEL QUANTITY
+  // =====================================================
 
-  const totalQuantity = fuelExpenses.reduce(
-    (total, fuel) =>
-      total + Number(fuel.quantity || 0),
-    0
-  );
+  const totalQuantity =
+    fuelExpenses.reduce(
+      (total, fuel) =>
+        total +
+        Number(fuel.quantity || 0),
+      0
+    );
 
-  // =========================
-  // Loading
-  // =========================
+  // =====================================================
+  // AVERAGE PRICE
+  // =====================================================
+
+  const averagePrice =
+    totalQuantity > 0
+      ? totalExpense / totalQuantity
+      : 0;
+
+  // =====================================================
+  // LOADING
+  // =====================================================
 
   if (loading) {
     return (
       <>
         <Navbar />
 
-        <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <main className="min-h-screen bg-[#0d0f10] text-white">
 
-          <div className="text-center">
+          <div className="max-w-6xl mx-auto px-5 lg:px-8 py-10">
 
-            <Fuel
-              className="mx-auto mb-4 text-orange-500 animate-pulse"
-              size={45}
-            />
+            <div className="w-32 h-3 bg-[#1b1e20] rounded animate-pulse mb-5" />
 
-            <p className="text-xl font-semibold text-zinc-300">
-              Loading Fuel History...
-            </p>
+            <div className="w-64 h-10 bg-[#1b1e20] rounded animate-pulse mb-3" />
+
+            <div className="w-96 max-w-full h-4 bg-[#1b1e20] rounded animate-pulse mb-10" />
+
+            <div className="h-44 bg-[#151718] border border-[#292c2f] rounded-2xl animate-pulse mb-6" />
+
+            <div className="grid md:grid-cols-3 gap-5 mb-6">
+
+              {[1, 2, 3].map(
+                (item) => (
+                  <div
+                    key={item}
+                    className="h-32 bg-[#151718] border border-[#292c2f] rounded-2xl animate-pulse"
+                  />
+                )
+              )}
+
+            </div>
+
+            <div className="h-96 bg-[#151718] border border-[#292c2f] rounded-2xl animate-pulse" />
 
           </div>
 
-        </div>
+        </main>
       </>
     );
   }
 
-  // =========================
-  // Vehicle Not Found
-  // =========================
+  // =====================================================
+  // VEHICLE NOT FOUND
+  // =====================================================
 
   if (!vehicle) {
     return (
       <>
         <Navbar />
 
-        <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <main className="min-h-screen bg-[#0d0f10] text-white flex items-center justify-center px-5">
 
           <div className="text-center">
 
-            <h2 className="text-2xl font-bold text-white">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#151718] border border-[#292c2f] flex items-center justify-center">
+
+              <CarFront
+                size={26}
+                className="text-gray-600"
+              />
+
+            </div>
+
+            <h2 className="text-2xl font-semibold mt-5">
               Vehicle not found
             </h2>
 
+            <p className="text-gray-600 mt-2">
+              We couldn't find this vehicle in your garage.
+            </p>
+
+            <button
+              onClick={() =>
+                navigate("/dashboard")
+              }
+              className="mt-6 px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-black font-semibold transition"
+            >
+              Back to dashboard
+            </button>
+
           </div>
 
-        </div>
+        </main>
       </>
     );
   }
@@ -210,60 +260,71 @@ function FuelHistory() {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-[#0a0a0a] py-8 px-4">
+      <main className="min-h-screen bg-[#0d0f10] text-white">
 
-        <div className="max-w-6xl mx-auto">
+        {/* =================================================
+            TOP BAR
+        ================================================= */}
 
-          {/* =========================
-              Back Button
-          ========================= */}
+        <div className="border-b border-[#25282b] bg-[#101213]">
 
-          <button
-            onClick={() =>
-              navigate(`/vehicles/${vehicleId}`)
-            }
-            className="flex items-center gap-2 text-zinc-400 hover:text-orange-500 hover:underline mb-6 transition"
-          >
-            <ArrowLeft size={20} />
+          <div className="max-w-6xl mx-auto px-5 lg:px-8 py-5">
 
-            Back to Vehicle
-          </button>
+            <button
+              onClick={() =>
+                navigate(
+                  `/vehicles/${vehicleId}`
+                )
+              }
+              className="group flex items-center gap-2 text-sm text-gray-500 hover:text-orange-500 transition"
+            >
 
-          {/* =========================
-              Header
-          ========================= */}
+              <ArrowLeft
+                size={17}
+                className="group-hover:-translate-x-1 transition"
+              />
 
-          <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-2xl shadow-black/20 p-6 mb-6">
+              Vehicle overview
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+            </button>
 
-              <div className="flex items-center gap-4">
+          </div>
 
-                <div className="bg-orange-500/10 border border-orange-500/20 p-4 rounded-full">
+        </div>
 
-                  <Fuel
-                    className="text-orange-500"
-                    size={32}
-                  />
+        <div className="max-w-6xl mx-auto px-5 lg:px-8 py-10">
+
+          {/* =================================================
+              HEADER
+          ================================================= */}
+
+          <section className="mb-8">
+
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+
+              <div>
+
+                <div className="flex items-center gap-3 mb-3">
+
+                  <span className="text-[11px] tracking-[0.25em] uppercase text-orange-500 font-semibold">
+                    Fuel Management
+                  </span>
+
+                  <span className="h-px w-8 bg-orange-500/50" />
+
+                  <span className="text-[11px] tracking-wider text-gray-600">
+                    HISTORY
+                  </span>
 
                 </div>
 
-                <div>
+                <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+                  Fuel history
+                </h1>
 
-                  <h1 className="text-3xl font-bold text-white">
-                    Fuel History
-                  </h1>
-
-                  <p className="text-zinc-500 mt-1">
-                    {vehicle.brand}{" "}
-                    {vehicle.model}
-                  </p>
-
-                  <p className="font-bold tracking-wide text-zinc-300">
-                    {vehicle.registrationNumber?.toUpperCase()}
-                  </p>
-
-                </div>
+                <p className="text-gray-500 mt-2">
+                  Track fuel spending, consumption and efficiency.
+                </p>
 
               </div>
 
@@ -273,134 +334,92 @@ function FuelHistory() {
                     `/vehicles/${vehicleId}/add-fuel`
                   )
                 }
-                className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-5 py-3 rounded-xl font-semibold transition shadow-lg shadow-orange-950/30"
+                className="self-start flex items-center gap-2 px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-black font-semibold transition"
               >
-                <Plus size={20} />
 
-                Add Fuel
+                <Plus size={17} />
+
+                Add fuel
+
               </button>
 
             </div>
 
-          </div>
+          </section>
 
-          {/* =========================
-              Summary Cards
-          ========================= */}
+          {/* =================================================
+              VEHICLE HEADER
+          ================================================= */}
 
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <section className="bg-[#151718] border border-[#292c2f] rounded-2xl overflow-hidden mb-6">
 
-            {/* Total Fuel Expense */}
+            <div className="p-6">
 
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-xl shadow-black/20 p-6">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
 
-              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4">
 
-                <div className="bg-orange-500/10 border border-orange-500/20 p-3 rounded-full">
+                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
 
-                  <IndianRupee
-                    className="text-orange-500"
-                    size={25}
-                  />
+                    <CarFront
+                      size={23}
+                      className="text-orange-500"
+                    />
 
-                </div>
+                  </div>
 
-                <div>
+                  <div>
 
-                  <p className="text-zinc-500">
-                    Total Fuel Expense
-                  </p>
-
-                  <h2 className="text-3xl font-bold text-white">
-                    ₹
-                    {totalExpense.toFixed(
-                      2
-                    )}
-                  </h2>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            {/* Total Fuel Quantity */}
-
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-xl shadow-black/20 p-6">
-
-              <div className="flex items-center gap-4">
-
-                <div className="bg-orange-500/10 border border-orange-500/20 p-3 rounded-full">
-
-                  <Fuel
-                    className="text-orange-500"
-                    size={25}
-                  />
-
-                </div>
-
-                <div>
-
-                  <p className="text-zinc-500">
-                    Total Fuel Used
-                  </p>
-
-                  <h2 className="text-3xl font-bold text-white">
-                    {totalQuantity.toFixed(
-                      2
-                    )}{" "}
-                    L
-                  </h2>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            {/* Fuel Efficiency */}
-
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-xl shadow-black/20 p-6">
-
-              <div className="flex items-center gap-4">
-
-                <div className="bg-orange-500/10 border border-orange-500/20 p-3 rounded-full">
-
-                  <TrendingUp
-                    className="text-orange-500"
-                    size={25}
-                  />
-
-                </div>
-
-                <div>
-
-                  <p className="text-zinc-500">
-                    Fuel Efficiency
-                  </p>
-
-                  {fuelEfficiency !==
-                  null ? (
-
-                    <h2 className="text-3xl font-bold text-white">
-
-                      {Number(
-                        fuelEfficiency
-                      ).toFixed(2)}{" "}
-
-                      <span className="text-lg font-semibold text-zinc-400">
-                        km/L
-                      </span>
-
+                    <h2 className="text-xl font-semibold">
+                      {vehicle.brand}{" "}
+                      {vehicle.model}
                     </h2>
 
-                  ) : (
+                    <div className="flex items-center gap-3 mt-1">
 
-                    <p className="text-sm text-zinc-500 mt-1">
-                      {efficiencyMessage}
+                      <span className="text-xs uppercase tracking-[0.16em] text-gray-600">
+                        {vehicle.registrationNumber?.toUpperCase()}
+                      </span>
+
+                      <span className="w-1 h-1 rounded-full bg-gray-700" />
+
+                      <span className="text-xs text-gray-600">
+                        {vehicle.fuelType}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div className="flex items-center gap-3">
+
+                  <div className="text-right">
+
+                    <p className="text-[10px] uppercase tracking-wider text-gray-700">
+                      Current odometer
                     </p>
 
-                  )}
+                    <p className="text-sm font-medium text-gray-300 mt-1">
+                      {Number(
+                        vehicle.odometer || 0
+                      ).toLocaleString(
+                        "en-IN"
+                      )}{" "}
+                      km
+                    </p>
+
+                  </div>
+
+                  <div className="w-9 h-9 rounded-lg bg-[#101213] border border-[#292c2f] flex items-center justify-center">
+
+                    <Gauge
+                      size={17}
+                      className="text-gray-600"
+                    />
+
+                  </div>
 
                 </div>
 
@@ -408,41 +427,209 @@ function FuelHistory() {
 
             </div>
 
-          </div>
+          </section>
 
-          {/* =========================
-              Fuel Records
-          ========================= */}
+          {/* =================================================
+              SUMMARY
+          ================================================= */}
 
-          <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-2xl shadow-black/20 overflow-hidden">
+          <section className="grid md:grid-cols-3 gap-5 mb-6">
 
-            <div className="p-6 border-b border-zinc-800">
+            <SummaryCard
+              icon={
+                <IndianRupee
+                  size={20}
+                />
+              }
+              label="Total fuel expense"
+              value={`₹${totalExpense.toLocaleString(
+                "en-IN",
+                {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }
+              )}`}
+              description="Total spent on fuel"
+              primary
+            />
 
-              <h2 className="text-2xl font-bold text-white">
-                Fuel Records
-              </h2>
+            <SummaryCard
+              icon={
+                <Droplets size={20} />
+              }
+              label="Fuel consumed"
+              value={`${totalQuantity.toLocaleString(
+                "en-IN",
+                {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }
+              )} L`}
+              description="Total recorded quantity"
+            />
 
-              <p className="text-zinc-500 mt-1">
-                Complete fuel expense history
-              </p>
+            <SummaryCard
+              icon={
+                <TrendingUp
+                  size={20}
+                />
+              }
+              label="Fuel efficiency"
+              value={
+                fuelEfficiency !== null
+                  ? `${Number(
+                      fuelEfficiency
+                    ).toFixed(2)} km/L`
+                  : "—"
+              }
+              description={
+                fuelEfficiency !== null
+                  ? "Calculated from fuel records"
+                  : efficiencyMessage
+              }
+            />
+
+          </section>
+
+          {/* =================================================
+              ADDITIONAL STATS
+          ================================================= */}
+
+          {fuelExpenses.length > 0 && (
+
+            <section className="grid md:grid-cols-2 gap-5 mb-6">
+
+              <div className="bg-[#151718] border border-[#292c2f] rounded-2xl p-5">
+
+                <div className="flex items-center justify-between">
+
+                  <div>
+
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-gray-700">
+                      Average fuel price
+                    </p>
+
+                    <p className="text-xl font-semibold text-gray-200 mt-2">
+                      ₹
+                      {averagePrice.toFixed(
+                        2
+                      )}
+                      <span className="text-sm text-gray-600 font-normal">
+                        {" "}
+                        / L
+                      </span>
+                    </p>
+
+                  </div>
+
+                  <div className="w-10 h-10 rounded-xl bg-[#101213] border border-[#292c2f] flex items-center justify-center">
+
+                    <CircleDollarSign
+                      size={19}
+                      className="text-gray-600"
+                    />
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div className="bg-[#151718] border border-[#292c2f] rounded-2xl p-5">
+
+                <div className="flex items-center justify-between">
+
+                  <div>
+
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-gray-700">
+                      Fuel records
+                    </p>
+
+                    <p className="text-xl font-semibold text-gray-200 mt-2">
+                      {fuelExpenses.length}
+                      <span className="text-sm text-gray-600 font-normal">
+                        {" "}
+                        entries
+                      </span>
+                    </p>
+
+                  </div>
+
+                  <div className="w-10 h-10 rounded-xl bg-[#101213] border border-[#292c2f] flex items-center justify-center">
+
+                    <Receipt
+                      size={19}
+                      className="text-gray-600"
+                    />
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+          )}
+
+          {/* =================================================
+              FUEL RECORDS
+          ================================================= */}
+
+          <section className="bg-[#151718] border border-[#292c2f] rounded-2xl overflow-hidden">
+
+            <div className="px-6 py-5 border-b border-[#292c2f] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
+              <div>
+
+                <div className="flex items-center gap-2">
+
+                  <Fuel
+                    size={18}
+                    className="text-orange-500"
+                  />
+
+                  <h2 className="text-lg font-semibold">
+                    Fuel records
+                  </h2>
+
+                </div>
+
+                <p className="text-xs text-gray-600 mt-1">
+                  Complete fuel transaction history.
+                </p>
+
+              </div>
+
+              {fuelExpenses.length > 0 && (
+
+                <span className="text-[10px] uppercase tracking-[0.15em] text-gray-700">
+                  {fuelExpenses.length} records
+                </span>
+
+              )}
 
             </div>
 
             {fuelExpenses.length === 0 ? (
 
-              <div className="text-center py-16 px-6">
+              <div className="py-16 px-6 text-center">
 
-                <Fuel
-                  className="mx-auto text-zinc-700"
-                  size={60}
-                />
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-[#101213] border border-[#292c2f] flex items-center justify-center">
 
-                <h3 className="text-xl font-semibold mt-5 text-white">
-                  No Fuel Records
+                  <Fuel
+                    size={25}
+                    className="text-gray-700"
+                  />
+
+                </div>
+
+                <h3 className="text-lg font-semibold text-gray-300 mt-5">
+                  No fuel records yet
                 </h3>
 
-                <p className="text-zinc-500 mt-2 mb-6">
-                  Start tracking your fuel expenses.
+                <p className="text-sm text-gray-600 mt-2 max-w-md mx-auto">
+                  Start recording your fuel purchases to track spending and calculate fuel efficiency.
                 </p>
 
                 <button
@@ -451,142 +638,36 @@ function FuelHistory() {
                       `/vehicles/${vehicleId}/add-fuel`
                     )
                   }
-                  className="bg-orange-500 hover:bg-orange-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg shadow-orange-950/30 transition"
+                  className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-black font-semibold transition"
                 >
-                  + Add First Fuel Record
+
+                  <Plus size={17} />
+
+                  Add first fuel record
+
                 </button>
 
               </div>
 
             ) : (
 
-              <div className="divide-y divide-zinc-800">
+              <div>
 
                 {fuelExpenses.map(
-                  (fuel) => (
+                  (fuel, index) => (
 
-                    <div
+                    <FuelRecord
                       key={fuel._id}
-                      className="p-6 hover:bg-[#151515] transition"
-                    >
-
-                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-
-                        {/* Main Info */}
-
-                        <div className="flex items-start gap-4">
-
-                          <div className="bg-orange-500/10 border border-orange-500/20 p-3 rounded-full">
-
-                            <Fuel
-                              className="text-orange-500"
-                              size={25}
-                            />
-
-                          </div>
-
-                          <div>
-
-                            <div className="flex items-center gap-3 flex-wrap">
-
-                              <h3 className="text-lg font-bold text-white">
-                                {fuel.fuelType}
-                              </h3>
-
-                              <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-medium">
-                                {fuel.quantity} L
-                              </span>
-
-                            </div>
-
-                            <div className="flex flex-wrap gap-4 text-zinc-500 text-sm mt-2">
-
-                              <span className="flex items-center gap-1">
-
-                                <Calendar
-                                  size={15}
-                                />
-
-                                {new Date(
-                                  fuel.fuelDate
-                                ).toLocaleDateString()}
-
-                              </span>
-
-                              <span className="flex items-center gap-1">
-
-                                <Gauge
-                                  size={15}
-                                />
-
-                                {fuel.odometer}{" "}
-                                km
-
-                              </span>
-
-                              {fuel.fuelStation && (
-                                <span>
-                                  📍{" "}
-                                  {fuel.fuelStation}
-                                </span>
-                              )}
-
-                            </div>
-
-                            {fuel.notes && (
-                              <p className="text-zinc-500 text-sm mt-2">
-                                {fuel.notes}
-                              </p>
-                            )}
-
-                          </div>
-
-                        </div>
-
-                        {/* Cost + Delete */}
-
-                        <div className="flex items-center justify-between lg:justify-end gap-6">
-
-                          <div className="text-right">
-
-                            <p className="text-2xl font-bold text-white">
-                              ₹
-                              {Number(
-                                fuel.totalCost ||
-                                  0
-                              ).toFixed(2)}
-                            </p>
-
-                            <p className="text-sm text-zinc-500">
-                              ₹
-                              {Number(
-                                fuel.pricePerUnit ||
-                                  0
-                              ).toFixed(2)}
-                              /unit
-                            </p>
-
-                          </div>
-
-                          <button
-                            onClick={() =>
-                              handleDelete(
-                                fuel._id
-                              )
-                            }
-                            className="p-3 text-red-400 hover:bg-red-500/10 rounded-lg transition"
-                            title="Delete Fuel Record"
-                          >
-                            <Trash2
-                              size={20}
-                            />
-                          </button>
-
-                        </div>
-
-                      </div>
-
-                    </div>
+                      fuel={fuel}
+                      index={index}
+                      deleting={
+                        deletingId ===
+                        fuel._id
+                      }
+                      onDelete={
+                        handleDelete
+                      }
+                    />
 
                   )
                 )}
@@ -595,12 +676,266 @@ function FuelHistory() {
 
             )}
 
+          </section>
+
+        </div>
+
+      </main>
+    </>
+  );
+}
+
+// =====================================================
+// SUMMARY CARD
+// =====================================================
+
+function SummaryCard({
+  icon,
+  label,
+  value,
+  description,
+  primary = false,
+}) {
+  return (
+    <div
+      className={`bg-[#151718] border rounded-2xl p-6 ${
+        primary
+          ? "border-orange-500/30"
+          : "border-[#292c2f]"
+      }`}
+    >
+
+      <div className="flex items-start justify-between gap-4">
+
+        <div>
+
+          <p className="text-[10px] uppercase tracking-[0.18em] text-gray-600">
+            {label}
+          </p>
+
+          <p
+            className={`text-2xl md:text-3xl font-semibold mt-2 ${
+              primary
+                ? "text-orange-500"
+                : "text-gray-200"
+            }`}
+          >
+            {value}
+          </p>
+
+          <p className="text-xs text-gray-700 mt-2">
+            {description}
+          </p>
+
+        </div>
+
+        <div
+          className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+            primary
+              ? "bg-orange-500/10 border border-orange-500/20 text-orange-500"
+              : "bg-[#101213] border border-[#292c2f] text-gray-600"
+          }`}
+        >
+          {icon}
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+// =====================================================
+// FUEL RECORD
+// =====================================================
+
+function FuelRecord({
+  fuel,
+  index,
+  deleting,
+  onDelete,
+}) {
+  return (
+    <div className="relative">
+
+      <div className="p-6 hover:bg-[#191b1d] transition">
+
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+
+          {/* =================================================
+              LEFT
+          ================================================= */}
+
+          <div className="flex items-start gap-4 min-w-0">
+
+            <div className="relative shrink-0">
+
+              <div className="w-11 h-11 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+
+                <Fuel
+                  size={19}
+                  className="text-orange-500"
+                />
+
+              </div>
+
+              {index !== undefined && (
+                <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#0d0f10] border border-[#303438] flex items-center justify-center text-[9px] text-gray-600">
+                  {index + 1}
+                </span>
+              )}
+
+            </div>
+
+            <div className="min-w-0">
+
+              <div className="flex items-center gap-3 flex-wrap">
+
+                <h3 className="text-base font-semibold text-gray-200">
+                  {fuel.fuelType ||
+                    "Fuel"}
+                </h3>
+
+                <span className="px-2.5 py-1 rounded-md bg-orange-500/10 border border-orange-500/15 text-[10px] uppercase tracking-wider text-orange-500">
+                  {fuel.quantity} L
+                </span>
+
+              </div>
+
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-3 text-xs text-gray-600">
+
+                <span className="flex items-center gap-1.5">
+
+                  <CalendarDays
+                    size={14}
+                  />
+
+                  {new Date(
+                    fuel.fuelDate
+                  ).toLocaleDateString(
+                    "en-IN",
+                    {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    }
+                  )}
+
+                </span>
+
+                <span className="flex items-center gap-1.5">
+
+                  <Gauge
+                    size={14}
+                  />
+
+                  {Number(
+                    fuel.odometer || 0
+                  ).toLocaleString(
+                    "en-IN"
+                  )}{" "}
+                  km
+
+                </span>
+
+                {fuel.fuelStation && (
+
+                  <span className="flex items-center gap-1.5">
+
+                    <MapPin
+                      size={14}
+                    />
+
+                    {fuel.fuelStation}
+
+                  </span>
+
+                )}
+
+              </div>
+
+              {fuel.notes && (
+
+                <p className="text-xs text-gray-700 mt-3 max-w-xl">
+                  {fuel.notes}
+                </p>
+
+              )}
+
+            </div>
+
+          </div>
+
+          {/* =================================================
+              RIGHT
+          ================================================= */}
+
+          <div className="flex items-center justify-between lg:justify-end gap-6 lg:min-w-[270px]">
+
+            <div className="text-left lg:text-right">
+
+              <p className="text-xl font-semibold text-gray-200">
+
+                ₹
+                {Number(
+                  fuel.totalCost || 0
+                ).toLocaleString(
+                  "en-IN",
+                  {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }
+                )}
+
+              </p>
+
+              <p className="text-[11px] text-gray-700 mt-1">
+
+                ₹
+                {Number(
+                  fuel.pricePerUnit ||
+                    0
+                ).toFixed(2)}
+
+                {" "}
+                / unit
+
+              </p>
+
+            </div>
+
+            <button
+              onClick={() =>
+                onDelete(fuel._id)
+              }
+              disabled={deleting}
+              title="Delete fuel record"
+              className="w-9 h-9 rounded-lg border border-[#292c2f] text-gray-600 hover:text-red-400 hover:border-red-500/20 hover:bg-red-500/[0.04] disabled:opacity-50 transition flex items-center justify-center"
+            >
+
+              {deleting ? (
+
+                <div className="w-4 h-4 border-2 border-gray-700 border-t-red-400 rounded-full animate-spin" />
+
+              ) : (
+
+                <Trash2 size={16} />
+
+              )}
+
+            </button>
+
           </div>
 
         </div>
 
       </div>
-    </>
+
+      {/* RECORD DIVIDER */}
+
+      <div className="mx-6 border-b border-[#222527]" />
+
+    </div>
   );
 }
 

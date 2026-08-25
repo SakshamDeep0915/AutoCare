@@ -14,6 +14,12 @@ import {
   ShieldCheck,
   Download,
   Car,
+  Activity,
+  Wrench,
+  Gauge,
+  CalendarDays,
+  Sparkles,
+  ChevronDown,
 } from "lucide-react";
 
 import { getVehicleById } from "../services/vehicleService";
@@ -24,12 +30,10 @@ function AIReport() {
 
   const [loading, setLoading] = useState(true);
   const [analysis, setAnalysis] = useState("");
-
-  // Vehicle details
   const [vehicle, setVehicle] = useState(null);
 
   // =====================================================
-  // Fetch AI Analysis + Vehicle
+  // FETCH VEHICLE + AI ANALYSIS
   // =====================================================
 
   useEffect(() => {
@@ -40,47 +44,21 @@ function AIReport() {
     try {
       setLoading(true);
 
-      // ===============================================
-      // Fetch Vehicle Details
-      // ===============================================
-
       const vehicleRes =
         await getVehicleById(vehicleId);
 
-      setVehicle(
-        vehicleRes.data.vehicle
-      );
-
-      // ===============================================
-      // Fetch AI Analysis
-      // ===============================================
+      setVehicle(vehicleRes.data.vehicle);
 
       const res = await API.post(
         `/ai/analyze/${vehicleId}`,
         {}
       );
 
-      setAnalysis(
-        res.data.analysis || ""
-      );
-
+      setAnalysis(res.data.analysis || "");
     } catch (err) {
-      console.error(
-        "AI Analysis Error:",
-        err
-      );
+      console.error("AI Analysis Error:", err);
 
       if (err.response) {
-        console.log(
-          "Status:",
-          err.response.status
-        );
-
-        console.log(
-          "Backend Response:",
-          err.response.data
-        );
-
         alert(
           `AI Analysis Failed\n\nStatus: ${err.response.status}\nMessage: ${
             err.response.data?.message ||
@@ -88,23 +66,9 @@ function AIReport() {
           }`
         );
       } else if (err.request) {
-        console.log(
-          "No response received:",
-          err.request
-        );
-
-        alert(
-          "Backend server is not responding."
-        );
+        alert("Backend server is not responding.");
       } else {
-        console.log(
-          "Request Error:",
-          err.message
-        );
-
-        alert(
-          `Request Error: ${err.message}`
-        );
+        alert(`Request Error: ${err.message}`);
       }
     } finally {
       setLoading(false);
@@ -112,7 +76,7 @@ function AIReport() {
   };
 
   // =====================================================
-  // Analyze Again
+  // ANALYZE AGAIN
   // =====================================================
 
   const fetchAnalysis = async () => {
@@ -124,14 +88,9 @@ function AIReport() {
         {}
       );
 
-      setAnalysis(
-        res.data.analysis || ""
-      );
+      setAnalysis(res.data.analysis || "");
     } catch (err) {
-      console.error(
-        "AI Analysis Error:",
-        err
-      );
+      console.error("AI Analysis Error:", err);
 
       alert(
         err.response?.data?.message ||
@@ -143,108 +102,91 @@ function AIReport() {
   };
 
   // =====================================================
-  // Extract Health Score
+  // EXTRACT HEALTH SCORE
   // =====================================================
 
-  const scoreMatch =
-    analysis.match(
-      /Health Score:\s*(\d+)\s*\/\s*100/i
-    );
+  const scoreMatch = analysis.match(
+    /Health Score:\s*(\d+)\s*\/\s*100/i
+  );
 
-  const healthScore =
-    scoreMatch
-      ? Number(scoreMatch[1])
-      : null;
+  const healthScore = scoreMatch
+    ? Number(scoreMatch[1])
+    : null;
 
   // =====================================================
-  // Extract Condition
+  // CONDITION
   // =====================================================
 
-  const conditionMatch =
-    analysis.match(
-      /Condition:\s*([\s\S]*?)(?=\n\s*Recommendations?:|$)/i
-    );
+  const conditionMatch = analysis.match(
+    /Condition:\s*([\s\S]*?)(?=\n\s*Recommendations?:|$)/i
+  );
 
-  const condition =
-    conditionMatch
-      ? conditionMatch[1].trim()
-      : "Analysis completed";
+  const condition = conditionMatch
+    ? conditionMatch[1].trim()
+    : "Analysis completed";
 
   // =====================================================
-  // Extract Recommendations
+  // RECOMMENDATIONS
   // =====================================================
 
-  const recommendationsMatch =
-    analysis.match(
-      /Recommendations?:\s*([\s\S]*)/i
-    );
+  const recommendationsMatch = analysis.match(
+    /Recommendations?:\s*([\s\S]*)/i
+  );
 
-  const recommendations =
-    recommendationsMatch
-      ? recommendationsMatch[1]
-          .split("\n")
-          .map(
-            (item) =>
-              item
-                .replace(
-                  /^[-•*]\s*/,
-                  ""
-                )
-                .trim()
-          )
-          .filter(Boolean)
-      : [];
+  const recommendations = recommendationsMatch
+    ? recommendationsMatch[1]
+        .split("\n")
+        .map((item) =>
+          item
+            .replace(/^[-•*]\s*/, "")
+            .trim()
+        )
+        .filter(Boolean)
+    : [];
 
   // =====================================================
-  // Score Color
+  // SCORE STATUS
   // =====================================================
+
+  const getScoreStatus = () => {
+    if (healthScore === null) return "Awaiting analysis";
+
+    if (healthScore >= 80) return "Excellent";
+
+    if (healthScore >= 60) return "Needs attention";
+
+    return "Critical";
+  };
 
   const getScoreColor = () => {
-    if (healthScore === null) {
+    if (healthScore === null)
       return "text-zinc-500";
-    }
 
-    if (healthScore >= 80) {
+    if (healthScore >= 80)
       return "text-orange-500";
-    }
 
-    if (healthScore >= 60) {
+    if (healthScore >= 60)
       return "text-orange-400";
-    }
 
     return "text-red-400";
   };
 
-  // =====================================================
-  // Score Background
-  // =====================================================
+  const getScoreBar = () => {
+    if (healthScore === null)
+      return 0;
 
-  const getScoreBackground = () => {
-    if (healthScore === null) {
-      return "bg-zinc-800";
-    }
-
-    if (healthScore >= 80) {
-      return "bg-orange-500/10";
-    }
-
-    if (healthScore >= 60) {
-      return "bg-orange-500/10";
-    }
-
-    return "bg-red-500/10";
+    return Math.min(
+      Math.max(healthScore, 0),
+      100
+    );
   };
-
-  // =====================================================
-  // Condition Icon
-  // =====================================================
 
   const getConditionIcon = () => {
     if (healthScore >= 80) {
       return (
         <CheckCircle
+          size={22}
           className="text-orange-500"
-          size={28}
         />
       );
     }
@@ -252,16 +194,16 @@ function AIReport() {
     if (healthScore >= 60) {
       return (
         <AlertTriangle
+          size={22}
           className="text-orange-400"
-          size={28}
         />
       );
     }
 
     return (
       <AlertTriangle
+        size={22}
         className="text-red-400"
-        size={28}
       />
     );
   };
@@ -289,62 +231,42 @@ function AIReport() {
 
     let y = 20;
 
-    // ===================================================
-    // Helper: Page Space
-    // ===================================================
+    const checkPageSpace = (
+      requiredSpace = 10
+    ) => {
+      if (
+        y + requiredSpace >
+        pageHeight - 20
+      ) {
+        doc.addPage();
+        y = 20;
+      }
+    };
 
-    const checkPageSpace =
-      (requiredSpace = 10) => {
-        if (
-          y + requiredSpace >
-          pageHeight - 20
-        ) {
-          doc.addPage();
-          y = 20;
-        }
-      };
+    const addWrappedText = (
+      text,
+      x,
+      fontSize = 11,
+      lineHeight = 6
+    ) => {
+      doc.setFontSize(fontSize);
 
-    // ===================================================
-    // Helper: Wrapped Text
-    // ===================================================
-
-    const addWrappedText =
-      (
-        text,
-        x,
-        fontSize = 11,
-        lineHeight = 6
-      ) => {
-        doc.setFontSize(
-          fontSize
+      const lines =
+        doc.splitTextToSize(
+          String(text),
+          pageWidth - x - 20
         );
 
-        const lines =
-          doc.splitTextToSize(
-            String(text),
-            pageWidth - x - 20
-          );
+      lines.forEach((line) => {
+        checkPageSpace(lineHeight);
 
-        lines.forEach(
-          (line) => {
-            checkPageSpace(
-              lineHeight
-            );
+        doc.text(line, x, y);
 
-            doc.text(
-              line,
-              x,
-              y
-            );
+        y += lineHeight;
+      });
+    };
 
-            y += lineHeight;
-          }
-        );
-      };
-
-    // ===================================================
     // HEADER
-    // ===================================================
 
     doc.setFont(
       "helvetica",
@@ -397,9 +319,7 @@ function AIReport() {
 
     y += 15;
 
-    // ===================================================
-    // VEHICLE INFORMATION
-    // ===================================================
+    // VEHICLE
 
     doc.setFont(
       "helvetica",
@@ -421,12 +341,9 @@ function AIReport() {
       "normal"
     );
 
-    doc.setFontSize(11);
-
-    const vehicleName =
-      vehicle
-        ? `${vehicle.brand} ${vehicle.model}`
-        : "Vehicle";
+    const vehicleName = vehicle
+      ? `${vehicle.brand} ${vehicle.model}`
+      : "Vehicle";
 
     const registrationNumber =
       vehicle?.registrationNumber
@@ -441,7 +358,9 @@ function AIReport() {
 
     const odometer =
       vehicle?.odometer !== undefined
-        ? `${vehicle.odometer.toLocaleString(
+        ? `${Number(
+            vehicle.odometer
+          ).toLocaleString(
             "en-IN"
           )} km`
         : "N/A";
@@ -473,9 +392,7 @@ function AIReport() {
 
     y += 8;
 
-    // ===================================================
-    // HEALTH SCORE
-    // ===================================================
+    // SCORE
 
     checkPageSpace(45);
 
@@ -511,39 +428,15 @@ function AIReport() {
       "normal"
     );
 
-    let scoreStatus =
-      "Analysis Completed";
-
-    if (
-      healthScore !== null
-    ) {
-      if (
-        healthScore >= 80
-      ) {
-        scoreStatus =
-          "Excellent";
-      } else if (
-        healthScore >= 60
-      ) {
-        scoreStatus =
-          "Fair";
-      } else {
-        scoreStatus =
-          "Needs Attention";
-      }
-    }
-
     doc.text(
-      `Status: ${scoreStatus}`,
+      `Status: ${getScoreStatus()}`,
       20,
       y
     );
 
     y += 15;
 
-    // ===================================================
     // CONDITION
-    // ===================================================
 
     checkPageSpace(35);
 
@@ -576,9 +469,7 @@ function AIReport() {
 
     y += 8;
 
-    // ===================================================
     // RECOMMENDATIONS
-    // ===================================================
 
     checkPageSpace(35);
 
@@ -602,10 +493,7 @@ function AIReport() {
       "normal"
     );
 
-    if (
-      recommendations.length >
-      0
-    ) {
+    if (recommendations.length > 0) {
       recommendations.forEach(
         (
           recommendation,
@@ -632,9 +520,7 @@ function AIReport() {
 
     y += 8;
 
-    // ===================================================
-    // FULL AI RESPONSE
-    // ===================================================
+    // FULL RESPONSE
 
     checkPageSpace(35);
 
@@ -680,9 +566,7 @@ function AIReport() {
       }
     );
 
-    // ===================================================
-    // FOOTER ON EVERY PAGE
-    // ===================================================
+    // FOOTER
 
     const totalPages =
       doc.internal.getNumberOfPages();
@@ -711,10 +595,6 @@ function AIReport() {
       );
     }
 
-    // ===================================================
-    // FILE NAME
-    // ===================================================
-
     const safeRegistration =
       registrationNumber.replace(
         /[^a-zA-Z0-9]/g,
@@ -727,7 +607,7 @@ function AIReport() {
   };
 
   // =====================================================
-  // Loading
+  // LOADING SCREEN
   // =====================================================
 
   if (loading) {
@@ -735,20 +615,45 @@ function AIReport() {
       <>
         <Navbar />
 
-        <div className="min-h-screen bg-[#0a0a0a] py-8 px-4">
+        <div className="min-h-screen bg-[#0d0f10] text-white flex items-center justify-center px-5">
 
-          <div className="max-w-5xl mx-auto">
+          <div className="w-full max-w-xl">
 
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-lg p-12 text-center">
+            <div className="relative overflow-hidden bg-[#151718] border border-[#292c2f] rounded-2xl p-10 text-center">
 
-              <div className="animate-spin mx-auto mb-6 w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full"></div>
+              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent" />
 
-              <h2 className="text-2xl font-semibold text-white">
-                Analyzing Your Vehicle
+              <div className="relative mx-auto w-20 h-20 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+
+                <Brain
+                  size={36}
+                  className="text-orange-500"
+                />
+
+                <div className="absolute inset-0 rounded-2xl border border-orange-500/20 animate-pulse" />
+
+              </div>
+
+              <p className="mt-7 text-[11px] tracking-[0.25em] uppercase text-orange-500 font-semibold">
+                AutoCare Intelligence
+              </p>
+
+              <h2 className="text-2xl font-semibold mt-2">
+                Reading vehicle data
               </h2>
 
-              <p className="text-zinc-500 mt-2">
-                AI is reviewing your vehicle and service history...
+              <p className="text-gray-500 mt-2">
+                Reviewing vehicle history and maintenance records.
+              </p>
+
+              <div className="mt-8 h-1 bg-[#242729] rounded-full overflow-hidden">
+
+                <div className="h-full w-1/2 bg-orange-500 rounded-full animate-pulse" />
+
+              </div>
+
+              <p className="text-xs text-gray-600 mt-3">
+                Generating health assessment...
               </p>
 
             </div>
@@ -768,395 +673,531 @@ function AIReport() {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-[#0a0a0a] py-8 px-4">
+      <main className="min-h-screen bg-[#0d0f10] text-white">
 
-        <div className="max-w-5xl mx-auto">
+        {/* ==========================================
+            TOP NAVIGATION
+        ========================================== */}
 
-          {/* =================================================
-              Back Button
-          ================================================= */}
+        <div className="border-b border-[#25282b] bg-[#101213]">
 
-          <button
-            onClick={() =>
-              navigate(-1)
-            }
-            className="flex items-center gap-2 text-zinc-400 hover:text-orange-500 mb-6 transition"
-          >
-            <ArrowLeft size={20} />
+          <div className="max-w-6xl mx-auto px-5 lg:px-8 py-5">
 
-            Back to Vehicle
-          </button>
+            <button
+              onClick={() => navigate(-1)}
+              className="group flex items-center gap-2 text-sm text-gray-500 hover:text-orange-500 transition"
+            >
+              <ArrowLeft
+                size={17}
+                className="group-hover:-translate-x-1 transition"
+              />
 
-          {/* =================================================
-              Header
-          ================================================= */}
+              Vehicle
+            </button>
 
-          <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-xl shadow-black/20 p-6 md:p-8 mb-6">
+          </div>
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+        </div>
 
-              <div className="flex items-center gap-4">
+        <div className="max-w-6xl mx-auto px-5 lg:px-8 py-10">
 
-                <div className="bg-orange-500/10 border border-orange-500/25 p-4 rounded-full">
+          {/* ==========================================
+              REPORT HEADER
+          ========================================== */}
 
-                  <Brain
-                    className="text-orange-500"
-                    size={32}
-                  />
+          <section className="mb-8">
+
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-7">
+
+              <div>
+
+                <div className="flex items-center gap-3 mb-4">
+
+                  <span className="text-[11px] tracking-[0.25em] uppercase text-orange-500 font-semibold">
+                    Vehicle Intelligence
+                  </span>
+
+                  <span className="h-px w-8 bg-orange-500/50" />
+
+                  <span className="text-[11px] tracking-wider text-gray-600">
+                    AI REPORT
+                  </span>
 
                 </div>
 
-                <div>
+                <h1 className="text-3xl md:text-5xl font-semibold tracking-tight">
+                  Vehicle health
+                </h1>
 
-                  <h1 className="text-3xl font-bold text-white">
-                    AI Vehicle Health Report
-                  </h1>
+                <p className="text-gray-500 mt-2 max-w-xl">
+                  A data-driven assessment of your vehicle's current condition and recommended maintenance actions.
+                </p>
 
-                  <p className="text-zinc-500 mt-1">
-                    Powered by AI vehicle analysis
-                  </p>
+                {vehicle && (
+                  <div className="flex flex-wrap items-center gap-3 mt-5">
 
-                  {vehicle && (
-                    <p className="text-sm text-zinc-400 mt-2 font-medium">
-                      🚗 {vehicle.brand}{" "}
+                    <span className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#151718] border border-[#292c2f] text-sm text-gray-300">
+
+                      <Car
+                        size={15}
+                        className="text-orange-500"
+                      />
+
+                      {vehicle.brand}{" "}
                       {vehicle.model}
-                      {" • "}
-                      {vehicle.registrationNumber?.toUpperCase()}
-                    </p>
-                  )}
 
-                </div>
+                    </span>
+
+                    <span className="px-3 py-2 rounded-lg bg-[#151718] border border-[#292c2f] text-xs tracking-wider text-gray-500 uppercase">
+                      {vehicle.registrationNumber?.toUpperCase()}
+                    </span>
+
+                  </div>
+                )}
 
               </div>
-
-              {/* Buttons */}
 
               <div className="flex flex-wrap gap-3">
 
                 <button
-                  onClick={
-                    fetchAnalysis
-                  }
-                  className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-5 py-3 rounded-lg transition shadow-lg shadow-orange-950/30"
+                  onClick={fetchAnalysis}
+                  disabled={loading}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-[#303438] text-gray-300 hover:text-white hover:border-orange-500/40 transition font-medium"
                 >
-                  <RefreshCw size={18} />
+                  <RefreshCw size={17} />
 
-                  Analyze Again
+                  Analyze again
                 </button>
 
                 <button
-                  onClick={
-                    downloadPDF
-                  }
-                  className="flex items-center justify-center gap-2 bg-orange-700 hover:bg-orange-600 text-white px-5 py-3 rounded-lg transition shadow-lg shadow-orange-950/20"
+                  onClick={downloadPDF}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-black transition font-semibold"
                 >
-                  <Download size={18} />
+                  <Download size={17} />
 
-                  Download PDF
+                  Download report
                 </button>
 
               </div>
 
             </div>
 
-          </div>
+          </section>
 
-          {/* =================================================
-              Vehicle Summary
-          ================================================= */}
+          {/* ==========================================
+              MAIN DIAGNOSTIC PANEL
+          ========================================== */}
 
-          {vehicle && (
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-xl shadow-black/20 p-6 mb-6">
+          <section className="grid lg:grid-cols-[1.15fr_0.85fr] gap-6 mb-6">
 
-              <div className="flex items-center gap-3 mb-5">
+            {/* HEALTH SCORE */}
 
-                <div className="bg-orange-500/10 border border-orange-500/20 p-3 rounded-full">
+            <div className="relative overflow-hidden bg-[#151718] border border-[#292c2f] rounded-2xl p-7 md:p-9">
 
-                  <Car
-                    className="text-orange-500"
-                    size={24}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/[0.025] rounded-full blur-3xl pointer-events-none" />
+
+              <div className="relative">
+
+                <div className="flex items-start justify-between gap-5">
+
+                  <div>
+
+                    <p className="text-[11px] tracking-[0.2em] uppercase text-gray-600">
+                      Primary diagnostic
+                    </p>
+
+                    <h2 className="text-xl font-semibold mt-1">
+                      Vehicle health score
+                    </h2>
+
+                  </div>
+
+                  <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+
+                    <ShieldCheck
+                      size={20}
+                      className={getScoreColor()}
+                    />
+
+                  </div>
+
+                </div>
+
+                <div className="mt-10 flex flex-col sm:flex-row sm:items-end gap-8">
+
+                  <div>
+
+                    <div className="flex items-baseline">
+
+                      <span
+                        className={`text-7xl md:text-8xl font-semibold tracking-[-0.06em] ${getScoreColor()}`}
+                      >
+                        {healthScore ?? "--"}
+                      </span>
+
+                      <span className="text-xl text-gray-600 ml-2">
+                        /100
+                      </span>
+
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-3">
+
+                      {getConditionIcon()}
+
+                      <span className="text-sm text-gray-300">
+                        {getScoreStatus()}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                  <div className="flex-1 pb-2">
+
+                    <div className="flex justify-between text-[11px] uppercase tracking-wider text-gray-600 mb-2">
+
+                      <span>
+                        Vehicle condition
+                      </span>
+
+                      <span>
+                        {healthScore ?? 0}%
+                      </span>
+
+                    </div>
+
+                    <div className="h-2 bg-[#242729] rounded-full overflow-hidden">
+
+                      <div
+                        className="h-full bg-orange-500 rounded-full transition-all duration-700"
+                        style={{
+                          width: `${getScoreBar()}%`,
+                        }}
+                      />
+
+                    </div>
+
+                    <p className="text-xs text-gray-600 mt-3">
+                      AI-generated assessment based on available vehicle records.
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* VEHICLE SNAPSHOT */}
+
+            <div className="bg-[#151718] border border-[#292c2f] rounded-2xl p-7">
+
+              <div className="flex items-center justify-between mb-7">
+
+                <div>
+
+                  <p className="text-[11px] tracking-[0.2em] uppercase text-gray-600">
+                    Vehicle data
+                  </p>
+
+                  <h2 className="text-xl font-semibold mt-1">
+                    Snapshot
+                  </h2>
+
+                </div>
+
+                <Gauge
+                  size={21}
+                  className="text-gray-600"
+                />
+
+              </div>
+
+              {vehicle && (
+
+                <div className="space-y-0">
+
+                  <SnapshotRow
+                    icon={<Car size={16} />}
+                    label="Vehicle"
+                    value={`${vehicle.brand} ${vehicle.model}`}
+                  />
+
+                  <SnapshotRow
+                    icon={<CalendarDays size={16} />}
+                    label="Year"
+                    value={vehicle.year || "—"}
+                  />
+
+                  <SnapshotRow
+                    icon={<Activity size={16} />}
+                    label="Fuel"
+                    value={vehicle.fuelType || "—"}
+                  />
+
+                  <SnapshotRow
+                    icon={<Gauge size={16} />}
+                    label="Odometer"
+                    value={
+                      vehicle.odometer !== undefined
+                        ? `${Number(
+                            vehicle.odometer
+                          ).toLocaleString(
+                            "en-IN"
+                          )} km`
+                        : "—"
+                    }
                   />
 
                 </div>
 
-                <h2 className="text-xl font-bold text-white">
-                  Vehicle Summary
-                </h2>
-
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-
-                <div className="bg-[#151515] border border-zinc-800 rounded-xl p-4">
-
-                  <p className="text-sm text-zinc-500">
-                    Vehicle
-                  </p>
-
-                  <p className="font-semibold mt-1 text-zinc-200">
-                    {vehicle.brand}{" "}
-                    {vehicle.model}
-                  </p>
-
-                </div>
-
-                <div className="bg-[#151515] border border-zinc-800 rounded-xl p-4">
-
-                  <p className="text-sm text-zinc-500">
-                    Registration
-                  </p>
-
-                  <p className="font-semibold mt-1 text-zinc-200">
-                    {vehicle.registrationNumber?.toUpperCase()}
-                  </p>
-
-                </div>
-
-                <div className="bg-[#151515] border border-zinc-800 rounded-xl p-4">
-
-                  <p className="text-sm text-zinc-500">
-                    Fuel Type
-                  </p>
-
-                  <p className="font-semibold mt-1 text-zinc-200">
-                    {vehicle.fuelType}
-                  </p>
-
-                </div>
-
-                <div className="bg-[#151515] border border-zinc-800 rounded-xl p-4">
-
-                  <p className="text-sm text-zinc-500">
-                    Odometer
-                  </p>
-
-                  <p className="font-semibold mt-1 text-zinc-200">
-                    {Number(
-                      vehicle.odometer
-                    ).toLocaleString(
-                      "en-IN"
-                    )}{" "}
-                    km
-                  </p>
-
-                </div>
-
-              </div>
+              )}
 
             </div>
-          )}
 
-          {/* =================================================
-              Health Score + Condition
-          ================================================= */}
+          </section>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
+          {/* ==========================================
+              CONDITION
+          ========================================== */}
 
-            {/* Health Score */}
+          <section className="bg-[#151718] border border-[#292c2f] rounded-2xl overflow-hidden mb-6">
 
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-xl shadow-black/20 p-8 text-center">
+            <div className="px-7 py-5 border-b border-[#292c2f] flex items-center justify-between">
 
-              <div className="flex justify-center mb-4">
+              <div className="flex items-center gap-3">
 
-                <ShieldCheck
-                  className={
-                    getScoreColor()
-                  }
-                  size={42}
-                />
-
-              </div>
-
-              <h2 className="text-xl font-semibold text-zinc-200">
-                Vehicle Health Score
-              </h2>
-
-              <div
-                className={`inline-flex items-center justify-center w-36 h-36 rounded-full ${getScoreBackground()} mt-5 border border-orange-500/20`}
-              >
+                {getConditionIcon()}
 
                 <div>
 
-                  <div
-                    className={`text-5xl font-bold ${getScoreColor()}`}
-                  >
-                    {healthScore ??
-                      "--"}
-                  </div>
+                  <p className="text-[11px] tracking-[0.2em] uppercase text-gray-600">
+                    Assessment
+                  </p>
 
-                  <div className="text-zinc-500">
-                    / 100
-                  </div>
+                  <h2 className="text-lg font-semibold">
+                    Current condition
+                  </h2>
 
                 </div>
 
               </div>
 
-              <p className="text-zinc-500 mt-4">
-                AI-generated vehicle health assessment
+              <span className="hidden sm:block text-[10px] tracking-wider uppercase text-gray-600">
+                AI evaluation
+              </span>
+
+            </div>
+
+            <div className="p-7">
+
+              <p className="text-gray-300 leading-8 text-[15px] max-w-4xl">
+                {condition}
               </p>
 
             </div>
 
-            {/* Condition */}
+          </section>
 
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-xl shadow-black/20 p-8">
+          {/* ==========================================
+              RECOMMENDATIONS
+          ========================================== */}
 
-              <div className="flex items-center gap-3 mb-5">
+          <section className="bg-[#151718] border border-[#292c2f] rounded-2xl overflow-hidden mb-6">
 
-                {getConditionIcon()}
+            <div className="px-7 py-6 border-b border-[#292c2f]">
 
-                <h2 className="text-xl font-semibold text-zinc-200">
-                  Vehicle Condition
-                </h2>
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
 
-              </div>
+                <div>
 
-              <div className="bg-[#151515] border border-zinc-800 rounded-xl p-5">
+                  <div className="flex items-center gap-3">
 
-                <p className="text-zinc-300 leading-7">
-                  {condition}
-                </p>
+                    <Wrench
+                      size={19}
+                      className="text-orange-500"
+                    />
 
-              </div>
+                    <h2 className="text-xl font-semibold">
+                      Recommended actions
+                    </h2>
 
-              <div className="mt-6">
+                  </div>
 
-                <p className="text-sm text-zinc-500">
-                  AI assessment based on:
-                </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    Maintenance actions identified from your vehicle data.
+                  </p>
 
-                <ul className="mt-3 space-y-2 text-zinc-400">
+                </div>
 
-                  <li>
-                    ✓ Vehicle information
-                  </li>
-
-                  <li>
-                    ✓ Service history
-                  </li>
-
-                  <li>
-                    ✓ Maintenance records
-                  </li>
-
-                </ul>
+                <span className="text-xs text-gray-600">
+                  {recommendations.length}{" "}
+                  {recommendations.length === 1
+                    ? "action"
+                    : "actions"}
+                </span>
 
               </div>
 
             </div>
 
-          </div>
+            <div className="p-7">
 
-          {/* =================================================
-              Recommendations
-          ================================================= */}
+              {recommendations.length > 0 ? (
 
-          <div className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-xl shadow-black/20 p-8 mb-6">
+                <div className="space-y-3">
 
-            <div className="flex items-center gap-3 mb-6">
+                  {recommendations.map(
+                    (
+                      recommendation,
+                      index
+                    ) => (
 
-              <div className="bg-orange-500/10 border border-orange-500/20 p-3 rounded-full">
+                      <div
+                        key={index}
+                        className="group flex gap-5 p-5 bg-[#101213] border border-[#292c2f] hover:border-orange-500/30 rounded-xl transition"
+                      >
 
-                <Brain
-                  className="text-orange-500"
-                  size={25}
-                />
+                        <div className="shrink-0">
 
-              </div>
+                          <div className="w-9 h-9 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 font-semibold text-sm">
+                            {String(
+                              index + 1
+                            ).padStart(
+                              2,
+                              "0"
+                            )}
+                          </div>
 
-              <div>
+                        </div>
 
-                <h2 className="text-2xl font-bold text-white">
-                  AI Recommendations
-                </h2>
+                        <div className="flex-1">
 
-                <p className="text-zinc-500">
-                  Recommended maintenance actions
-                </p>
+                          <div className="flex items-start justify-between gap-4">
 
-              </div>
+                            <p className="text-gray-300 leading-7">
+                              {recommendation}
+                            </p>
 
-            </div>
+                            <CheckCircle
+                              size={17}
+                              className="text-gray-700 group-hover:text-orange-500 transition shrink-0 mt-1"
+                            />
 
-            {recommendations.length > 0 ? (
-
-              <div className="grid md:grid-cols-2 gap-4">
-
-                {recommendations.map(
-                  (
-                    recommendation,
-                    index
-                  ) => (
-
-                    <div
-                      key={index}
-                      className="flex gap-4 bg-[#151515] hover:bg-orange-500/5 border border-zinc-800 hover:border-orange-500/30 rounded-xl p-5 transition"
-                    >
-
-                      <div className="flex-shrink-0">
-
-                        <div className="bg-orange-500/10 border border-orange-500/20 p-2 rounded-full">
-
-                          <CheckCircle
-                            className="text-orange-500"
-                            size={22}
-                          />
+                          </div>
 
                         </div>
 
                       </div>
 
-                      <div>
+                    )
+                  )}
 
-                        <h3 className="font-semibold text-zinc-200">
-                          Recommendation{" "}
-                          {index + 1}
-                        </h3>
+                </div>
 
-                        <p className="text-zinc-400 mt-1 leading-6">
-                          {recommendation}
-                        </p>
+              ) : (
 
-                      </div>
+                <div className="py-8 text-center">
 
-                    </div>
+                  <Wrench
+                    size={28}
+                    className="mx-auto text-gray-700"
+                  />
 
-                  )
-                )}
+                  <p className="text-gray-500 mt-3">
+                    No specific recommendations were returned.
+                  </p>
+
+                </div>
+
+              )}
+
+            </div>
+
+          </section>
+
+          {/* ==========================================
+              AI DETAILS
+          ========================================== */}
+
+          <details className="group bg-[#151718] border border-[#292c2f] rounded-2xl overflow-hidden mb-8">
+
+            <summary className="cursor-pointer list-none px-7 py-5 flex items-center justify-between hover:bg-[#181a1c] transition">
+
+              <div className="flex items-center gap-3">
+
+                <Sparkles
+                  size={18}
+                  className="text-orange-500"
+                />
+
+                <div>
+
+                  <p className="font-semibold text-gray-200">
+                    Full AI analysis
+                  </p>
+
+                  <p className="text-xs text-gray-600 mt-1">
+                    View the complete response generated by AutoCare AI.
+                  </p>
+
+                </div>
 
               </div>
 
-            ) : (
+              <ChevronDown
+                size={18}
+                className="text-gray-600 group-open:rotate-180 transition-transform"
+              />
 
-              <div className="bg-[#151515] border border-zinc-800 rounded-xl p-6 text-zinc-400">
-                No specific recommendations were returned.
-              </div>
-
-            )}
-
-          </div>
-
-          {/* =================================================
-              Original AI Response
-          ================================================= */}
-
-          <details className="bg-[#111111] border border-zinc-800 rounded-2xl shadow-xl shadow-black/20 p-6 mb-8">
-
-            <summary className="cursor-pointer font-semibold text-zinc-200 hover:text-orange-500 transition">
-              View Full AI Response
             </summary>
 
-            <div className="mt-5 bg-[#151515] border border-zinc-800 rounded-xl p-5 whitespace-pre-wrap text-zinc-300 leading-7">
-              {analysis}
+            <div className="px-7 pb-7">
+
+              <div className="bg-[#101213] border border-[#292c2f] rounded-xl p-6 whitespace-pre-wrap text-gray-400 leading-7 text-sm">
+                {analysis}
+              </div>
+
             </div>
 
           </details>
 
         </div>
 
-      </div>
+      </main>
     </>
+  );
+}
+
+// =====================================================
+// SNAPSHOT ROW
+// =====================================================
+
+function SnapshotRow({
+  icon,
+  label,
+  value,
+}) {
+  return (
+    <div className="flex items-center justify-between py-4 border-b border-[#242729] last:border-b-0">
+
+      <div className="flex items-center gap-3 text-gray-600">
+
+        {icon}
+
+        <span className="text-sm">
+          {label}
+        </span>
+
+      </div>
+
+      <span className="text-sm text-gray-300 text-right max-w-[180px] truncate">
+        {value}
+      </span>
+
+    </div>
   );
 }
 

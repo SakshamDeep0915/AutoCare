@@ -6,16 +6,25 @@ function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
 
-  // User is not authenticated
+  // =====================================================
+  // CHECK AUTHENTICATION
+  // =====================================================
+
   if (!token || !user) {
     return (
       <Navigate
         to="/login"
         replace
-        state={{ from: location.pathname }}
+        state={{
+          from: location.pathname,
+        }}
       />
     );
   }
+
+  // =====================================================
+  // AUTHENTICATED USER
+  // =====================================================
 
   return children;
 }

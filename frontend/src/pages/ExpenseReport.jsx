@@ -8,6 +8,11 @@ import {
   IndianRupee,
   Search,
   Car,
+  CalendarDays,
+  Gauge,
+  FileBarChart,
+  Receipt,
+  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -27,7 +32,7 @@ function ExpenseReport() {
   const [to, setTo] = useState("");
 
   // =====================================================
-  // Load Expense Report
+  // LOAD EXPENSE REPORT
   // =====================================================
 
   const loadReport = async () => {
@@ -59,7 +64,7 @@ function ExpenseReport() {
   };
 
   // =====================================================
-  // Initial Load
+  // INITIAL LOAD
   // =====================================================
 
   useEffect(() => {
@@ -67,7 +72,7 @@ function ExpenseReport() {
   }, []);
 
   // =====================================================
-  // Currency Formatter
+  // CURRENCY FORMATTER
   // =====================================================
 
   const formatCurrency = (amount) => {
@@ -77,7 +82,7 @@ function ExpenseReport() {
   };
 
   // =====================================================
-  // Date Formatter
+  // DATE FORMATTER
   // =====================================================
 
   const formatDate = (date) => {
@@ -94,7 +99,17 @@ function ExpenseReport() {
   };
 
   // =====================================================
-  // Download PDF
+  // CLEAR FILTERS
+  // =====================================================
+
+  const clearFilters = () => {
+    setRegistrationNumber("");
+    setFrom("");
+    setTo("");
+  };
+
+  // =====================================================
+  // DOWNLOAD PDF
   // =====================================================
 
   const downloadPDF = () => {
@@ -120,10 +135,6 @@ function ExpenseReport() {
 
     let y = 20;
 
-    // ===================================================
-    // Page Space Helper
-    // ===================================================
-
     const checkPage = (space = 10) => {
       if (
         y + space >
@@ -136,7 +147,7 @@ function ExpenseReport() {
     };
 
     // ===================================================
-    // Header
+    // HEADER
     // ===================================================
 
     doc.setFont(
@@ -191,7 +202,7 @@ function ExpenseReport() {
     y += 15;
 
     // ===================================================
-    // Vehicle Information
+    // VEHICLE INFORMATION
     // ===================================================
 
     doc.setFont(
@@ -251,10 +262,13 @@ function ExpenseReport() {
 
       doc.text(
         `Odometer: ${
-          data.vehicle.odometer !== undefined
+          data.vehicle.odometer !==
+          undefined
             ? Number(
                 data.vehicle.odometer
-              ).toLocaleString("en-IN")
+              ).toLocaleString(
+                "en-IN"
+              )
             : "N/A"
         } km`,
         20,
@@ -265,7 +279,7 @@ function ExpenseReport() {
     }
 
     // ===================================================
-    // Report Period
+    // REPORT PERIOD
     // ===================================================
 
     doc.setFont(
@@ -313,7 +327,7 @@ function ExpenseReport() {
     y += 12;
 
     // ===================================================
-    // Expense Summary
+    // EXPENSE SUMMARY
     // ===================================================
 
     doc.setFont(
@@ -374,7 +388,7 @@ function ExpenseReport() {
     y += 15;
 
     // ===================================================
-    // Table Header
+    // TABLE HEADER
     // ===================================================
 
     checkPage(20);
@@ -428,7 +442,7 @@ function ExpenseReport() {
     y += 7;
 
     // ===================================================
-    // Table Rows
+    // TABLE ROWS
     // ===================================================
 
     doc.setFont(
@@ -503,7 +517,7 @@ function ExpenseReport() {
     );
 
     // ===================================================
-    // Grand Total
+    // GRAND TOTAL
     // ===================================================
 
     checkPage(20);
@@ -541,7 +555,7 @@ function ExpenseReport() {
     );
 
     // ===================================================
-    // Footer
+    // FOOTER
     // ===================================================
 
     const totalPages =
@@ -572,7 +586,7 @@ function ExpenseReport() {
     }
 
     // ===================================================
-    // Filename
+    // FILENAME
     // ===================================================
 
     const registration =
@@ -592,7 +606,7 @@ function ExpenseReport() {
   };
 
   // =====================================================
-  // Loading Screen
+  // LOADING
   // =====================================================
 
   if (loading) {
@@ -600,116 +614,176 @@ function ExpenseReport() {
       <>
         <Navbar />
 
-        <div className="min-h-screen flex justify-center items-center bg-gray-50">
+        <main className="min-h-screen bg-[#0d0f10] text-white">
 
-          <div className="text-center">
+          <div className="max-w-7xl mx-auto px-5 lg:px-8 py-10">
 
-            <div className="animate-spin w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full mx-auto mb-4"></div>
+            <div className="w-28 h-3 bg-[#1b1e20] rounded animate-pulse mb-5" />
 
-            <h2 className="text-xl font-semibold text-gray-700">
-              Loading Expense Report...
-            </h2>
+            <div className="w-72 h-10 bg-[#1b1e20] rounded animate-pulse mb-3" />
+
+            <div className="w-96 max-w-full h-4 bg-[#1b1e20] rounded animate-pulse mb-10" />
+
+            <div className="h-40 bg-[#151718] border border-[#292c2f] rounded-2xl animate-pulse mb-6" />
+
+            <div className="grid md:grid-cols-3 gap-5">
+
+              {[1, 2, 3].map(
+                (item) => (
+                  <div
+                    key={item}
+                    className="h-32 bg-[#151718] border border-[#292c2f] rounded-2xl animate-pulse"
+                  />
+                )
+              )}
+
+            </div>
 
           </div>
 
-        </div>
+        </main>
       </>
     );
   }
 
   // =====================================================
-  // Main UI
+  // MAIN UI
   // =====================================================
 
   return (
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gray-50 p-6">
+      <main className="min-h-screen bg-[#0d0f10] text-white">
 
-        <div className="max-w-7xl mx-auto">
+        {/* =================================================
+            TOP BAR
+        ================================================= */}
+
+        <div className="border-b border-[#25282b] bg-[#101213]">
+
+          <div className="max-w-7xl mx-auto px-5 lg:px-8 py-5">
+
+            <button
+              onClick={() =>
+                navigate(-1)
+              }
+              className="group flex items-center gap-2 text-sm text-gray-500 hover:text-orange-500 transition"
+            >
+
+              <ArrowLeft
+                size={17}
+                className="group-hover:-translate-x-1 transition"
+              />
+
+              Back
+
+            </button>
+
+          </div>
+
+        </div>
+
+        <div className="max-w-7xl mx-auto px-5 lg:px-8 py-10">
 
           {/* =================================================
-              Back Button
+              HEADER
           ================================================= */}
 
-          <button
-            onClick={() =>
-              navigate(-1)
-            }
-            className="flex items-center gap-2 text-blue-600 hover:underline mb-6"
-          >
-            <ArrowLeft size={20} />
+          <section className="mb-8">
 
-            Back
-          </button>
-
-          {/* =================================================
-              Main Card
-          ================================================= */}
-
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-
-            {/* Header */}
-
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
 
               <div>
 
-                <h1 className="text-3xl font-bold text-gray-800">
-                  Vehicle Expense Report
+                <div className="flex items-center gap-3 mb-3">
+
+                  <span className="text-[11px] tracking-[0.25em] uppercase text-orange-500 font-semibold">
+                    Garage Analytics
+                  </span>
+
+                  <span className="h-px w-8 bg-orange-500/50" />
+
+                  <span className="text-[11px] tracking-wider text-gray-600">
+                    EXPENSE REPORT
+                  </span>
+
+                </div>
+
+                <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+                  Vehicle expenses
                 </h1>
 
-                <p className="text-gray-500 mt-2">
-                  Date-wise maintenance and fuel expenses
+                <p className="text-gray-500 mt-2 max-w-xl">
+                  Understand where your vehicle running costs are going across fuel and maintenance.
                 </p>
 
               </div>
 
               <button
-                onClick={
-                  downloadPDF
-                }
+                onClick={downloadPDF}
                 disabled={
                   !data ||
                   !data.expenses?.length
                 }
-                className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white px-5 py-3 rounded-lg transition"
+                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 disabled:bg-[#292c2f] disabled:text-gray-600 text-black font-semibold transition"
               >
-                <Download size={20} />
+
+                <Download size={17} />
 
                 Download PDF
+
               </button>
 
             </div>
 
-            {/* =================================================
-                Filters
-            ================================================= */}
+          </section>
 
-            <div className="mt-8 bg-gray-50 rounded-xl p-5">
+          {/* =================================================
+              FILTER PANEL
+          ================================================= */}
 
-              <div className="flex items-center gap-2 mb-5">
+          <section className="bg-[#151718] border border-[#292c2f] rounded-2xl overflow-hidden mb-6">
 
-                <Search
-                  size={20}
-                  className="text-blue-600"
-                />
+            <div className="px-6 py-5 border-b border-[#292c2f]">
 
-                <h2 className="font-semibold text-lg">
-                  Filter Expenses
-                </h2>
+              <div className="flex items-center gap-3">
 
-              </div>
+                <div className="w-9 h-9 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
 
-              <div className="grid md:grid-cols-3 gap-4">
+                  <Search
+                    size={17}
+                    className="text-orange-500"
+                  />
 
-                {/* Registration Number */}
+                </div>
 
                 <div>
 
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
-                    Vehicle Registration Number
+                  <h2 className="font-semibold">
+                    Filter expenses
+                  </h2>
+
+                  <p className="text-xs text-gray-600 mt-1">
+                    Select a vehicle and optional date range.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div className="p-6">
+
+              <div className="grid md:grid-cols-3 gap-5">
+
+                {/* REGISTRATION */}
+
+                <div>
+
+                  <label className="filter-label">
+                    Registration number
                   </label>
 
                   <input
@@ -722,447 +796,620 @@ function ExpenseReport() {
                         e.target.value.toUpperCase()
                       )
                     }
-                    placeholder="e.g. PB11DQ0915"
-                    className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="PB11DQ0915"
+                    className="filter-input uppercase"
                   />
 
                 </div>
 
-                {/* From Date */}
+                {/* FROM */}
 
                 <div>
 
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
-                    From Date
+                  <label className="filter-label">
+                    From date
                   </label>
 
-                  <input
-                    type="date"
-                    value={from}
-                    onChange={(e) =>
-                      setFrom(
-                        e.target.value
-                      )
-                    }
-                    className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  <div className="relative">
 
-                </div>
+                    <CalendarDays
+                      size={16}
+                      className="filter-icon"
+                    />
 
-                {/* To Date */}
-
-                <div>
-
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
-                    To Date
-                  </label>
-
-                  <input
-                    type="date"
-                    value={to}
-                    onChange={(e) =>
-                      setTo(
-                        e.target.value
-                      )
-                    }
-                    className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-
-                </div>
-
-              </div>
-
-              <button
-                onClick={
-                  loadReport
-                }
-                disabled={
-                  !registrationNumber.trim()
-                }
-                className="mt-5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition"
-              >
-                Apply Filters
-              </button>
-
-            </div>
-
-            {/* =================================================
-                Vehicle Information
-            ================================================= */}
-
-            {data?.vehicle && (
-
-              <div className="mt-8 bg-blue-50 border border-blue-100 rounded-xl p-6">
-
-                <div className="flex items-center gap-3 mb-5">
-
-                  <div className="bg-blue-100 p-3 rounded-full">
-
-                    <Car
-                      className="text-blue-600"
-                      size={25}
+                    <input
+                      type="date"
+                      value={from}
+                      onChange={(e) =>
+                        setFrom(
+                          e.target.value
+                        )
+                      }
+                      className="filter-input pl-10"
                     />
 
                   </div>
 
-                  <div>
-
-                    <h2 className="text-xl font-bold text-gray-800">
-                      {data.vehicle.brand}{" "}
-                      {data.vehicle.model}
-                    </h2>
-
-                    <p className="text-gray-500">
-                      {data.vehicle.registrationNumber}
-                    </p>
-
-                  </div>
-
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-
-                  <div>
-
-                    <p className="text-sm text-gray-500">
-                      Year
-                    </p>
-
-                    <p className="font-semibold">
-                      {data.vehicle.year ||
-                        "N/A"}
-                    </p>
-
-                  </div>
-
-                  <div>
-
-                    <p className="text-sm text-gray-500">
-                      Fuel Type
-                    </p>
-
-                    <p className="font-semibold">
-                      {data.vehicle.fuelType ||
-                        "N/A"}
-                    </p>
-
-                  </div>
-
-                  <div>
-
-                    <p className="text-sm text-gray-500">
-                      Odometer
-                    </p>
-
-                    <p className="font-semibold">
-                      {data.vehicle.odometer !==
-                      undefined
-                        ? `${Number(
-                            data.vehicle.odometer
-                          ).toLocaleString(
-                            "en-IN"
-                          )} km`
-                        : "N/A"}
-                    </p>
-
-                  </div>
-
-                  <div>
-
-                    <p className="text-sm text-gray-500">
-                      Records
-                    </p>
-
-                    <p className="font-semibold">
-                      {data.totalRecords}
-                    </p>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            )}
-
-            {/* =================================================
-                Summary Cards
-            ================================================= */}
-
-            {data && (
-
-              <div className="grid md:grid-cols-3 gap-5 mt-8">
-
-                {/* Maintenance */}
-
-                <div className="bg-blue-50 border border-blue-100 rounded-xl p-6">
-
-                  <div className="flex items-center gap-4">
-
-                    <div className="bg-blue-100 p-3 rounded-full">
-
-                      <Wrench
-                        className="text-blue-600"
-                        size={26}
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <p className="text-gray-500">
-                        Maintenance Cost
-                      </p>
-
-                      <h2 className="text-2xl font-bold text-gray-800">
-                        {formatCurrency(
-                          data.totalMaintenance
-                        )}
-                      </h2>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-                {/* Fuel */}
-
-                <div className="bg-green-50 border border-green-100 rounded-xl p-6">
-
-                  <div className="flex items-center gap-4">
-
-                    <div className="bg-green-100 p-3 rounded-full">
-
-                      <Fuel
-                        className="text-green-600"
-                        size={26}
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <p className="text-gray-500">
-                        Fuel Cost
-                      </p>
-
-                      <h2 className="text-2xl font-bold text-gray-800">
-                        {formatCurrency(
-                          data.totalFuel
-                        )}
-                      </h2>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-                {/* Total */}
-
-                <div className="bg-purple-50 border border-purple-100 rounded-xl p-6">
-
-                  <div className="flex items-center gap-4">
-
-                    <div className="bg-purple-100 p-3 rounded-full">
-
-                      <IndianRupee
-                        className="text-purple-600"
-                        size={26}
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <p className="text-gray-500">
-                        Total Expense
-                      </p>
-
-                      <h2 className="text-2xl font-bold text-gray-800">
-                        {formatCurrency(
-                          data.totalExpense
-                        )}
-                      </h2>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            )}
-
-            {/* =================================================
-                Expense History
-            ================================================= */}
-
-            <div className="mt-8">
-
-              <h2 className="text-xl font-bold mb-4">
-                Expense History
-              </h2>
-
-              {data?.expenses?.length >
-              0 ? (
-
-                <div className="overflow-x-auto">
-
-                  <table className="w-full border-collapse">
-
-                    <thead>
-
-                      <tr className="bg-gray-100">
-
-                        <th className="text-left p-4">
-                          Date
-                        </th>
-
-                        <th className="text-left p-4">
-                          Type
-                        </th>
-
-                        <th className="text-left p-4">
-                          Vehicle
-                        </th>
-
-                        <th className="text-left p-4">
-                          Description
-                        </th>
-
-                        <th className="text-right p-4">
-                          Amount
-                        </th>
-
-                      </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                      {data.expenses.map(
-                        (
-                          expense,
-                          index
-                        ) => (
-
-                          <tr
-                            key={index}
-                            className="border-b hover:bg-gray-50"
-                          >
-
-                            <td className="p-4">
-                              {formatDate(
-                                expense.date
-                              )}
-                            </td>
-
-                            <td className="p-4">
-
-                              <span
-                                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                  expense.type ===
-                                  "Fuel"
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-blue-100 text-blue-700"
-                                }`}
-                              >
-                                {expense.type}
-                              </span>
-
-                            </td>
-
-                            <td className="p-4">
-
-                              <div className="font-medium">
-                                {expense.vehicle}
-                              </div>
-
-                              {expense.registrationNumber && (
-
-                                <div className="text-xs text-gray-500">
-                                  {
-                                    expense.registrationNumber
-                                  }
-                                </div>
-
-                              )}
-
-                            </td>
-
-                            <td className="p-4 text-gray-600">
-                              {
-                                expense.description
-                              }
-                            </td>
-
-                            <td className="p-4 text-right font-semibold">
-                              {formatCurrency(
-                                expense.amount
-                              )}
-                            </td>
-
-                          </tr>
-
+                {/* TO */}
+
+                <div>
+
+                  <label className="filter-label">
+                    To date
+                  </label>
+
+                  <div className="relative">
+
+                    <CalendarDays
+                      size={16}
+                      className="filter-icon"
+                    />
+
+                    <input
+                      type="date"
+                      value={to}
+                      onChange={(e) =>
+                        setTo(
+                          e.target.value
                         )
-                      )}
+                      }
+                      className="filter-input pl-10"
+                    />
 
-                    </tbody>
-
-                    {/* Total */}
-
-                    {data && (
-
-                      <tfoot>
-
-                        <tr className="bg-gray-50 font-bold">
-
-                          <td
-                            colSpan="4"
-                            className="p-4 text-right"
-                          >
-                            Grand Total
-                          </td>
-
-                          <td className="p-4 text-right">
-                            {formatCurrency(
-                              data.totalExpense
-                            )}
-                          </td>
-
-                        </tr>
-
-                      </tfoot>
-
-                    )}
-
-                  </table>
+                  </div>
 
                 </div>
 
-              ) : (
+              </div>
 
-                <div className="bg-gray-50 border rounded-xl p-10 text-center">
+              <div className="flex flex-wrap gap-3 mt-5">
 
-                  <p className="text-gray-500">
-                    No expenses found for the selected vehicle and date range.
+                <button
+                  onClick={loadReport}
+                  disabled={
+                    !registrationNumber.trim() ||
+                    loading
+                  }
+                  className="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 disabled:bg-[#292c2f] disabled:text-gray-600 text-black font-semibold transition"
+                >
+                  Apply filters
+                </button>
+
+                {(registrationNumber ||
+                  from ||
+                  to) && (
+
+                  <button
+                    onClick={
+                      clearFilters
+                    }
+                    className="px-5 py-2.5 rounded-xl border border-[#303438] text-gray-500 hover:text-white transition flex items-center gap-2"
+                  >
+
+                    <X size={15} />
+
+                    Clear
+
+                  </button>
+
+                )}
+
+              </div>
+
+            </div>
+
+          </section>
+
+          {/* =================================================
+              VEHICLE INFORMATION
+          ================================================= */}
+
+          {data?.vehicle && (
+
+            <section className="bg-[#151718] border border-[#292c2f] rounded-2xl overflow-hidden mb-6">
+
+              <div className="p-6">
+
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+
+                  <div className="flex items-center gap-4">
+
+                    <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+
+                      <Car
+                        size={23}
+                        className="text-orange-500"
+                      />
+
+                    </div>
+
+                    <div>
+
+                      <h2 className="text-xl font-semibold">
+                        {data.vehicle.brand}{" "}
+                        {data.vehicle.model}
+                      </h2>
+
+                      <p className="text-xs text-gray-600 mt-1 tracking-wider uppercase">
+                        {
+                          data.vehicle
+                            .registrationNumber
+                        }
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-6 md:gap-8">
+
+                    <VehicleMeta
+                      label="Year"
+                      value={
+                        data.vehicle.year ||
+                        "N/A"
+                      }
+                    />
+
+                    <VehicleMeta
+                      label="Fuel"
+                      value={
+                        data.vehicle.fuelType ||
+                        "N/A"
+                      }
+                    />
+
+                    <VehicleMeta
+                      label="Odometer"
+                      value={
+                        data.vehicle
+                          .odometer !==
+                        undefined
+                          ? `${Number(
+                              data.vehicle
+                                .odometer
+                            ).toLocaleString(
+                              "en-IN"
+                            )} km`
+                          : "N/A"
+                      }
+                    />
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div className="px-6 py-3 bg-orange-500/[0.025] border-t border-[#292c2f]">
+
+                <span className="text-xs text-gray-600">
+                  {data.totalRecords || 0} expense records found
+                </span>
+
+              </div>
+
+            </section>
+
+          )}
+
+          {/* =================================================
+              SUMMARY
+          ================================================= */}
+
+          {data && (
+
+            <section className="grid md:grid-cols-3 gap-5 mb-6">
+
+              <ExpenseSummary
+                icon={
+                  <Wrench size={20} />
+                }
+                label="Maintenance"
+                value={formatCurrency(
+                  data.totalMaintenance
+                )}
+                description="Service and repair costs"
+              />
+
+              <ExpenseSummary
+                icon={
+                  <Fuel size={20} />
+                }
+                label="Fuel"
+                value={formatCurrency(
+                  data.totalFuel
+                )}
+                description="Fuel-related expenses"
+              />
+
+              <ExpenseSummary
+                icon={
+                  <IndianRupee
+                    size={20}
+                  />
+                }
+                label="Total expense"
+                value={formatCurrency(
+                  data.totalExpense
+                )}
+                description="Combined vehicle spending"
+                primary
+              />
+
+            </section>
+
+          )}
+
+          {/* =================================================
+              EXPENSE HISTORY
+          ================================================= */}
+
+          <section className="bg-[#151718] border border-[#292c2f] rounded-2xl overflow-hidden">
+
+            <div className="px-6 py-5 border-b border-[#292c2f] flex items-center justify-between">
+
+              <div className="flex items-center gap-3">
+
+                <div className="w-9 h-9 rounded-lg bg-[#101213] border border-[#292c2f] flex items-center justify-center">
+
+                  <Receipt
+                    size={17}
+                    className="text-gray-500"
+                  />
+
+                </div>
+
+                <div>
+
+                  <h2 className="font-semibold">
+                    Expense history
+                  </h2>
+
+                  <p className="text-xs text-gray-600 mt-1">
+                    Detailed record of vehicle expenses.
                   </p>
 
                 </div>
+
+              </div>
+
+              {data?.expenses?.length >
+                0 && (
+
+                <span className="text-xs text-gray-600">
+                  {data.expenses.length} records
+                </span>
 
               )}
 
             </div>
 
-          </div>
+            {data?.expenses?.length >
+            0 ? (
+
+              <div className="overflow-x-auto">
+
+                <table className="w-full">
+
+                  <thead>
+
+                    <tr className="bg-[#111314] border-b border-[#292c2f]">
+
+                      <th className="table-head">
+                        Date
+                      </th>
+
+                      <th className="table-head">
+                        Type
+                      </th>
+
+                      <th className="table-head">
+                        Vehicle
+                      </th>
+
+                      <th className="table-head">
+                        Description
+                      </th>
+
+                      <th className="table-head text-right">
+                        Amount
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    {data.expenses.map(
+                      (
+                        expense,
+                        index
+                      ) => (
+
+                        <tr
+                          key={index}
+                          className="border-b border-[#222527] last:border-b-0 hover:bg-[#191b1d] transition"
+                        >
+
+                          <td className="table-cell whitespace-nowrap">
+
+                            {formatDate(
+                              expense.date
+                            )}
+
+                          </td>
+
+                          <td className="table-cell">
+
+                            <span
+                              className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] uppercase tracking-wider font-medium ${
+                                expense.type ===
+                                "Fuel"
+                                  ? "bg-orange-500/10 text-orange-500 border border-orange-500/15"
+                                  : "bg-[#101213] text-gray-400 border border-[#303438]"
+                              }`}
+                            >
+                              {expense.type}
+                            </span>
+
+                          </td>
+
+                          <td className="table-cell">
+
+                            <div className="text-gray-300 font-medium">
+                              {
+                                expense.vehicle
+                              }
+                            </div>
+
+                            {expense.registrationNumber && (
+
+                              <div className="text-[11px] text-gray-600 mt-1 tracking-wider">
+                                {
+                                  expense.registrationNumber
+                                }
+                              </div>
+
+                            )}
+
+                          </td>
+
+                          <td className="table-cell text-gray-500 max-w-xs">
+
+                            <span className="line-clamp-2">
+                              {
+                                expense.description ||
+                                "-"
+                              }
+                            </span>
+
+                          </td>
+
+                          <td className="table-cell text-right font-semibold text-gray-200 whitespace-nowrap">
+
+                            {formatCurrency(
+                              expense.amount
+                            )}
+
+                          </td>
+
+                        </tr>
+
+                      )
+                    )}
+
+                  </tbody>
+
+                  <tfoot>
+
+                    <tr className="bg-[#111314]">
+
+                      <td
+                        colSpan="4"
+                        className="px-5 py-5 text-right text-xs uppercase tracking-wider text-gray-600 font-semibold"
+                      >
+                        Grand total
+                      </td>
+
+                      <td className="px-5 py-5 text-right text-lg font-semibold text-orange-500">
+
+                        {formatCurrency(
+                          data.totalExpense
+                        )}
+
+                      </td>
+
+                    </tr>
+
+                  </tfoot>
+
+                </table>
+
+              </div>
+
+            ) : (
+
+              <div className="py-16 text-center px-5">
+
+                <div className="w-12 h-12 mx-auto rounded-xl bg-[#101213] border border-[#292c2f] flex items-center justify-center">
+
+                  <Receipt
+                    size={21}
+                    className="text-gray-700"
+                  />
+
+                </div>
+
+                <h3 className="text-base font-semibold text-gray-400 mt-4">
+                  No expenses found
+                </h3>
+
+                <p className="text-sm text-gray-600 mt-1 max-w-md mx-auto">
+                  No expense records match the selected vehicle and date range.
+                </p>
+
+              </div>
+
+            )}
+
+          </section>
 
         </div>
 
-      </div>
+      </main>
+
+      {/* =================================================
+          STYLES
+      ================================================= */}
+
+      <style>{`
+
+        .filter-label {
+          display: block;
+          margin-bottom: 9px;
+          font-size: 0.78rem;
+          font-weight: 600;
+          color: #b6babd;
+        }
+
+        .filter-input {
+          width: 100%;
+          height: 46px;
+          background: #101213;
+          border: 1px solid #2c3033;
+          border-radius: 10px;
+          padding: 0 14px;
+          color: #f1f1f1;
+          font-size: 0.9rem;
+          outline: none;
+          transition: all 0.2s ease;
+        }
+
+        .filter-input::placeholder {
+          color: #505559;
+        }
+
+        .filter-input:focus {
+          border-color: #e8752a;
+          box-shadow: 0 0 0 3px rgba(232, 117, 42, 0.08);
+        }
+
+        .filter-icon {
+          position: absolute;
+          left: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #5f6468;
+          pointer-events: none;
+        }
+
+        .table-head {
+          padding: 14px 20px;
+          text-align: left;
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.14em;
+          color: #5f6468;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+
+        .table-cell {
+          padding: 16px 20px;
+          font-size: 0.88rem;
+          color: #9ca1a5;
+        }
+
+      `}</style>
+
     </>
+  );
+}
+
+// =====================================================
+// VEHICLE META
+// =====================================================
+
+function VehicleMeta({
+  label,
+  value,
+}) {
+  return (
+    <div>
+
+      <p className="text-[10px] uppercase tracking-wider text-gray-700">
+        {label}
+      </p>
+
+      <p className="text-sm text-gray-300 mt-1 whitespace-nowrap">
+        {value}
+      </p>
+
+    </div>
+  );
+}
+
+// =====================================================
+// EXPENSE SUMMARY
+// =====================================================
+
+function ExpenseSummary({
+  icon,
+  label,
+  value,
+  description,
+  primary = false,
+}) {
+  return (
+    <div
+      className={`bg-[#151718] border rounded-2xl p-6 ${
+        primary
+          ? "border-orange-500/30"
+          : "border-[#292c2f]"
+      }`}
+    >
+
+      <div className="flex items-start justify-between gap-4">
+
+        <div>
+
+          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-600">
+            {label}
+          </p>
+
+          <p
+            className={`text-2xl md:text-3xl font-semibold mt-2 ${
+              primary
+                ? "text-orange-500"
+                : "text-gray-200"
+            }`}
+          >
+            {value}
+          </p>
+
+          <p className="text-xs text-gray-700 mt-2">
+            {description}
+          </p>
+
+        </div>
+
+        <div
+          className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+            primary
+              ? "bg-orange-500/10 border border-orange-500/20 text-orange-500"
+              : "bg-[#101213] border border-[#292c2f] text-gray-500"
+          }`}
+        >
+          {icon}
+        </div>
+
+      </div>
+
+    </div>
   );
 }
 

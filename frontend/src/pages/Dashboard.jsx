@@ -9,208 +9,196 @@ import HealthAlerts from "../components/HealthAlerts";
 
 import { getDashboard } from "../services/dashboardService";
 
+import {
+  CarFront,
+  Plus,
+  ArrowUpRight,
+  Bot,
+  FileText,
+  MapPin,
+  Gauge,
+  Fuel,
+  CalendarDays,
+  Settings2,
+  Wrench,
+  ChevronRight,
+  Activity,
+} from "lucide-react";
 
 function Dashboard() {
-
   const navigate = useNavigate();
 
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
-  /* =====================================================
-     FETCH DASHBOARD
-  ====================================================== */
+  // =====================================================
+  // FETCH DASHBOARD
+  // =====================================================
 
   const fetchDashboard = async () => {
-
     try {
-
       const res = await getDashboard();
 
       setDashboard(res.data);
-
     } catch (err) {
-
       console.error(err);
 
       alert("Failed to load dashboard");
-
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
-
   useEffect(() => {
-
     fetchDashboard();
-
   }, []);
 
-
-  /* =====================================================
-     LOADING
-  ====================================================== */
+  // =====================================================
+  // LOADING
+  // =====================================================
 
   if (loading) {
-
     return (
+      <div className="min-h-screen bg-[#0d0f10] text-white">
+        <Navbar />
 
-      <div className="dashboard-page">
+        <div className="max-w-7xl mx-auto px-5 lg:px-8">
 
-        {/* Animated Background */}
+          <div className="pt-10">
 
-        <div className="dashboard-background">
+            <div className="dashboard-skeleton w-32 h-3 mb-4" />
 
-          <div className="dashboard-grid"></div>
+            <div className="dashboard-skeleton w-64 h-10 mb-3" />
 
-          <div className="dashboard-glow dashboard-glow-one"></div>
+            <div className="dashboard-skeleton w-96 max-w-full h-4" />
 
-          <div className="dashboard-glow dashboard-glow-two"></div>
+          </div>
 
-          <div className="dashboard-particle dashboard-particle-one"></div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
 
-          <div className="dashboard-particle dashboard-particle-two"></div>
+            {[1, 2, 3, 4].map((item) => (
+              <div
+                key={item}
+                className="dashboard-skeleton-card"
+              />
+            ))}
 
-          <div className="dashboard-particle dashboard-particle-three"></div>
+          </div>
 
-          <div className="dashboard-particle dashboard-particle-four"></div>
+          <div className="grid lg:grid-cols-[1fr_320px] gap-5 mt-6">
 
-        </div>
+            <div className="dashboard-skeleton-card h-72" />
 
-
-        <div className="dashboard-content">
-
-          <Navbar />
-
-          <div className="flex items-center justify-center min-h-[60vh]">
-
-            <div className="text-center">
-
-              <div className="dashboard-loader"></div>
-
-              <p className="text-orange-400 text-lg font-semibold mt-5">
-                Loading Dashboard...
-              </p>
-
-            </div>
+            <div className="dashboard-skeleton-card h-72" />
 
           </div>
 
         </div>
 
+        <style>{`
+          .dashboard-skeleton {
+            background: #1b1e20;
+            border-radius: 6px;
+            animation: dashboardPulse 1.5s ease-in-out infinite;
+          }
+
+          .dashboard-skeleton-card {
+            background: #151718;
+            border: 1px solid #292c2f;
+            border-radius: 16px;
+            animation: dashboardPulse 1.5s ease-in-out infinite;
+          }
+
+          @keyframes dashboardPulse {
+            0%, 100% {
+              opacity: .5;
+            }
+
+            50% {
+              opacity: 1;
+            }
+          }
+        `}</style>
       </div>
-
     );
-
   }
 
-
-  /* =====================================================
-     DASHBOARD
-  ====================================================== */
+  // =====================================================
+  // DASHBOARD
+  // =====================================================
 
   return (
+    <div className="min-h-screen bg-[#0d0f10] text-white">
 
-    <div className="dashboard-page">
+      <Navbar />
 
+      <main className="max-w-7xl mx-auto px-5 lg:px-8 py-9">
 
-      {/* =====================================================
-          ANIMATED BACKGROUND
-      ====================================================== */}
+        {/* =================================================
+            HEADER
+        ================================================= */}
 
-      <div className="dashboard-background">
+        <section className="mb-9">
 
-        {/* Moving Grid */}
-
-        <div className="dashboard-grid"></div>
-
-
-        {/* Orange Glows */}
-
-        <div className="dashboard-glow dashboard-glow-one"></div>
-
-        <div className="dashboard-glow dashboard-glow-two"></div>
-
-
-        {/* Floating Particles */}
-
-        <div className="dashboard-particle dashboard-particle-one"></div>
-
-        <div className="dashboard-particle dashboard-particle-two"></div>
-
-        <div className="dashboard-particle dashboard-particle-three"></div>
-
-        <div className="dashboard-particle dashboard-particle-four"></div>
-
-      </div>
-
-
-
-      {/* =====================================================
-          DASHBOARD CONTENT
-      ====================================================== */}
-
-      <div className="dashboard-content">
-
-
-        {/* =====================================================
-            NAVBAR
-        ====================================================== */}
-
-        <Navbar />
-
-
-        {/* =====================================================
-            MAIN CONTAINER
-        ====================================================== */}
-
-        <div className="max-w-7xl mx-auto p-6">
-
-
-          {/* =====================================================
-              DASHBOARD HEADER
-          ====================================================== */}
-
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
 
             <div>
 
-              <p className="text-orange-500 font-semibold text-sm uppercase tracking-widest mb-2">
-                Vehicle Management
-              </p>
+              <div className="flex items-center gap-3 mb-3">
 
-              <h1 className="text-4xl font-bold text-white">
-                Dashboard
+                <span className="text-[11px] tracking-[0.25em] uppercase text-orange-500 font-semibold">
+                  AutoCare Garage
+                </span>
+
+                <span className="h-px w-8 bg-orange-500/50" />
+
+                <span className="text-[11px] tracking-wider text-gray-600">
+                  OVERVIEW
+                </span>
+
+              </div>
+
+              <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+                Your garage
               </h1>
 
-              <p className="text-zinc-500 mt-2">
-                Monitor your vehicles, maintenance and expenses.
+              <p className="text-gray-500 mt-2">
+                Keep track of vehicle health, maintenance and running costs.
               </p>
 
             </div>
 
+            <div className="flex flex-wrap gap-3">
 
-            <button
-              onClick={() => navigate("/chatbot")}
-              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-orange-950/30"
-            >
+              <button
+                onClick={() => navigate("/chatbot")}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#303438] text-gray-300 hover:text-orange-500 hover:border-orange-500/30 transition"
+              >
+                <Bot size={17} />
 
-              🤖 Ask AutoCare AI
+                Ask AutoCare AI
+              </button>
 
-            </button>
+              <button
+                onClick={() => navigate("/add-vehicle")}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-black font-semibold transition"
+              >
+                <Plus size={17} />
+
+                Add vehicle
+              </button>
+
+            </div>
 
           </div>
 
+        </section>
 
+        {/* =================================================
+            SUMMARY
+        ================================================= */}
 
-          {/* =====================================================
-              SUMMARY CARDS
-          ====================================================== */}
+        <section className="mb-7">
 
           <SummaryCards
             totalVehicles={dashboard.totalVehicles}
@@ -219,361 +207,361 @@ function Dashboard() {
             fuelExpense={dashboard.fuelExpense}
           />
 
+        </section>
 
+        {/* =================================================
+            PRIMARY DASHBOARD GRID
+        ================================================= */}
 
-          {/* =====================================================
-              EXPENSE CHART
-          ====================================================== */}
+        <section className="grid lg:grid-cols-[1fr_320px] gap-5 mb-7">
 
-          <div className="my-8">
+          {/* EXPENSE CHART */}
 
-            <ExpenseChart />
+          <div className="bg-[#151718] border border-[#292c2f] rounded-2xl overflow-hidden">
+
+            <div className="px-6 py-5 border-b border-[#292c2f]">
+
+              <div className="flex items-center justify-between">
+
+                <div>
+
+                  <p className="text-[11px] tracking-[0.2em] uppercase text-gray-600">
+                    Spending
+                  </p>
+
+                  <h2 className="text-lg font-semibold mt-1">
+                    Expense overview
+                  </h2>
+
+                </div>
+
+                <Activity
+                  size={19}
+                  className="text-gray-600"
+                />
+
+              </div>
+
+            </div>
+
+            <div className="p-5">
+
+              <ExpenseChart />
+
+            </div>
 
           </div>
 
+          {/* AI CARD */}
 
+          <div className="relative overflow-hidden bg-[#151718] border border-[#292c2f] rounded-2xl">
 
-          {/* =====================================================
-              HEALTH ALERTS
-          ====================================================== */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-orange-500/[0.025] rounded-full blur-3xl" />
+
+            <div className="relative p-6 h-full flex flex-col">
+
+              <div className="flex items-center justify-between">
+
+                <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+
+                  <Bot
+                    size={20}
+                    className="text-orange-500"
+                  />
+
+                </div>
+
+                <span className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-gray-600">
+
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+
+                  AI Assistant
+
+                </span>
+
+              </div>
+
+              <div className="mt-7">
+
+                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-600">
+                  Vehicle intelligence
+                </p>
+
+                <h2 className="text-2xl font-semibold mt-2">
+                  Need help with your car?
+                </h2>
+
+                <p className="text-sm text-gray-500 leading-6 mt-3">
+                  Describe a noise, warning light, maintenance issue or
+                  anything unusual. AutoCare AI can help you understand it.
+                </p>
+
+              </div>
+
+              <button
+                onClick={() => navigate("/chatbot")}
+                className="mt-auto pt-7 flex items-center justify-between group"
+              >
+
+                <span className="text-sm font-semibold text-orange-500">
+                  Start a diagnosis
+                </span>
+
+                <span className="w-9 h-9 rounded-lg border border-[#303438] group-hover:border-orange-500/40 flex items-center justify-center transition">
+
+                  <ArrowUpRight
+                    size={17}
+                    className="text-gray-500 group-hover:text-orange-500 transition"
+                  />
+
+                </span>
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* =================================================
+            HEALTH ALERTS
+        ================================================= */}
+
+        <section className="mb-7">
 
           <HealthAlerts />
 
+        </section>
 
+        {/* =================================================
+            QUICK TOOLS
+        ================================================= */}
 
-          {/* =====================================================
-              EXPENSE REPORT
-          ====================================================== */}
+        <section className="mb-9">
 
-          <div className="bg-zinc-950/90 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl shadow-black/30 p-6 mb-8">
+          <div className="flex items-end justify-between mb-4">
 
-            <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+            <div>
 
+              <p className="text-[11px] uppercase tracking-[0.2em] text-gray-600">
+                Tools
+              </p>
 
-              {/* Left */}
-
-              <div className="flex items-center gap-4">
-
-                <div className="bg-orange-500/10 border border-orange-500/20 p-4 rounded-full text-3xl">
-                  📄
-                </div>
-
-
-                <div>
-
-                  <h2 className="text-2xl font-bold text-white">
-                    Vehicle Expense Report
-                  </h2>
-
-                  <p className="text-zinc-500 mt-1">
-                    View maintenance and fuel expenses
-                    date-wise and download a detailed PDF report.
-                  </p>
-
-                </div>
-
-              </div>
-
-
-              {/* Button */}
-
-              <button
-                onClick={() =>
-                  navigate("/expense-report")
-                }
-                className="flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-orange-950/30 whitespace-nowrap"
-              >
-
-                📄 View Expense Report
-
-              </button>
+              <h2 className="text-xl font-semibold mt-1">
+                Garage tools
+              </h2>
 
             </div>
 
           </div>
 
+          <div className="grid md:grid-cols-2 gap-4">
 
+            {/* EXPENSE REPORT */}
 
-          {/* =====================================================
-              NEARBY SERVICES
-          ====================================================== */}
+            <button
+              onClick={() =>
+                navigate("/expense-report")
+              }
+              className="group text-left bg-[#151718] border border-[#292c2f] hover:border-orange-500/30 rounded-2xl p-5 transition"
+            >
 
-          <div className="bg-zinc-950/90 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl shadow-black/30 p-6 mb-8">
+              <div className="flex items-center justify-between">
 
-            <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+                <div className="w-10 h-10 rounded-xl bg-[#101213] border border-[#292c2f] flex items-center justify-center">
 
-
-              {/* Left */}
-
-              <div className="flex items-center gap-4">
-
-                <div className="bg-orange-500/10 border border-orange-500/20 p-4 rounded-full text-3xl">
-                  📍
-                </div>
-
-
-                <div>
-
-                  <h2 className="text-2xl font-bold text-white">
-                    Nearby Vehicle Services
-                  </h2>
-
-                  <p className="text-zinc-500 mt-1">
-                    Find nearby fuel stations, service centers,
-                    tyre shops, EV charging stations and more.
-                  </p>
+                  <FileText
+                    size={19}
+                    className="text-gray-500 group-hover:text-orange-500 transition"
+                  />
 
                 </div>
+
+                <ArrowUpRight
+                  size={17}
+                  className="text-gray-700 group-hover:text-orange-500 transition"
+                />
 
               </div>
 
+              <h3 className="text-base font-semibold mt-5">
+                Expense report
+              </h3>
 
-              {/* Button */}
+              <p className="text-sm text-gray-600 mt-1 leading-5">
+                Review maintenance and fuel expenses and download a detailed
+                report.
+              </p>
 
-              <button
-                onClick={() =>
-                  navigate("/nearby-services")
-                }
-                className="flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-orange-950/30 whitespace-nowrap"
-              >
+            </button>
 
-                📍 Find Nearby Services
+            {/* NEARBY SERVICES */}
 
-              </button>
+            <button
+              onClick={() =>
+                navigate("/nearby-services")
+              }
+              className="group text-left bg-[#151718] border border-[#292c2f] hover:border-orange-500/30 rounded-2xl p-5 transition"
+            >
 
-            </div>
+              <div className="flex items-center justify-between">
+
+                <div className="w-10 h-10 rounded-xl bg-[#101213] border border-[#292c2f] flex items-center justify-center">
+
+                  <MapPin
+                    size={19}
+                    className="text-gray-500 group-hover:text-orange-500 transition"
+                  />
+
+                </div>
+
+                <ArrowUpRight
+                  size={17}
+                  className="text-gray-700 group-hover:text-orange-500 transition"
+                />
+
+              </div>
+
+              <h3 className="text-base font-semibold mt-5">
+                Nearby services
+              </h3>
+
+              <p className="text-sm text-gray-600 mt-1 leading-5">
+                Find fuel stations, service centers, tyre shops and EV
+                charging locations.
+              </p>
+
+            </button>
 
           </div>
 
+        </section>
 
+        {/* =================================================
+            MY VEHICLES
+        ================================================= */}
 
-          {/* =====================================================
-              MY VEHICLES
-          ====================================================== */}
+        <section className="mb-10">
 
-          <div className="mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5">
 
+            <div>
 
-            {/* Section Header */}
+              <p className="text-[11px] uppercase tracking-[0.2em] text-gray-600">
+                Your garage
+              </p>
 
-            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl font-semibold mt-1">
+                My vehicles
+              </h2>
 
-              <div>
+            </div>
 
-                <p className="text-orange-500 text-xs font-semibold uppercase tracking-widest mb-1">
-                  Your Garage
-                </p>
+            <button
+              onClick={() =>
+                navigate("/add-vehicle")
+              }
+              className="self-start sm:self-auto flex items-center gap-2 text-sm text-orange-500 hover:text-orange-400 transition"
+            >
 
-                <h2 className="text-2xl font-bold text-white">
-                  🚗 My Vehicles
-                </h2>
+              <Plus size={16} />
+
+              Add another vehicle
+
+            </button>
+
+          </div>
+
+          {/* =================================================
+              NO VEHICLES
+          ================================================= */}
+
+          {dashboard.vehicles.length === 0 ? (
+
+            <div className="bg-[#151718] border border-[#292c2f] rounded-2xl p-10 text-center">
+
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+
+                <CarFront
+                  size={27}
+                  className="text-orange-500"
+                />
 
               </div>
 
+              <h3 className="text-xl font-semibold mt-5">
+                Your garage is empty
+              </h3>
+
+              <p className="text-gray-600 max-w-md mx-auto mt-2">
+                Add your first vehicle to start tracking maintenance,
+                fuel expenses and vehicle health.
+              </p>
 
               <button
                 onClick={() =>
                   navigate("/add-vehicle")
                 }
-                className="flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-orange-950/30"
+                className="mt-6 px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-black font-semibold transition"
               >
-
-                <span className="text-xl">
-                  +
-                </span>
-
-                Add New Vehicle
-
+                Add your first vehicle
               </button>
 
             </div>
 
+          ) : (
 
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-            {/* =================================================
-                NO VEHICLES
-            ================================================== */}
+              {dashboard.vehicles.map(
+                (vehicle) => (
 
-            {dashboard.vehicles.length === 0 ? (
+                  <VehicleCard
+                    key={vehicle._id}
+                    vehicle={vehicle}
+                    onView={() =>
+                      navigate(
+                        `/vehicles/${vehicle._id}`
+                      )
+                    }
+                    onEdit={() =>
+                      navigate(
+                        `/edit-vehicle/${vehicle._id}`
+                      )
+                    }
+                  />
 
-              <div className="bg-zinc-950/90 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-xl p-8 text-center">
+                )
+              )}
 
+            </div>
 
-                <div className="text-5xl mb-4">
-                  🚗
-                </div>
+          )}
 
+        </section>
 
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  No Vehicles Added
-                </h3>
+        {/* =================================================
+            RECENT SERVICES
+        ================================================= */}
 
+        <section className="mb-10">
 
-                <p className="text-zinc-500 mb-5">
-                  Add your first vehicle to start
-                  tracking its health and maintenance.
-                </p>
+          <div className="flex items-end justify-between mb-5">
 
+            <div>
 
-                <button
-                  onClick={() =>
-                    navigate("/add-vehicle")
-                  }
-                  className="bg-orange-500 hover:bg-orange-400 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-orange-950/30"
-                >
+              <p className="text-[11px] uppercase tracking-[0.2em] text-gray-600">
+                Maintenance
+              </p>
 
-                  + Add Your First Vehicle
+              <h2 className="text-xl font-semibold mt-1">
+                Recent services
+              </h2>
 
-                </button>
-
-              </div>
-
-            ) : (
-
-
-              /* =================================================
-                 VEHICLES
-              ================================================== */
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-
-                {dashboard.vehicles.map(
-                  (vehicle) => (
-
-                    <div
-                      key={vehicle._id}
-                      className="bg-zinc-950/90 backdrop-blur-xl border border-zinc-800 shadow-xl rounded-2xl p-6 hover:border-orange-500/30 hover:-translate-y-1 transition-all duration-300"
-                    >
-
-
-                      {/* Vehicle Header */}
-
-                      <div className="flex items-center gap-4 mb-5">
-
-                        <div className="bg-orange-500/10 border border-orange-500/20 p-4 rounded-full text-2xl">
-                          🚗
-                        </div>
-
-
-                        <div>
-
-                          <h3 className="text-xl font-bold text-white">
-                            {vehicle.brand}
-                          </h3>
-
-                          <p className="text-zinc-500">
-                            {vehicle.model}
-                          </p>
-
-                        </div>
-
-                      </div>
-
-
-
-                      {/* Vehicle Details */}
-
-                      <div className="space-y-2 text-zinc-400">
-
-
-                        <p>
-
-                          <span className="font-semibold text-zinc-200">
-                            Registration:
-                          </span>{" "}
-
-                          {vehicle.registrationNumber?.toUpperCase()}
-
-                        </p>
-
-
-                        <p>
-
-                          <span className="font-semibold text-zinc-200">
-                            Year:
-                          </span>{" "}
-
-                          {vehicle.year}
-
-                        </p>
-
-
-                        <p>
-
-                          <span className="font-semibold text-zinc-200">
-                            Fuel:
-                          </span>{" "}
-
-                          {vehicle.fuelType}
-
-                        </p>
-
-
-                        <p>
-
-                          <span className="font-semibold text-zinc-200">
-                            Odometer:
-                          </span>{" "}
-
-                          {vehicle.odometer} km
-
-                        </p>
-
-                      </div>
-
-
-
-                      {/* Buttons */}
-
-                      <div className="flex gap-3 mt-6">
-
-
-                        <button
-                          onClick={() =>
-                            navigate(
-                              `/vehicles/${vehicle._id}`
-                            )
-                          }
-                          className="flex-1 bg-orange-500 hover:bg-orange-400 text-white px-4 py-2 rounded-xl font-medium transition-all duration-300"
-                        >
-
-                          View Details
-
-                        </button>
-
-
-                        <button
-                          onClick={() =>
-                            navigate(
-                              `/edit-vehicle/${vehicle._id}`
-                            )
-                          }
-                          className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2 rounded-xl font-medium transition-all duration-300"
-                        >
-
-                          Edit
-
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  )
-                )}
-
-              </div>
-
-            )}
+            </div>
 
           </div>
-
-
-
-          {/* =====================================================
-              RECENT SERVICES
-          ====================================================== */}
 
           <RecentServices
             services={
@@ -581,9 +569,156 @@ function Dashboard() {
             }
           />
 
+        </section>
+
+      </main>
+    </div>
+  );
+}
+
+// =====================================================
+// VEHICLE CARD
+// =====================================================
+
+function VehicleCard({
+  vehicle,
+  onView,
+  onEdit,
+}) {
+  return (
+    <div className="group bg-[#151718] border border-[#292c2f] hover:border-orange-500/30 rounded-2xl overflow-hidden transition">
+
+      {/* CARD TOP */}
+
+      <div className="p-5">
+
+        <div className="flex items-start justify-between gap-4">
+
+          <div className="flex items-center gap-3">
+
+            <div className="w-11 h-11 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+
+              <CarFront
+                size={21}
+                className="text-orange-500"
+              />
+
+            </div>
+
+            <div>
+
+              <h3 className="font-semibold text-white">
+                {vehicle.brand}
+              </h3>
+
+              <p className="text-sm text-gray-600">
+                {vehicle.model}
+              </p>
+
+            </div>
+
+          </div>
+
+          <ChevronRight
+            size={17}
+            className="text-gray-700 group-hover:text-orange-500 transition"
+          />
+
+        </div>
+
+        {/* REGISTRATION */}
+
+        <div className="mt-5">
+
+          <span className="inline-flex px-2.5 py-1 rounded-md bg-[#101213] border border-[#292c2f] text-[10px] uppercase tracking-[0.15em] text-gray-500">
+
+            {vehicle.registrationNumber?.toUpperCase()}
+
+          </span>
+
+        </div>
+
+        {/* DETAILS */}
+
+        <div className="grid grid-cols-2 gap-x-4 gap-y-4 mt-6">
+
+          <VehicleDetail
+            icon={<CalendarDays size={14} />}
+            label="Year"
+            value={vehicle.year}
+          />
+
+          <VehicleDetail
+            icon={<Fuel size={14} />}
+            label="Fuel"
+            value={vehicle.fuelType}
+          />
+
+          <VehicleDetail
+            icon={<Gauge size={14} />}
+            label="Odometer"
+            value={`${vehicle.odometer} km`}
+          />
+
+          <VehicleDetail
+            icon={<Settings2 size={14} />}
+            label="Type"
+            value={vehicle.registrationType || "Private"}
+          />
+
         </div>
 
       </div>
+
+      {/* ACTIONS */}
+
+      <div className="grid grid-cols-2 border-t border-[#292c2f]">
+
+        <button
+          onClick={onView}
+          className="py-3.5 text-sm font-medium text-orange-500 hover:bg-orange-500/[0.04] transition"
+        >
+          View vehicle
+        </button>
+
+        <button
+          onClick={onEdit}
+          className="py-3.5 text-sm font-medium text-gray-500 hover:text-white hover:bg-[#191b1d] border-l border-[#292c2f] transition"
+        >
+          Edit
+        </button>
+
+      </div>
+
+    </div>
+  );
+}
+
+// =====================================================
+// VEHICLE DETAIL
+// =====================================================
+
+function VehicleDetail({
+  icon,
+  label,
+  value,
+}) {
+  return (
+    <div>
+
+      <div className="flex items-center gap-1.5 text-gray-700">
+
+        {icon}
+
+        <span className="text-[10px] uppercase tracking-wider">
+          {label}
+        </span>
+
+      </div>
+
+      <p className="text-sm text-gray-300 mt-1 truncate">
+        {value || "—"}
+      </p>
 
     </div>
   );
