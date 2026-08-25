@@ -2,7 +2,7 @@ import {
   Car,
   LogOut,
   User,
-  ChevronDown,
+  ArrowRight,
 } from "lucide-react";
 
 import {
@@ -15,16 +15,11 @@ import {
 const Navbar = () => {
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const location =
-    useLocation();
-
-
-  const user =
-    JSON.parse(
-      localStorage.getItem("user")
-    );
-
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
 
   const isLandingPage =
     location.pathname === "/";
@@ -37,7 +32,6 @@ const Navbar = () => {
   const handleLogout = () => {
 
     localStorage.removeItem("token");
-
     localStorage.removeItem("user");
 
     navigate("/login");
@@ -52,17 +46,15 @@ const Navbar = () => {
   if (isLandingPage) {
 
     return (
-
       <>
 
         <nav className="landing-navbar">
 
           <div className="landing-navbar-inner">
 
-
-            {/* ==========================================
+            {/* ==============================
                 LOGO
-            ========================================== */}
+            ============================== */}
 
             <Link
               to="/"
@@ -71,7 +63,7 @@ const Navbar = () => {
 
               <div className="landing-logo-mark">
 
-                <Car size={17} />
+                <Car size={20} />
 
               </div>
 
@@ -79,17 +71,11 @@ const Navbar = () => {
               <div className="landing-logo-copy">
 
                 <div className="landing-logo-title">
-
-                  AutoCare
-                  <span> AI</span>
-
+                  AutoCare <span>AI</span>
                 </div>
 
-
                 <div className="landing-logo-subtitle">
-
                   VEHICLE INTELLIGENCE
-
                 </div>
 
               </div>
@@ -97,9 +83,9 @@ const Navbar = () => {
             </Link>
 
 
-            {/* ==========================================
+            {/* ==============================
                 NAVIGATION
-            ========================================== */}
+            ============================== */}
 
             <div className="landing-nav-links">
 
@@ -141,9 +127,9 @@ const Navbar = () => {
             </div>
 
 
-            {/* ==========================================
-                LOGIN
-            ========================================== */}
+            {/* ==============================
+                SIGN IN
+            ============================== */}
 
             <div className="landing-nav-actions">
 
@@ -152,11 +138,12 @@ const Navbar = () => {
                 className="landing-login-btn"
               >
 
-                Sign in
+                <span>
+                  Sign in
+                </span>
 
-                <ChevronDown
-                  size={12}
-                  className="login-arrow"
+                <ArrowRight
+                  size={15}
                 />
 
               </Link>
@@ -171,9 +158,7 @@ const Navbar = () => {
         <NavbarStyles />
 
       </>
-
     );
-
   }
 
 
@@ -187,10 +172,9 @@ const Navbar = () => {
 
       <nav className="app-navbar">
 
-
-        {/* ==========================================
+        {/* ==============================
             BRAND
-        ========================================== */}
+        ============================== */}
 
         <Link
           to="/dashboard"
@@ -199,7 +183,7 @@ const Navbar = () => {
 
           <div className="app-brand-mark">
 
-            <Car size={17} />
+            <Car size={20} />
 
           </div>
 
@@ -207,17 +191,11 @@ const Navbar = () => {
           <div>
 
             <div className="app-brand-name">
-
-              AutoCare
-              <span> AI</span>
-
+              AutoCare <span>AI</span>
             </div>
 
-
             <div className="app-brand-subtitle">
-
               VEHICLE INTELLIGENCE SYSTEM
-
             </div>
 
           </div>
@@ -225,12 +203,11 @@ const Navbar = () => {
         </Link>
 
 
-        {/* ==========================================
+        {/* ==============================
             RIGHT SIDE
-        ========================================== */}
+        ============================== */}
 
         <div className="app-navbar-right">
-
 
           {/* USER */}
 
@@ -238,7 +215,7 @@ const Navbar = () => {
 
             <div className="app-user-icon">
 
-              <User size={14} />
+              <User size={16} />
 
             </div>
 
@@ -258,8 +235,6 @@ const Navbar = () => {
           </div>
 
 
-          {/* DIVIDER */}
-
           <div className="navbar-divider"></div>
 
 
@@ -270,7 +245,7 @@ const Navbar = () => {
             className="app-logout"
           >
 
-            <LogOut size={14} />
+            <LogOut size={16} />
 
             <span>
               Logout
@@ -301,31 +276,24 @@ function NavbarStyles() {
 
     <style>{`
 
-      /* ==========================================
+      /* =================================================
          LANDING NAVBAR
-      ========================================== */
+      ================================================= */
 
       .landing-navbar {
 
         position: fixed;
 
         top: 0;
-
         left: 0;
-
         right: 0;
 
-        z-index: 100;
+        z-index: 1000;
 
-        height: 68px;
+        height: 76px;
 
         background:
-          rgba(
-            10,
-            11,
-            11,
-            0.88
-          );
+          rgba(8, 9, 9, 0.92);
 
         backdrop-filter:
           blur(18px);
@@ -335,39 +303,37 @@ function NavbarStyles() {
 
         border-bottom:
           1px solid
-          rgba(
-            255,
-            255,
-            255,
-            0.055
-          );
+          rgba(255,255,255,0.08);
 
       }
 
 
       .landing-navbar-inner {
 
-        max-width: 1180px;
+        width: 100%;
+
+        max-width: 1280px;
 
         height: 100%;
 
         margin: 0 auto;
 
         padding:
-          0 24px;
+          0 34px;
 
-        display: flex;
+        display: grid;
+
+        grid-template-columns:
+          1fr auto 1fr;
 
         align-items: center;
-
-        justify-content: space-between;
 
       }
 
 
-      /* ==========================================
-         LANDING LOGO
-      ========================================== */
+      /* =================================================
+         LOGO
+      ================================================= */
 
       .landing-logo {
 
@@ -375,46 +341,33 @@ function NavbarStyles() {
 
         align-items: center;
 
-        gap: 9px;
+        justify-self: start;
+
+        gap: 11px;
 
         text-decoration: none;
-
-        min-width: 190px;
 
       }
 
 
       .landing-logo-mark {
 
-        width: 31px;
-
-        height: 31px;
+        width: 38px;
+        height: 38px;
 
         display: flex;
 
         align-items: center;
-
         justify-content: center;
 
-        border-radius: 7px;
+        border-radius: 9px;
 
-        color: #f0f1f1;
+        color: #f1f1f1;
 
-        background:
-          #151819;
+        background: #151718;
 
         border:
-          1px solid #303538;
-
-        box-shadow:
-          inset
-          0 0 0 1px
-          rgba(
-            255,
-            255,
-            255,
-            0.025
-          );
+          1px solid #303537;
 
       }
 
@@ -428,44 +381,44 @@ function NavbarStyles() {
 
       .landing-logo-title {
 
-        color: #d8dbdc;
+        color: #eeeeee;
 
-        font-size: 13px;
+        font-size: 18px;
 
-        font-weight: 600;
+        font-weight: 650;
 
         letter-spacing:
-          -0.025em;
+          -0.035em;
 
       }
 
 
       .landing-logo-title span {
 
-        color: #e8752a;
+        color: #f07827;
 
       }
 
 
       .landing-logo-subtitle {
 
-        margin-top: 4px;
+        margin-top: 5px;
 
-        color: #454c50;
+        color: #666d70;
 
-        font-size: 5px;
+        font-size: 8px;
 
         font-weight: 700;
 
         letter-spacing:
-          0.17em;
+          0.16em;
 
       }
 
 
-      /* ==========================================
-         LANDING LINKS
-      ========================================== */
+      /* =================================================
+         NAV LINKS
+      ================================================= */
 
       .landing-nav-links {
 
@@ -473,7 +426,9 @@ function NavbarStyles() {
 
         align-items: center;
 
-        gap: 27px;
+        justify-content: center;
+
+        gap: 34px;
 
       }
 
@@ -482,13 +437,17 @@ function NavbarStyles() {
 
         position: relative;
 
-        color: #686f73;
+        color: #8a9093;
 
-        font-size: 8px;
+        font-size: 14px;
 
         font-weight: 500;
 
+        line-height: 1;
+
         text-decoration: none;
+
+        white-space: nowrap;
 
         transition:
           color 0.2s ease;
@@ -498,14 +457,14 @@ function NavbarStyles() {
 
       .landing-nav-link:hover {
 
-        color: #d0d4d5;
+        color: #ffffff;
 
       }
 
 
       .landing-nav-link.active {
 
-        color: #d0d4d5;
+        color: #ffffff;
 
       }
 
@@ -518,32 +477,34 @@ function NavbarStyles() {
 
         left: 50%;
 
-        bottom: -10px;
+        bottom: -12px;
 
-        width: 14px;
+        width: 22px;
 
-        height: 1px;
+        height: 2px;
 
         transform:
           translateX(-50%);
 
         background:
-          #e8752a;
+          #f07827;
+
+        border-radius: 10px;
 
       }
 
 
-      /* ==========================================
-         LANDING LOGIN
-      ========================================== */
+      /* =================================================
+         SIGN IN
+      ================================================= */
 
       .landing-nav-actions {
-
-        min-width: 190px;
 
         display: flex;
 
         justify-content: flex-end;
+
+        align-items: center;
 
       }
 
@@ -554,33 +515,27 @@ function NavbarStyles() {
 
         align-items: center;
 
-        gap: 5px;
+        justify-content: center;
+
+        gap: 8px;
+
+        min-width: 96px;
 
         padding:
-          8px 12px;
+          11px 16px;
 
         border:
           1px solid
-          rgba(
-            232,
-            117,
-            42,
-            0.22
-          );
+          rgba(240,120,39,0.38);
 
-        border-radius: 6px;
+        border-radius: 8px;
 
-        color: #d77539;
+        color: #f28a45;
 
         background:
-          rgba(
-            232,
-            117,
-            42,
-            0.045
-          );
+          rgba(240,120,39,0.06);
 
-        font-size: 7px;
+        font-size: 13px;
 
         font-weight: 600;
 
@@ -594,38 +549,23 @@ function NavbarStyles() {
 
       .landing-login-btn:hover {
 
+        color: #ffffff;
+
         background:
-          rgba(
-            232,
-            117,
-            42,
-            0.10
-          );
+          rgba(240,120,39,0.14);
 
         border-color:
-          rgba(
-            232,
-            117,
-            42,
-            0.4
-          );
-
-      }
-
-
-      .login-arrow {
+          rgba(240,120,39,0.65);
 
         transform:
-          rotate(-90deg);
-
-        opacity: 0.6;
+          translateY(-1px);
 
       }
 
 
-      /* ==========================================
-         APP NAVBAR
-      ========================================== */
+      /* =================================================
+         AUTHENTICATED NAVBAR
+      ================================================= */
 
       .app-navbar {
 
@@ -635,7 +575,7 @@ function NavbarStyles() {
 
         width: 100%;
 
-        height: 58px;
+        min-height: 70px;
 
         display: flex;
 
@@ -644,9 +584,9 @@ function NavbarStyles() {
         justify-content: space-between;
 
         padding:
-          0 18px;
+          0 22px;
 
-        margin-bottom: 18px;
+        margin-bottom: 22px;
 
         background:
           #131617;
@@ -654,23 +594,18 @@ function NavbarStyles() {
         border:
           1px solid #292e31;
 
-        border-radius: 9px;
+        border-radius: 12px;
 
         box-shadow:
           0 12px 30px
-          rgba(
-            0,
-            0,
-            0,
-            0.16
-          );
+          rgba(0,0,0,0.18);
 
       }
 
 
-      /* ==========================================
+      /* =================================================
          APP BRAND
-      ========================================== */
+      ================================================= */
 
       .app-navbar-brand {
 
@@ -678,7 +613,7 @@ function NavbarStyles() {
 
         align-items: center;
 
-        gap: 9px;
+        gap: 11px;
 
         text-decoration: none;
 
@@ -687,68 +622,56 @@ function NavbarStyles() {
 
       .app-brand-mark {
 
-        width: 32px;
-
-        height: 32px;
+        width: 38px;
+        height: 38px;
 
         display: flex;
 
         align-items: center;
-
         justify-content: center;
 
-        border-radius: 7px;
+        border-radius: 9px;
 
-        color: #e8752a;
+        color: #f07827;
 
         background:
-          rgba(
-            232,
-            117,
-            42,
-            0.065
-          );
+          rgba(240,120,39,0.08);
 
         border:
           1px solid
-          rgba(
-            232,
-            117,
-            42,
-            0.17
-          );
+          rgba(240,120,39,0.22);
 
       }
 
 
       .app-brand-name {
 
-        color: #d2d5d6;
+        color: #e5e7e8;
 
-        font-size: 12px;
+        font-size: 18px;
 
-        font-weight: 600;
+        font-weight: 650;
 
         letter-spacing:
-          -0.02em;
+          -0.03em;
 
       }
 
 
       .app-brand-name span {
 
-        color: #e8752a;
+        color: #f07827;
 
       }
 
 
       .app-brand-subtitle {
 
-        margin-top: 3px;
+        margin-top: 4px;
 
-        color: #454c50;
+        color: #626a6e;
 
-        font-size: 5px;
+        font-size: 8px;
 
         font-weight: 700;
 
@@ -758,9 +681,9 @@ function NavbarStyles() {
       }
 
 
-      /* ==========================================
+      /* =================================================
          RIGHT SIDE
-      ========================================== */
+      ================================================= */
 
       .app-navbar-right {
 
@@ -768,14 +691,14 @@ function NavbarStyles() {
 
         align-items: center;
 
-        gap: 12px;
+        gap: 14px;
 
       }
 
 
-      /* ==========================================
+      /* =================================================
          USER
-      ========================================== */
+      ================================================= */
 
       .app-user {
 
@@ -783,44 +706,38 @@ function NavbarStyles() {
 
         align-items: center;
 
-        gap: 8px;
+        gap: 10px;
 
         padding:
-          6px 9px;
+          7px 11px;
 
         border:
-          1px solid #252a2c;
+          1px solid #292e31;
 
-        border-radius: 6px;
+        border-radius: 8px;
 
-        background: #111314;
+        background:
+          #101213;
 
       }
 
 
       .app-user-icon {
 
-        width: 25px;
-
-        height: 25px;
+        width: 31px;
+        height: 31px;
 
         display: flex;
 
         align-items: center;
-
         justify-content: center;
 
-        border-radius: 5px;
+        border-radius: 7px;
 
-        color: #e8752a;
+        color: #f07827;
 
         background:
-          rgba(
-            232,
-            117,
-            42,
-            0.06
-          );
+          rgba(240,120,39,0.07);
 
       }
 
@@ -829,14 +746,14 @@ function NavbarStyles() {
 
         display: block;
 
-        color: #454c50;
+        color: #626a6e;
 
-        font-size: 5px;
+        font-size: 8px;
 
         font-weight: 700;
 
         letter-spacing:
-          0.13em;
+          0.12em;
 
       }
 
@@ -845,7 +762,9 @@ function NavbarStyles() {
 
         display: block;
 
-        max-width: 120px;
+        max-width: 160px;
+
+        margin-top: 3px;
 
         overflow: hidden;
 
@@ -853,35 +772,34 @@ function NavbarStyles() {
 
         white-space: nowrap;
 
-        margin-top: 2px;
+        color: #c9ced0;
 
-        color: #8f9699;
-
-        font-size: 7px;
+        font-size: 13px;
 
         font-weight: 500;
 
       }
 
 
-      /* ==========================================
+      /* =================================================
          DIVIDER
-      ========================================== */
+      ================================================= */
 
       .navbar-divider {
 
         width: 1px;
 
-        height: 24px;
+        height: 30px;
 
-        background: #292e31;
+        background:
+          #292e31;
 
       }
 
 
-      /* ==========================================
+      /* =================================================
          LOGOUT
-      ========================================== */
+      ================================================= */
 
       .app-logout {
 
@@ -889,21 +807,24 @@ function NavbarStyles() {
 
         align-items: center;
 
-        gap: 6px;
+        justify-content: center;
+
+        gap: 8px;
 
         padding:
-          7px 10px;
+          10px 14px;
 
         border:
-          1px solid #292e31;
+          1px solid #303538;
 
-        border-radius: 6px;
+        border-radius: 8px;
 
-        color: #777e82;
+        color: #a0a6a9;
 
-        background: transparent;
+        background:
+          transparent;
 
-        font-size: 7px;
+        font-size: 13px;
 
         font-weight: 500;
 
@@ -917,32 +838,69 @@ function NavbarStyles() {
 
       .app-logout:hover {
 
-        color: #d77539;
+        color: #f07827;
 
         border-color:
-          rgba(
-            232,
-            117,
-            42,
-            0.22
-          );
+          rgba(240,120,39,0.35);
 
         background:
-          rgba(
-            232,
-            117,
-            42,
-            0.045
-          );
+          rgba(240,120,39,0.06);
 
       }
 
 
-      /* ==========================================
-         RESPONSIVE
-      ========================================== */
+      /* =================================================
+         TABLET
+      ================================================= */
 
-      @media (max-width: 800px) {
+      @media (max-width: 1050px) {
+
+        .landing-navbar-inner {
+
+          grid-template-columns:
+            auto 1fr auto;
+
+        }
+
+        .landing-nav-links {
+
+          gap: 20px;
+
+        }
+
+        .landing-nav-link {
+
+          font-size: 13px;
+
+        }
+
+      }
+
+
+      /* =================================================
+         MOBILE
+      ================================================= */
+
+      @media (max-width: 760px) {
+
+        .landing-navbar {
+
+          height: 68px;
+
+        }
+
+
+        .landing-navbar-inner {
+
+          display: flex;
+
+          justify-content: space-between;
+
+          padding:
+            0 18px;
+
+        }
+
 
         .landing-nav-links {
 
@@ -951,26 +909,47 @@ function NavbarStyles() {
         }
 
 
-        .landing-logo {
+        .landing-logo-title {
 
-          min-width: auto;
+          font-size: 16px;
 
         }
 
 
-        .landing-nav-actions {
+        .landing-logo-subtitle {
 
-          min-width: auto;
+          font-size: 7px;
+
+        }
+
+
+        .landing-login-btn {
+
+          min-width: 82px;
+
+          padding:
+            9px 12px;
+
+          font-size: 12px;
 
         }
 
 
         .app-navbar {
 
-          height: 55px;
+          min-height: 64px;
 
           padding:
-            0 12px;
+            0 14px;
+
+          border-radius: 10px;
+
+        }
+
+
+        .app-brand-name {
+
+          font-size: 16px;
 
         }
 
@@ -998,18 +977,57 @@ function NavbarStyles() {
       }
 
 
-      @media (max-width: 500px) {
+      /* =================================================
+         SMALL MOBILE
+      ================================================= */
 
-        .app-navbar {
+      @media (max-width: 450px) {
 
-          border-radius: 7px;
+        .landing-logo-mark {
+
+          width: 34px;
+          height: 34px;
+
+        }
+
+
+        .landing-logo-title {
+
+          font-size: 15px;
+
+        }
+
+
+        .landing-login-btn {
+
+          min-width: 76px;
+
+          font-size: 11px;
+
+        }
+
+
+        .app-brand-mark {
+
+          width: 34px;
+          height: 34px;
 
         }
 
 
         .app-brand-name {
 
-          font-size: 11px;
+          font-size: 15px;
+
+        }
+
+
+        .app-logout {
+
+          width: 36px;
+          height: 36px;
+
+          padding: 0;
 
         }
 
@@ -1017,19 +1035,6 @@ function NavbarStyles() {
         .app-logout span {
 
           display: none;
-
-        }
-
-
-        .app-logout {
-
-          width: 30px;
-
-          height: 30px;
-
-          padding: 0;
-
-          justify-content: center;
 
         }
 
