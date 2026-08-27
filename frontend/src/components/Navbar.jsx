@@ -165,7 +165,7 @@ const Navbar = () => {
 
             width: 100% !important;
 
-            height: 76px !important;
+            height: 84px !important;
 
             margin: 0 !important;
 
@@ -203,7 +203,7 @@ const Navbar = () => {
 
             max-width: 1320px !important;
 
-            height: 76px !important;
+            height: 84px !important;
 
             margin: 0 auto !important;
 
@@ -240,7 +240,7 @@ const Navbar = () => {
 
             min-width: 0;
 
-            height: 58px;
+            height: 70px;
 
             overflow: hidden;
 
@@ -251,9 +251,9 @@ const Navbar = () => {
 
             display: block;
 
-            width: 220px;
+            width: 280px;
 
-            height: 58px;
+            height: 70px;
 
             object-fit: contain;
 
@@ -705,7 +705,7 @@ const Navbar = () => {
 
           min-width: 0;
 
-          height: 58px;
+          height: 70px;
 
         }
 
@@ -714,9 +714,9 @@ const Navbar = () => {
 
           display: block;
 
-          width: 220px;
+          width: 280px;
 
-          height: 58px;
+          height: 70px;
 
           object-fit: contain;
 
