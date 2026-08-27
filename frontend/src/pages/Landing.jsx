@@ -77,7 +77,7 @@ const Landing = () => {
             <div className="hero-actions">
 
               <Link
-                to="/dashboard"
+                to="/login"
                 className="hero-primary-btn"
               >
                 Open Dashboard
@@ -588,7 +588,7 @@ const Landing = () => {
               </p>
 
               <Link
-                to="/dashboard"
+                to="/login"
                 className="services-btn"
               >
 
