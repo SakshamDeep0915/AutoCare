@@ -1,496 +1,221 @@
+import { useEffect, useState } from "react";
+
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
 } from "recharts";
 
-import { useEffect, useState } from "react";
+import {
+  BarChart3,
+  IndianRupee,
+  TrendingUp,
+} from "lucide-react";
 
-import { getExpenseReport } from "../services/dashboardService";
+import {
+  getMonthlyExpenses,
+} from "../services/dashboardService";
 
 
 function ExpenseChart() {
 
-  const [data, setData] = useState([]);
+  const [data, setData] =
+    useState([]);
 
   const [loading, setLoading] =
     useState(true);
 
 
   // =====================================================
-  // FETCH EXPENSE DATA
+  // LOAD EXPENSE DATA
   // =====================================================
 
   useEffect(() => {
 
-    const loadExpenses = async () => {
-
-      try {
-
-        const res =
-          await getExpenseReport();
-
-        setData(
-          res.data?.monthly ||
-          res.data ||
-          []
-        );
-
-      } catch (err) {
-
-        console.error(
-          "Expense chart error:",
-          err
-        );
-
-      } finally {
-
-        setLoading(false);
-
-      }
-
-    };
-
-
-    loadExpenses();
+    loadChart();
 
   }, []);
 
 
-  // =====================================================
-  // LOADING
-  // =====================================================
+  const loadChart = async () => {
 
-  if (loading) {
+    try {
 
-    return (
-
-      <div className="expense-chart-wrapper">
-
-        <div className="expense-chart-loading">
-
-          <div className="expense-loading-line large" />
-
-          <div className="expense-loading-line medium" />
-
-          <div className="expense-loading-chart" />
-
-        </div>
+      const res =
+        await getMonthlyExpenses();
 
 
-        <style>{`
-
-          .expense-chart-wrapper {
-
-            width: 100%;
-
-          }
-
-
-          .expense-chart-loading {
-
-            padding:
-              12px 4px 4px;
-
-          }
-
-
-          .expense-loading-line {
-
-            background: #202426;
-
-            border-radius: 6px;
-
-            animation:
-              expensePulse
-              1.5s
-              ease-in-out
-              infinite;
-
-          }
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
 
 
-          .expense-loading-line.large {
-
-            width: 150px;
-
-            height: 18px;
-
-          }
+      const monthlyExpenses =
+        res.data?.monthlyExpenses || [];
 
 
-          .expense-loading-line.medium {
+      const formattedData =
+        monthlyExpenses.map(
+          (item) => ({
 
-            width: 230px;
+            month:
+              `${months[item.month - 1]} ${item.year}`,
 
-            height: 12px;
+            shortMonth:
+              months[item.month - 1],
 
-            margin-top: 9px;
+            expense:
+              Number(
+                item.totalExpense || 0
+              ),
 
-          }
-
-
-          .expense-loading-chart {
-
-            width: 100%;
-
-            height: 230px;
-
-            margin-top: 24px;
-
-            border:
-              1px solid #252a2c;
-
-            border-radius: 10px;
-
-            background:
-              linear-gradient(
-                180deg,
-                #151819,
-                #111314
-              );
-
-            animation:
-              expensePulse
-              1.5s
-              ease-in-out
-              infinite;
-
-          }
+          })
+        );
 
 
-          @keyframes expensePulse {
+      setData(
+        formattedData
+      );
 
-            0%,
-            100% {
-              opacity: .45;
-            }
 
-            50% {
-              opacity: 1;
-            }
+    } catch (err) {
 
-          }
+      console.error(
+        "Expense Chart Error:",
+        err
+      );
 
-        `}</style>
 
-      </div>
+      setData([]);
 
-    );
+    } finally {
 
-  }
+      setLoading(false);
+
+    }
+
+  };
 
 
   // =====================================================
-  // EMPTY STATE
-  // =====================================================
-
-  if (!data.length) {
-
-    return (
-
-      <div className="expense-chart-empty">
-
-        <div className="expense-empty-icon">
-          ₹
-        </div>
-
-
-        <h3>
-          No expense data yet
-        </h3>
-
-
-        <p>
-          Add maintenance or fuel expenses to see your spending trend here.
-        </p>
-
-
-        <style>{`
-
-          .expense-chart-empty {
-
-            min-height: 250px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            flex-direction: column;
-
-            text-align: center;
-
-            padding: 25px;
-
-          }
-
-
-          .expense-empty-icon {
-
-            width: 48px;
-
-            height: 48px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            border-radius: 10px;
-
-            color: #e8752a;
-
-            background:
-              rgba(
-                232,
-                117,
-                42,
-                0.07
-              );
-
-            border:
-              1px solid
-              rgba(
-                232,
-                117,
-                42,
-                0.15
-              );
-
-            font-size: 20px;
-
-            font-weight: 600;
-
-          }
-
-
-          .expense-chart-empty h3 {
-
-            margin:
-              14px 0 0;
-
-            color: #c8cdcf;
-
-            font-size: 17px;
-
-            font-weight: 600;
-
-          }
-
-
-          .expense-chart-empty p {
-
-            max-width: 420px;
-
-            margin:
-              6px 0 0;
-
-            color: #626a6e;
-
-            font-size: 14px;
-
-            line-height: 1.6;
-
-          }
-
-        `}</style>
-
-      </div>
-
-    );
-
-  }
-
-
-  // =====================================================
-  // NORMALIZE DATA
-  // =====================================================
-
-  const chartData = data.map(
-    (item) => ({
-
-      month:
-        item.month ||
-        item.label ||
-        item.name ||
-        "",
-
-      expense:
-        Number(
-          item.expense ??
-          item.total ??
-          item.amount ??
-          0
-        ),
-
-    })
-  );
-
-
-  // =====================================================
-  // TOTAL
+  // TOTAL EXPENSE
   // =====================================================
 
   const totalExpense =
-    chartData.reduce(
-      (sum, item) =>
-        sum + Number(item.expense || 0),
+    data.reduce(
+      (total, item) =>
+        total +
+        Number(
+          item.expense || 0
+        ),
       0
     );
 
 
   // =====================================================
-  // FORMAT CURRENCY
+  // HIGHEST MONTH
   // =====================================================
 
-  const formatCurrency = (value) => {
-
-    return `₹${Number(
-      value || 0
-    ).toLocaleString("en-IN")}`;
-
-  };
-
-
-  // =====================================================
-  // TOOLTIP
-  // =====================================================
-
-  const CustomTooltip = ({
-    active,
-    payload,
-    label,
-  }) => {
-
-    if (
-      !active ||
-      !payload ||
-      !payload.length
-    ) {
-
-      return null;
-
-    }
-
-
-    return (
-
-      <div className="expense-tooltip">
-
-        <p className="expense-tooltip-label">
-          {label}
-        </p>
-
-
-        <strong>
-          {formatCurrency(
-            payload[0].value
-          )}
-        </strong>
-
-
-        <style>{`
-
-          .expense-tooltip {
-
-            min-width: 135px;
-
-            padding:
-              11px 13px;
-
-            background: #0d0f10;
-
-            border:
-              1px solid #343a3d;
-
-            border-radius: 8px;
-
-            box-shadow:
-              0 12px 30px
-              rgba(0,0,0,0.35);
-
-          }
-
-
-          .expense-tooltip-label {
-
-            margin: 0 0 4px;
-
-            color: #737b7f;
-
-            font-size: 11px;
-
-            font-weight: 600;
-
-          }
-
-
-          .expense-tooltip strong {
-
-            color: #e8752a;
-
-            font-size: 16px;
-
-            font-weight: 600;
-
-          }
-
-        `}</style>
-
-      </div>
-
-    );
-
-  };
+  const highestExpense =
+    data.length > 0
+      ? Math.max(
+          ...data.map(
+            (item) =>
+              Number(
+                item.expense || 0
+              )
+          )
+        )
+      : 0;
 
 
   // =====================================================
-  // CHART
+  // MAIN
   // =====================================================
 
   return (
 
-    <div className="expense-chart-wrapper">
+    <section className="expense-chart-container">
 
 
       {/* =================================================
-          CHART HEADER
+          HEADER
       ================================================= */}
 
-      <div className="expense-chart-summary">
+      <div className="expense-chart-header">
 
         <div>
 
-          <span className="expense-summary-label">
-            TOTAL SPENDING
-          </span>
+          <div className="expense-chart-kicker">
+
+            <span></span>
+
+            EXPENSE ANALYTICS
+
+          </div>
 
 
-          <strong className="expense-summary-value">
+          <div className="expense-chart-title-row">
 
-            {formatCurrency(
-              totalExpense
-            )}
+            <div className="expense-chart-icon">
 
-          </strong>
+              <BarChart3
+                size={20}
+              />
+
+            </div>
+
+
+            <div>
+
+              <h2>
+                Monthly expenses
+              </h2>
+
+              <p>
+                Maintenance + fuel spending
+              </p>
+
+            </div>
+
+          </div>
 
         </div>
 
 
-        <div className="expense-summary-period">
+        {/* =================================================
+            TOTAL
+        ================================================= */}
 
-          <span className="expense-summary-dot" />
+        <div className="expense-total">
 
           <span>
-            Monthly overview
+            TOTAL SPENDING
           </span>
+
+          <strong>
+
+            ₹
+            {totalExpense.toLocaleString(
+              "en-IN"
+            )}
+
+          </strong>
 
         </div>
 
@@ -501,118 +226,138 @@ function ExpenseChart() {
           CHART
       ================================================= */}
 
-      <div className="expense-chart">
+      <div className="expense-chart-wrapper">
 
-        <ResponsiveContainer
-          width="100%"
-          height={270}
-        >
+        {loading ? (
 
-          <AreaChart
-            data={chartData}
-            margin={{
-              top: 10,
-              right: 8,
-              left: 0,
-              bottom: 5,
-            }}
+          <div className="expense-chart-loading">
+
+            <div className="expense-loading-bar"></div>
+
+
+            <div className="expense-loading-chart">
+
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+
+            </div>
+
+          </div>
+
+        ) : data.length === 0 ? (
+
+          <div className="expense-empty">
+
+            <div className="expense-empty-icon">
+
+              <IndianRupee
+                size={22}
+              />
+
+            </div>
+
+
+            <h3>
+              No expense data yet
+            </h3>
+
+
+            <p>
+              Add fuel or service records
+              to start tracking your spending.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <ResponsiveContainer
+            width="100%"
+            height={320}
           >
 
-            <defs>
-
-              <linearGradient
-                id="expenseAreaGradient"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-
-                <stop
-                  offset="0%"
-                  stopColor="#f97316"
-                  stopOpacity={0.25}
-                />
-
-                <stop
-                  offset="100%"
-                  stopColor="#f97316"
-                  stopOpacity={0}
-                />
-
-              </linearGradient>
-
-            </defs>
-
-
-            <CartesianGrid
-              stroke="#252a2c"
-              strokeDasharray="3 5"
-              vertical={false}
-            />
-
-
-            <XAxis
-              dataKey="month"
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fill: "#687074",
-                fontSize: 12,
+            <BarChart
+              data={data}
+              margin={{
+                top: 15,
+                right: 10,
+                left: -10,
+                bottom: 5,
               }}
-              dy={10}
-            />
+              barCategoryGap="30%"
+            >
+
+              <CartesianGrid
+                stroke="#252a2c"
+                strokeDasharray="2 5"
+                vertical={false}
+              />
 
 
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              width={55}
-              tick={{
-                fill: "#687074",
-                fontSize: 11,
-              }}
-              tickFormatter={(value) =>
-                `₹${Number(
-                  value || 0
-                ).toLocaleString("en-IN")}`
-              }
-            />
+              <XAxis
+                dataKey="month"
+                tick={{
+                  fill: "#70787c",
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+                axisLine={{
+                  stroke: "#292e31",
+                }}
+                tickLine={false}
+              />
 
 
-            <Tooltip
-              content={
-                <CustomTooltip />
-              }
-              cursor={{
-                stroke: "#3b4144",
-                strokeDasharray: "4 4",
-              }}
-            />
+              <YAxis
+                tick={{
+                  fill: "#70787c",
+                  fontSize: 11,
+                  fontWeight: 500,
+                }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(value) =>
+                  value >= 1000
+                    ? `₹${(
+                        value / 1000
+                      ).toFixed(0)}k`
+                    : `₹${value}`
+                }
+              />
 
 
-            <Area
-              type="monotone"
-              dataKey="expense"
-              stroke="#f97316"
-              strokeWidth={2.5}
-              fill="url(#expenseAreaGradient)"
-              dot={{
-                r: 3,
-                fill: "#f97316",
-                strokeWidth: 0,
-              }}
-              activeDot={{
-                r: 5,
-                fill: "#f97316",
-                stroke: "#151718",
-                strokeWidth: 2,
-              }}
-            />
+              <Tooltip
+                cursor={{
+                  fill:
+                    "rgba(232,117,42,0.035)",
+                }}
+                content={
+                  <CustomTooltip />
+                }
+              />
 
-          </AreaChart>
 
-        </ResponsiveContainer>
+              <Bar
+                dataKey="expense"
+                fill="#e8752a"
+                radius={[
+                  5,
+                  5,
+                  0,
+                  0,
+                ]}
+                maxBarSize={42}
+              />
+
+            </BarChart>
+
+          </ResponsiveContainer>
+
+        )}
 
       </div>
 
@@ -621,18 +366,54 @@ function ExpenseChart() {
           FOOTER
       ================================================= */}
 
-      <div className="expense-chart-footer">
+      {!loading &&
+        data.length > 0 && (
 
-        <span>
-          Vehicle maintenance & fuel expenses
-        </span>
+          <div className="expense-chart-footer">
 
 
-        <span>
-          {chartData.length} months
-        </span>
+            <div className="expense-footer-stat">
 
-      </div>
+              <div className="expense-footer-icon">
+
+                <TrendingUp
+                  size={16}
+                />
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  HIGHEST MONTH
+                </span>
+
+
+                <strong>
+
+                  ₹
+                  {highestExpense.toLocaleString(
+                    "en-IN"
+                  )}
+
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div className="expense-footer-note">
+
+              Spending includes recorded
+              maintenance and fuel expenses.
+
+            </div>
+
+          </div>
+
+        )}
 
 
       {/* =================================================
@@ -641,42 +422,58 @@ function ExpenseChart() {
 
       <style>{`
 
-        /* =================================================
-           WRAPPER
-        ================================================= */
+        /* ==========================================
+           CONTAINER
+        ========================================== */
 
-        .expense-chart-wrapper {
+        .expense-chart-container {
 
           width: 100%;
+
+          margin-top: 20px;
+
+          background: #131617;
+
+          border:
+            1px solid #292e31;
+
+          border-radius: 12px;
+
+          overflow: hidden;
 
         }
 
 
-        /* =================================================
-           SUMMARY
-        ================================================= */
+        /* ==========================================
+           HEADER
+        ========================================== */
 
-        .expense-chart-summary {
+        .expense-chart-header {
 
           display: flex;
 
-          align-items: flex-end;
+          align-items: center;
 
           justify-content: space-between;
 
           gap: 20px;
 
           padding:
-            0 4px 15px;
+            20px 22px;
+
+          border-bottom:
+            1px solid #292e31;
 
         }
 
 
-        .expense-summary-label {
+        .expense-chart-kicker {
 
-          display: block;
+          display: flex;
 
-          margin-bottom: 5px;
+          align-items: center;
+
+          gap: 8px;
 
           color: #626a6e;
 
@@ -685,20 +482,143 @@ function ExpenseChart() {
           font-weight: 700;
 
           letter-spacing:
-            0.14em;
+            0.18em;
+
+          margin-bottom: 9px;
 
         }
 
 
-        .expense-summary-value {
+        .expense-chart-kicker span {
+
+          width: 18px;
+
+          height: 1px;
+
+          background: #e8752a;
+
+        }
+
+
+        /* ==========================================
+           TITLE
+        ========================================== */
+
+        .expense-chart-title-row {
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 11px;
+
+        }
+
+
+        .expense-chart-icon {
+
+          width: 38px;
+
+          height: 38px;
+
+          flex-shrink: 0;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          border-radius: 8px;
+
+          color: #e8752a;
+
+          background:
+            rgba(
+              232,
+              117,
+              42,
+              0.065
+            );
+
+          border:
+            1px solid
+            rgba(
+              232,
+              117,
+              42,
+              0.13
+            );
+
+        }
+
+
+        .expense-chart-title-row h2 {
+
+          margin: 0;
+
+          color: #d0d4d5;
+
+          font-size: 20px;
+
+          font-weight: 600;
+
+          letter-spacing:
+            -0.015em;
+
+        }
+
+
+        .expense-chart-title-row p {
+
+          margin:
+            4px 0 0;
+
+          color: #697175;
+
+          font-size: 13px;
+
+          line-height: 1.4;
+
+        }
+
+
+        /* ==========================================
+           TOTAL
+        ========================================== */
+
+        .expense-total {
+
+          text-align: right;
+
+        }
+
+
+        .expense-total span {
 
           display: block;
 
-          color: #e0e3e4;
+          color: #626a6e;
 
-          font-size: 25px;
+          font-size: 10px;
 
-          line-height: 1.15;
+          font-weight: 700;
+
+          letter-spacing:
+            0.15em;
+
+        }
+
+
+        .expense-total strong {
+
+          display: block;
+
+          margin-top: 5px;
+
+          color: #e8752a;
+
+          font-size: 24px;
 
           font-weight: 600;
 
@@ -708,61 +628,110 @@ function ExpenseChart() {
         }
 
 
-        .expense-summary-period {
+        /* ==========================================
+           CHART
+        ========================================== */
+
+        .expense-chart-wrapper {
+
+          padding:
+            20px 15px 8px;
+
+          min-height: 350px;
+
+        }
+
+
+        /* ==========================================
+           EMPTY
+        ========================================== */
+
+        .expense-empty {
+
+          min-height: 320px;
 
           display: flex;
 
           align-items: center;
 
-          gap: 7px;
+          justify-content: center;
 
-          color: #626a6e;
+          flex-direction: column;
 
-          font-size: 12px;
-
-          white-space: nowrap;
+          text-align: center;
 
         }
 
 
-        .expense-summary-dot {
+        .expense-empty-icon {
 
-          width: 7px;
+          width: 48px;
 
-          height: 7px;
+          height: 48px;
 
-          border-radius: 50%;
+          display: flex;
 
-          background: #e8752a;
+          align-items: center;
 
-          box-shadow:
-            0 0 0 3px
+          justify-content: center;
+
+          border-radius: 10px;
+
+          color: #e8752a;
+
+          background:
             rgba(
               232,
               117,
               42,
-              0.08
+              0.06
+            );
+
+          border:
+            1px solid
+            rgba(
+              232,
+              117,
+              42,
+              0.13
             );
 
         }
 
 
-        /* =================================================
-           CHART
-        ================================================= */
+        .expense-empty h3 {
 
-        .expense-chart {
+          margin:
+            12px 0 0;
 
-          width: 100%;
+          color: #c5cacc;
 
-          min-height: 270px;
+          font-size: 17px;
+
+          font-weight: 600;
 
         }
 
 
-        /* =================================================
+        .expense-empty p {
+
+          max-width: 360px;
+
+          margin:
+            7px 0 0;
+
+          color: #697175;
+
+          font-size: 14px;
+
+          line-height: 1.6;
+
+        }
+
+
+        /* ==========================================
            FOOTER
-        ================================================= */
+        ========================================== */
 
         .expense-chart-footer {
 
@@ -772,41 +741,292 @@ function ExpenseChart() {
 
           justify-content: space-between;
 
-          gap: 15px;
-
-          margin-top: 3px;
+          gap: 20px;
 
           padding:
-            12px 4px 0;
+            13px 22px;
 
           border-top:
-            1px solid #252a2c;
+            1px solid #292e31;
 
-          color: #565f63;
-
-          font-size: 11px;
-
-          line-height: 1.4;
+          background: #111314;
 
         }
 
 
-        .expense-chart-footer span:last-child {
+        .expense-footer-stat {
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 9px;
+
+        }
+
+
+        .expense-footer-icon {
+
+          width: 30px;
+
+          height: 30px;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          border-radius: 7px;
+
+          color: #e8752a;
+
+          background:
+            rgba(
+              232,
+              117,
+              42,
+              0.06
+            );
+
+        }
+
+
+        .expense-footer-stat span {
+
+          display: block;
 
           color: #626a6e;
 
-          white-space: nowrap;
+          font-size: 10px;
+
+          font-weight: 700;
+
+          letter-spacing:
+            0.14em;
 
         }
 
 
-        /* =================================================
-           TABLET
-        ================================================= */
+        .expense-footer-stat strong {
 
-        @media (max-width: 700px) {
+          display: block;
 
-          .expense-chart-summary {
+          color: #aeb4b6;
+
+          font-size: 14px;
+
+          margin-top: 3px;
+
+          font-weight: 500;
+
+        }
+
+
+        .expense-footer-note {
+
+          color: #565f63;
+
+          font-size: 12px;
+
+          text-align: right;
+
+          line-height: 1.5;
+
+        }
+
+
+        /* ==========================================
+           LOADING
+        ========================================== */
+
+        .expense-chart-loading {
+
+          min-height: 320px;
+
+          padding: 25px;
+
+          display: flex;
+
+          flex-direction: column;
+
+          justify-content: flex-end;
+
+        }
+
+
+        .expense-loading-bar {
+
+          width: 100%;
+
+          height: 1px;
+
+          background: #252a2c;
+
+          margin-bottom: 20px;
+
+        }
+
+
+        .expense-loading-chart {
+
+          height: 220px;
+
+          display: flex;
+
+          align-items: flex-end;
+
+          justify-content: space-around;
+
+          gap: 20px;
+
+        }
+
+
+        .expense-loading-chart span {
+
+          width: 8%;
+
+          height: 30%;
+
+          border-radius:
+            4px 4px 0 0;
+
+          background: #1b1f20;
+
+          animation:
+            expense-pulse
+            1.3s infinite;
+
+        }
+
+
+        .expense-loading-chart
+        span:nth-child(2) {
+
+          height: 55%;
+
+          animation-delay:
+            0.1s;
+
+        }
+
+
+        .expense-loading-chart
+        span:nth-child(3) {
+
+          height: 40%;
+
+          animation-delay:
+            0.2s;
+
+        }
+
+
+        .expense-loading-chart
+        span:nth-child(4) {
+
+          height: 70%;
+
+          animation-delay:
+            0.3s;
+
+        }
+
+
+        .expense-loading-chart
+        span:nth-child(5) {
+
+          height: 48%;
+
+          animation-delay:
+            0.4s;
+
+        }
+
+
+        .expense-loading-chart
+        span:nth-child(6) {
+
+          height: 65%;
+
+          animation-delay:
+            0.5s;
+
+        }
+
+
+        @keyframes expense-pulse {
+
+          0%,
+          100% {
+            opacity: 0.45;
+          }
+
+          50% {
+            opacity: 1;
+          }
+
+        }
+
+
+        /* ==========================================
+           TOOLTIP
+        ========================================== */
+
+        .expense-tooltip {
+
+          background: #101213;
+
+          border:
+            1px solid #343a3d;
+
+          border-radius: 8px;
+
+          padding:
+            10px 13px;
+
+          box-shadow:
+            0 12px 30px
+            rgba(0,0,0,0.35);
+
+        }
+
+
+        .expense-tooltip-label {
+
+          color: #737b7f;
+
+          font-size: 11px;
+
+          font-weight: 700;
+
+          letter-spacing:
+            0.12em;
+
+          margin-bottom: 5px;
+
+        }
+
+
+        .expense-tooltip-value {
+
+          color: #e8752a;
+
+          font-size: 16px;
+
+          font-weight: 600;
+
+        }
+
+
+        /* ==========================================
+           TABLET / MOBILE
+        ========================================== */
+
+        @media (max-width: 650px) {
+
+          .expense-chart-header {
 
             align-items:
               flex-start;
@@ -814,78 +1034,121 @@ function ExpenseChart() {
             flex-direction:
               column;
 
-            gap: 9px;
+          }
+
+
+          .expense-total {
+
+            text-align:
+              left;
 
           }
 
 
-          .expense-summary-value {
+          .expense-chart-title-row h2 {
 
-            font-size: 23px;
+            font-size: 18px;
+
+          }
+
+
+          .expense-chart-title-row p {
+
+            font-size: 12px;
 
           }
 
 
-          .expense-chart {
+          .expense-total strong {
 
-            min-height: 240px;
+            font-size: 22px;
 
           }
 
-        }
 
-
-        /* =================================================
-           MOBILE
-        ================================================= */
-
-        @media (max-width: 480px) {
-
-          .expense-chart-summary {
+          .expense-chart-wrapper {
 
             padding:
-              0 2px 10px;
-
-          }
-
-
-          .expense-summary-label {
-
-            font-size: 10px;
-
-          }
-
-
-          .expense-summary-value {
-
-            font-size: 21px;
-
-          }
-
-
-          .expense-summary-period {
-
-            font-size: 11px;
-
-          }
-
-
-          .expense-chart {
-
-            min-height: 220px;
+              15px 5px 5px;
 
           }
 
 
           .expense-chart-footer {
 
-            font-size: 10px;
+            align-items:
+              flex-start;
+
+            flex-direction:
+              column;
+
+          }
+
+
+          .expense-footer-note {
+
+            text-align:
+              left;
 
           }
 
         }
 
       `}</style>
+
+    </section>
+
+  );
+
+}
+
+
+/* =====================================================
+   CUSTOM TOOLTIP
+===================================================== */
+
+function CustomTooltip({
+  active,
+  payload,
+  label,
+}) {
+
+  if (
+    !active ||
+    !payload ||
+    !payload.length
+  ) {
+
+    return null;
+
+  }
+
+
+  const value =
+    payload[0].value || 0;
+
+
+  return (
+
+    <div className="expense-tooltip">
+
+      <div className="expense-tooltip-label">
+
+        {label}
+
+      </div>
+
+
+      <div className="expense-tooltip-value">
+
+        ₹
+        {Number(
+          value
+        ).toLocaleString(
+          "en-IN"
+        )}
+
+      </div>
 
     </div>
 
