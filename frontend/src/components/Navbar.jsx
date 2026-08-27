@@ -1,5 +1,4 @@
 import {
-  Car,
   LogOut,
   User,
   ArrowRight,
@@ -43,7 +42,6 @@ const Navbar = () => {
 
   // =====================================================
   // LANDING NAVBAR
-  // Render directly inside BODY
   // =====================================================
 
   if (isLandingPage) {
@@ -62,35 +60,14 @@ const Navbar = () => {
             <Link
               to="/"
               className="ac-landing-logo"
+              aria-label="AutoCare AI Home"
             >
 
-              <div className="ac-landing-logo-mark">
-
-                <Car size={21} />
-
-              </div>
-
-
-              <div className="ac-landing-logo-copy">
-
-                <div className="ac-landing-logo-title">
-
-                  AutoCare{" "}
-
-                  <span>
-                    AI
-                  </span>
-
-                </div>
-
-
-                <div className="ac-landing-logo-subtitle">
-
-                  VEHICLE INTELLIGENCE
-
-                </div>
-
-              </div>
+              <img
+                src="/autocare-logo.png"
+                alt="AutoCare AI"
+                className="ac-landing-logo-image"
+              />
 
             </Link>
 
@@ -173,7 +150,7 @@ const Navbar = () => {
         <style>{`
 
           /* =====================================================
-             FULL LANDING NAVBAR
+             LANDING NAVBAR
           ===================================================== */
 
           .ac-landing-navbar {
@@ -259,84 +236,30 @@ const Navbar = () => {
 
             justify-self: start !important;
 
-            gap: 11px;
-
             text-decoration: none !important;
 
             min-width: 0;
 
-          }
+            height: 58px;
 
-
-          .ac-landing-logo-mark {
-
-            width: 38px;
-
-            height: 38px;
-
-            flex-shrink: 0;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            border-radius: 9px;
-
-            color: #f2f2f2;
-
-            background:
-              #151718;
-
-            border:
-              1px solid #303537;
+            overflow: hidden;
 
           }
 
 
-          .ac-landing-logo-copy {
+          .ac-landing-logo-image {
 
-            line-height: 1;
+            display: block;
 
-          }
+            width: 220px;
 
+            height: 58px;
 
-          .ac-landing-logo-title {
+            object-fit: contain;
 
-            color: #eeeeee;
+            object-position: left center;
 
-            font-size: 19px;
-
-            font-weight: 650;
-
-            letter-spacing:
-              -0.035em;
-
-            white-space: nowrap;
-
-          }
-
-
-          .ac-landing-logo-title span {
-
-            color: #f07827;
-
-          }
-
-
-          .ac-landing-logo-subtitle {
-
-            margin-top: 5px;
-
-            color: #666d70;
-
-            font-size: 8px;
-
-            font-weight: 700;
-
-            letter-spacing:
-              0.15em;
+            max-width: 100%;
 
           }
 
@@ -506,6 +429,13 @@ const Navbar = () => {
             }
 
 
+            .ac-landing-logo-image {
+
+              width: 190px;
+
+            }
+
+
             .ac-landing-nav-links {
 
               gap: 20px;
@@ -558,16 +488,20 @@ const Navbar = () => {
             }
 
 
-            .ac-landing-logo-title {
+            .ac-landing-logo {
 
-              font-size: 17px;
+              height: 52px;
+
+              max-width: calc(100% - 100px);
 
             }
 
 
-            .ac-landing-logo-subtitle {
+            .ac-landing-logo-image {
 
-              font-size: 7px;
+              width: 190px;
+
+              height: 52px;
 
             }
 
@@ -591,25 +525,18 @@ const Navbar = () => {
 
           @media (max-width: 450px) {
 
-            .ac-landing-logo-mark {
+            .ac-landing-logo {
 
-              width: 34px;
-
-              height: 34px;
+              max-width: calc(100% - 90px);
 
             }
 
 
-            .ac-landing-logo-title {
+            .ac-landing-logo-image {
 
-              font-size: 16px;
+              width: 155px;
 
-            }
-
-
-            .ac-landing-logo-subtitle {
-
-              display: none;
+              height: 46px;
 
             }
 
@@ -621,6 +548,9 @@ const Navbar = () => {
               height: 38px;
 
               font-size: 11px;
+
+              padding:
+                0 10px;
 
             }
 
@@ -636,6 +566,7 @@ const Navbar = () => {
       landingNavbar,
       document.body
     );
+
   }
 
 
@@ -649,42 +580,22 @@ const Navbar = () => {
 
       <nav className="app-navbar">
 
+
         {/* =================================================
-            BRAND
+            BRAND / LOGO
         ================================================= */}
 
         <Link
           to="/dashboard"
           className="app-navbar-brand"
+          aria-label="AutoCare AI Dashboard"
         >
 
-          <div className="app-brand-mark">
-
-            <Car size={20} />
-
-          </div>
-
-
-          <div>
-
-            <div className="app-brand-name">
-
-              AutoCare{" "}
-
-              <span>
-                AI
-              </span>
-
-            </div>
-
-
-            <div className="app-brand-subtitle">
-
-              VEHICLE INTELLIGENCE SYSTEM
-
-            </div>
-
-          </div>
+          <img
+            src="/autocare-logo.png"
+            alt="AutoCare AI"
+            className="app-navbar-logo"
+          />
 
         </Link>
 
@@ -742,6 +653,10 @@ const Navbar = () => {
 
       <style>{`
 
+        /* =====================================================
+           APPLICATION NAVBAR
+        ===================================================== */
+
         .app-navbar {
 
           position: relative;
@@ -776,78 +691,45 @@ const Navbar = () => {
         }
 
 
+        /* =====================================================
+           APPLICATION LOGO
+        ===================================================== */
+
         .app-navbar-brand {
 
           display: flex;
 
           align-items: center;
 
-          gap: 11px;
-
           text-decoration: none;
 
-        }
+          min-width: 0;
 
-
-        .app-brand-mark {
-
-          width: 38px;
-
-          height: 38px;
-
-          display: flex;
-
-          align-items: center;
-
-          justify-content: center;
-
-          border-radius: 9px;
-
-          color: #f07827;
-
-          background:
-            rgba(240,120,39,0.08);
-
-          border:
-            1px solid
-            rgba(240,120,39,0.22);
+          height: 58px;
 
         }
 
 
-        .app-brand-name {
+        .app-navbar-logo {
 
-          color: #e5e7e8;
+          display: block;
 
-          font-size: 18px;
+          width: 220px;
 
-          font-weight: 650;
+          height: 58px;
 
-        }
+          object-fit: contain;
 
+          object-position: left center;
 
-        .app-brand-name span {
-
-          color: #f07827;
-
-        }
-
-
-        .app-brand-subtitle {
-
-          margin-top: 4px;
-
-          color: #626a6e;
-
-          font-size: 8px;
-
-          font-weight: 700;
-
-          letter-spacing:
-            0.14em;
+          max-width: 100%;
 
         }
 
+
+        /* =====================================================
+           RIGHT SIDE
+        ===================================================== */
 
         .app-navbar-right {
 
@@ -974,6 +856,9 @@ const Navbar = () => {
 
           cursor: pointer;
 
+          transition:
+            all 0.2s ease;
+
         }
 
 
@@ -990,6 +875,25 @@ const Navbar = () => {
         }
 
 
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+          .app-navbar-logo {
+
+            width: 190px;
+
+          }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
         @media (max-width: 760px) {
 
           .app-navbar {
@@ -998,6 +902,24 @@ const Navbar = () => {
 
             padding:
               0 14px;
+
+          }
+
+
+          .app-navbar-brand {
+
+            height: 52px;
+
+            max-width: calc(100% - 190px);
+
+          }
+
+
+          .app-navbar-logo {
+
+            width: 175px;
+
+            height: 52px;
 
           }
 
@@ -1016,6 +938,93 @@ const Navbar = () => {
 
           }
 
+
+          .app-navbar-right {
+
+            gap: 8px;
+
+          }
+
+
+          .app-user {
+
+            padding:
+              5px;
+
+            border:
+              none;
+
+            background:
+              transparent;
+
+          }
+
+
+          .app-user-icon {
+
+            width: 34px;
+
+            height: 34px;
+
+          }
+
+
+          .app-logout {
+
+            padding:
+              8px 10px;
+
+            font-size: 12px;
+
+          }
+
+        }
+
+
+        /* =====================================================
+           SMALL MOBILE
+        ===================================================== */
+
+        @media (max-width: 450px) {
+
+          .app-navbar {
+
+            padding:
+              0 10px;
+
+          }
+
+
+          .app-navbar-brand {
+
+            max-width: calc(100% - 145px);
+
+          }
+
+
+          .app-navbar-logo {
+
+            width: 145px;
+
+            height: 46px;
+
+          }
+
+
+          .app-logout {
+
+            padding:
+              8px;
+
+          }
+
+
+          .app-logout span {
+
+            display: none;
+
+          }
+
         }
 
       `}</style>
@@ -1023,6 +1032,7 @@ const Navbar = () => {
     </>
 
   );
+
 };
 
 
