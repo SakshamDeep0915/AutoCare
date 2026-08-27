@@ -6,12 +6,14 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
+
 function SummaryCards({
   totalVehicles,
   totalServices,
   maintenanceCost,
   fuelExpense,
 }) {
+
   const cards = [
     {
       label: "TOTAL VEHICLES",
@@ -47,59 +49,77 @@ function SummaryCards({
     },
   ];
 
+
   return (
+
     <div className="summary-cards-grid">
 
       {cards.map((card, index) => {
+
         const Icon = card.icon;
 
+
         return (
+
           <div
             key={index}
             className="summary-card"
           >
 
-            {/* ==========================================
+            {/* =================================================
                 TOP
-            ========================================== */}
+            ================================================= */}
 
             <div className="summary-card-top">
 
               <div className="summary-card-icon">
-                <Icon size={16} />
+
+                <Icon size={19} />
+
               </div>
 
+
               <div className="summary-card-index">
+
                 {String(index + 1).padStart(2, "0")}
+
               </div>
 
             </div>
 
 
-            {/* ==========================================
+            {/* =================================================
                 CONTENT
-            ========================================== */}
+            ================================================= */}
 
             <div className="summary-card-content">
 
               <span className="summary-card-label">
+
                 {card.label}
+
               </span>
 
+
               <h3>
+
                 {card.title}
+
               </h3>
 
+
               <div className="summary-card-value">
+
                 {card.value}
+
               </div>
 
             </div>
 
 
-            {/* ==========================================
+            {/* =================================================
                 FOOTER
-            ========================================== */}
+            ================================================= */}
 
             <div className="summary-card-footer">
 
@@ -107,26 +127,27 @@ function SummaryCards({
                 AutoCare AI monitoring
               </span>
 
-              <ArrowUpRight
-                size={12}
-              />
+
+              <ArrowUpRight size={15} />
 
             </div>
 
           </div>
+
         );
+
       })}
 
 
-      {/* ================================================
+      {/* =====================================================
           STYLES
-      ================================================= */}
+      ===================================================== */}
 
       <style>{`
 
-        /* ==========================================
+        /* =====================================================
            GRID
-        ========================================== */
+        ===================================================== */
 
         .summary-cards-grid {
 
@@ -138,25 +159,24 @@ function SummaryCards({
               minmax(0, 1fr)
             );
 
-          gap: 8px;
+          gap: 14px;
 
-          margin-bottom: 20px;
+          margin-bottom: 24px;
 
         }
 
 
-        /* ==========================================
+        /* =====================================================
            CARD
-        ========================================== */
+        ===================================================== */
 
         .summary-card {
 
           position: relative;
 
-          min-height: 145px;
+          min-height: 175px;
 
-          padding:
-            15px;
+          padding: 20px;
 
           display: flex;
 
@@ -171,7 +191,7 @@ function SummaryCards({
           border:
             1px solid #292e31;
 
-          border-radius: 9px;
+          border-radius: 12px;
 
           transition:
             transform 0.2s ease,
@@ -189,16 +209,15 @@ function SummaryCards({
 
           top: 0;
 
-          left: 15px;
+          left: 20px;
 
-          width: 25px;
+          width: 34px;
 
-          height: 1px;
+          height: 2px;
 
-          background:
-            #e8752a;
+          background: #e8752a;
 
-          opacity: 0.75;
+          opacity: 0.8;
 
         }
 
@@ -215,15 +234,15 @@ function SummaryCards({
               232,
               117,
               42,
-              0.23
+              0.3
             );
 
         }
 
 
-        /* ==========================================
+        /* =====================================================
            TOP
-        ========================================== */
+        ===================================================== */
 
         .summary-card-top {
 
@@ -238,9 +257,9 @@ function SummaryCards({
 
         .summary-card-icon {
 
-          width: 30px;
+          width: 38px;
 
-          height: 30px;
+          height: 38px;
 
           display: flex;
 
@@ -248,7 +267,7 @@ function SummaryCards({
 
           justify-content: center;
 
-          border-radius: 7px;
+          border-radius: 9px;
 
           color: #e8752a;
 
@@ -257,7 +276,7 @@ function SummaryCards({
               232,
               117,
               42,
-              0.055
+              0.07
             );
 
           border:
@@ -266,7 +285,7 @@ function SummaryCards({
               232,
               117,
               42,
-              0.12
+              0.15
             );
 
         }
@@ -274,12 +293,12 @@ function SummaryCards({
 
         .summary-card-index {
 
-          color: #343b3f;
+          color: #41494d;
 
           font-family:
             monospace;
 
-          font-size: 7px;
+          font-size: 10px;
 
           letter-spacing:
             0.08em;
@@ -287,13 +306,13 @@ function SummaryCards({
         }
 
 
-        /* ==========================================
+        /* =====================================================
            CONTENT
-        ========================================== */
+        ===================================================== */
 
         .summary-card-content {
 
-          margin-top: 13px;
+          margin-top: 16px;
 
         }
 
@@ -302,14 +321,16 @@ function SummaryCards({
 
           display: block;
 
-          color: #4a5256;
+          color: #626a6e;
 
-          font-size: 5px;
+          font-size: 11px;
 
           font-weight: 700;
 
           letter-spacing:
-            0.16em;
+            0.14em;
+
+          line-height: 1.3;
 
         }
 
@@ -317,31 +338,33 @@ function SummaryCards({
         .summary-card-content h3 {
 
           margin:
-            4px 0 0;
+            6px 0 0;
 
-          color: #737b7f;
+          color: #969da0;
 
-          font-size: 7px;
+          font-size: 15px;
 
           font-weight: 500;
+
+          line-height: 1.4;
 
         }
 
 
         .summary-card-value {
 
-          margin-top: 7px;
+          margin-top: 8px;
 
-          color: #d0d4d5;
+          color: #e0e3e4;
 
-          font-size: 21px;
+          font-size: 30px;
 
-          font-weight: 600;
+          font-weight: 650;
 
-          line-height: 1;
+          line-height: 1.05;
 
           letter-spacing:
-            -0.04em;
+            -0.035em;
 
           white-space: nowrap;
 
@@ -352,9 +375,9 @@ function SummaryCards({
         }
 
 
-        /* ==========================================
+        /* =====================================================
            FOOTER
-        ========================================== */
+        ===================================================== */
 
         .summary-card-footer {
 
@@ -364,28 +387,65 @@ function SummaryCards({
 
           justify-content: space-between;
 
-          padding-top: 10px;
+          gap: 10px;
+
+          padding-top: 12px;
 
           border-top:
             1px solid #252a2c;
 
-          color: #3f474b;
+          color: #565f63;
 
-          font-size: 5px;
+          font-size: 11px;
+
+          line-height: 1.4;
 
         }
 
 
         .summary-card-footer svg {
 
-          color: #555d61;
+          flex-shrink: 0;
+
+          color: #697175;
 
         }
 
 
-        /* ==========================================
-           RESPONSIVE
-        ========================================== */
+        /* =====================================================
+           LARGE SCREENS
+        ===================================================== */
+
+        @media (min-width: 1280px) {
+
+          .summary-cards-grid {
+
+            gap: 16px;
+
+          }
+
+
+          .summary-card {
+
+            min-height: 180px;
+
+            padding: 21px;
+
+          }
+
+
+          .summary-card-value {
+
+            font-size: 32px;
+
+          }
+
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
 
         @media (max-width: 1000px) {
 
@@ -397,25 +457,84 @@ function SummaryCards({
                 minmax(0, 1fr)
               );
 
-          }
-
-        }
-
-
-        @media (max-width: 600px) {
-
-          .summary-cards-grid {
-
-            grid-template-columns:
-              1fr;
+            gap: 14px;
 
           }
 
 
           .summary-card {
 
-            min-height:
-              125px;
+            min-height: 165px;
+
+          }
+
+
+          .summary-card-value {
+
+            font-size: 28px;
+
+          }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+          .summary-cards-grid {
+
+            grid-template-columns: 1fr;
+
+            gap: 12px;
+
+          }
+
+
+          .summary-card {
+
+            min-height: 150px;
+
+            padding: 18px;
+
+          }
+
+
+          .summary-card-icon {
+
+            width: 36px;
+
+            height: 36px;
+
+          }
+
+
+          .summary-card-label {
+
+            font-size: 10px;
+
+          }
+
+
+          .summary-card-content h3 {
+
+            font-size: 15px;
+
+          }
+
+
+          .summary-card-value {
+
+            font-size: 27px;
+
+          }
+
+
+          .summary-card-footer {
+
+            font-size: 10px;
 
           }
 
@@ -424,7 +543,9 @@ function SummaryCards({
       `}</style>
 
     </div>
+
   );
 }
+
 
 export default SummaryCards;

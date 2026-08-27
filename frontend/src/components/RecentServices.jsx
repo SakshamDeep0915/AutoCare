@@ -1,81 +1,65 @@
 import {
   Wrench,
-  Car,
   CalendarDays,
-  ArrowRight,
+  IndianRupee,
+  ArrowUpRight,
   ClipboardList,
 } from "lucide-react";
 
 
-function RecentServices({ services = [] }) {
+function RecentServices({
+  services = [],
+}) {
 
   return (
 
-    <section className="recent-services-container">
+    <div className="recent-services-container">
 
-
-      {/* =================================================
+      {/* =====================================================
           HEADER
-      ================================================= */}
+      ===================================================== */}
 
       <div className="recent-services-header">
 
-        <div className="recent-services-title-group">
+        <div className="recent-services-title">
 
           <div className="recent-services-icon">
 
-            <Wrench size={17} />
+            <ClipboardList size={20} />
 
           </div>
 
-
           <div>
 
-            <div className="recent-services-kicker">
-
-              <span></span>
-
+            <p className="recent-services-kicker">
               MAINTENANCE ACTIVITY
-
-            </div>
-
-            <h2>
-              Recent services
-            </h2>
-
-            <p>
-              Latest maintenance records across your vehicles.
             </p>
+
+            <h3>
+              Service history
+            </h3>
 
           </div>
 
         </div>
 
 
-        {services.length > 0 && (
+        <span className="recent-services-count">
 
-          <div className="recent-services-count">
+          {services.length}
 
-            <strong>
-              {String(
-                services.length
-              ).padStart(2, "0")}
-            </strong>
+          <span>
+            RECORDS
+          </span>
 
-            <span>
-              RECORDS
-            </span>
-
-          </div>
-
-        )}
+        </span>
 
       </div>
 
 
-      {/* =================================================
+      {/* =====================================================
           EMPTY STATE
-      ================================================= */}
+      ===================================================== */}
 
       {services.length === 0 ? (
 
@@ -83,173 +67,193 @@ function RecentServices({ services = [] }) {
 
           <div className="recent-empty-icon">
 
-            <ClipboardList
-              size={20}
-            />
+            <Wrench size={25} />
 
           </div>
 
 
-          <div>
+          <h4>
+            No service records yet
+          </h4>
 
-            <h3>
-              No recent services
-            </h3>
 
-            <p>
-              Service records will appear here once maintenance is added.
-            </p>
-
-          </div>
+          <p>
+            Your recent maintenance activity will appear here once
+            you add a service record.
+          </p>
 
         </div>
 
       ) : (
 
-        /* =================================================
+        /* ===================================================
            SERVICE LIST
-        ================================================= */
+        =================================================== */
 
         <div className="recent-services-list">
 
           {services.map(
-            (service, index) => (
+            (service, index) => {
 
-              <div
-                key={service._id}
-                className="recent-service-card"
-              >
-
-
-                {/* ======================================
-                    NUMBER
-                ====================================== */}
-
-                <div className="recent-service-number">
-
-                  {String(
-                    index + 1
-                  ).padStart(2, "0")}
-
-                </div>
+              const serviceDate =
+                service.date ||
+                service.serviceDate ||
+                service.createdAt;
 
 
-                {/* ======================================
-                    SERVICE ICON
-                ====================================== */}
-
-                <div className="recent-service-icon">
-
-                  <Wrench
-                    size={15}
-                  />
-
-                </div>
-
-
-                {/* ======================================
-                    SERVICE DETAILS
-                ====================================== */}
-
-                <div className="recent-service-details">
-
-                  <h3>
-                    {service.serviceType}
-                  </h3>
+              const formattedDate =
+                serviceDate
+                  ? new Date(
+                      serviceDate
+                    ).toLocaleDateString(
+                      "en-IN",
+                      {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )
+                  : "Date unavailable";
 
 
-                  <div className="recent-service-meta">
+              const cost =
+                Number(
+                  service.cost ||
+                  service.amount ||
+                  0
+                );
 
 
-                    <span>
-
-                      <Car
-                        size={11}
-                      />
-
-                      {service.vehicle?.brand ||
-                        "Vehicle"}{" "}
-
-                      {service.vehicle?.model ||
-                        ""}
-
-                    </span>
+              const vehicleName =
+                service.vehicle?.brand ||
+                service.vehicle?.model ||
+                service.vehicleName ||
+                "Vehicle";
 
 
-                    <span>
+              return (
 
-                      <CalendarDays
-                        size={11}
-                      />
+                <div
+                  key={
+                    service._id ||
+                    index
+                  }
+                  className="recent-service-row"
+                >
 
-                      {new Date(
-                        service.serviceDate
-                      ).toLocaleDateString(
-                        "en-IN",
-                        {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        }
-                      )}
+                  {/* =================================================
+                      ICON
+                  ================================================= */}
 
-                    </span>
+                  <div className="recent-service-icon">
+
+                    <Wrench size={19} />
+
+                  </div>
 
 
-                    {service.serviceCenter && (
+                  {/* =================================================
+                      MAIN INFO
+                  ================================================= */}
 
-                      <span className="service-center">
+                  <div className="recent-service-main">
 
-                        {service.serviceCenter}
+                    <div className="recent-service-top">
+
+                      <h4>
+
+                        {service.serviceType ||
+                          service.type ||
+                          service.title ||
+                          "Service"}
+
+                      </h4>
+
+
+                      <span className="recent-service-number">
+
+                        {String(index + 1).padStart(
+                          2,
+                          "0"
+                        )}
 
                       </span>
+
+                    </div>
+
+
+                    <div className="recent-service-meta">
+
+                      <span>
+
+                        <CalendarDays size={14} />
+
+                        {formattedDate}
+
+                      </span>
+
+
+                      <span>
+
+                        {vehicleName}
+
+                      </span>
+
+                    </div>
+
+
+                    {service.description && (
+
+                      <p className="recent-service-description">
+
+                        {service.description}
+
+                      </p>
 
                     )}
 
                   </div>
 
-                </div>
+
+                  {/* =================================================
+                      COST
+                  ================================================= */}
+
+                  <div className="recent-service-cost">
+
+                    <span>
+                      COST
+                    </span>
 
 
-                {/* ======================================
-                    COST
-                ====================================== */}
+                    <strong>
 
-                <div className="recent-service-cost">
+                      <IndianRupee size={15} />
 
-                  <span>
-                    COST
-                  </span>
+                      {cost.toLocaleString(
+                        "en-IN"
+                      )}
 
-                  <strong>
+                    </strong>
 
-                    ₹
-                    {Number(
-                      service.cost || 0
-                    ).toLocaleString(
-                      "en-IN"
-                    )}
-
-                  </strong>
-
-                </div>
+                  </div>
 
 
-                {/* ======================================
-                    ARROW
-                ====================================== */}
+                  {/* =================================================
+                      ACTION
+                  ================================================= */}
 
-                <div className="recent-service-arrow">
+                  <div className="recent-service-action">
 
-                  <ArrowRight
-                    size={14}
-                  />
+                    <ArrowUpRight size={17} />
+
+                  </div>
 
                 </div>
 
-              </div>
+              );
 
-            )
+            }
           )}
 
         </div>
@@ -257,21 +261,19 @@ function RecentServices({ services = [] }) {
       )}
 
 
-      {/* =================================================
+      {/* =====================================================
           STYLES
-      ================================================= */}
+      ===================================================== */}
 
       <style>{`
 
-        /* ==========================================
+        /* =====================================================
            CONTAINER
-        ========================================== */
+        ===================================================== */
 
         .recent-services-container {
 
           width: 100%;
-
-          margin-top: 20px;
 
           background: #131617;
 
@@ -285,9 +287,9 @@ function RecentServices({ services = [] }) {
         }
 
 
-        /* ==========================================
+        /* =====================================================
            HEADER
-        ========================================== */
+        ===================================================== */
 
         .recent-services-header {
 
@@ -300,32 +302,32 @@ function RecentServices({ services = [] }) {
           gap: 20px;
 
           padding:
-            20px 22px;
+            21px 24px;
+
+          background: #151819;
 
           border-bottom:
             1px solid #292e31;
 
-          background: #151819;
-
         }
 
 
-        .recent-services-title-group {
+        .recent-services-title {
 
           display: flex;
 
           align-items: center;
 
-          gap: 10px;
+          gap: 12px;
 
         }
 
 
         .recent-services-icon {
 
-          width: 35px;
+          width: 40px;
 
-          height: 35px;
+          height: 40px;
 
           display: flex;
 
@@ -333,7 +335,7 @@ function RecentServices({ services = [] }) {
 
           justify-content: center;
 
-          border-radius: 8px;
+          flex-shrink: 0;
 
           color: #e8752a;
 
@@ -351,77 +353,48 @@ function RecentServices({ services = [] }) {
               232,
               117,
               42,
-              0.13
+              0.14
             );
+
+          border-radius: 9px;
 
         }
 
 
         .recent-services-kicker {
 
-          display: flex;
+          margin: 0 0 4px;
 
-          align-items: center;
+          color: #626a6e;
 
-          gap: 7px;
-
-          color: #4d5458;
-
-          font-size: 6px;
+          font-size: 11px;
 
           font-weight: 700;
 
           letter-spacing:
-            0.18em;
-
-          margin-bottom: 4px;
+            0.15em;
 
         }
 
 
-        .recent-services-kicker span {
-
-          width: 17px;
-
-          height: 1px;
-
-          background:
-            #e8752a;
-
-        }
-
-
-        .recent-services-header h2 {
+        .recent-services-title h3 {
 
           margin: 0;
 
-          color: #d2d5d6;
+          color: #d0d4d5;
 
-          font-size: 14px;
+          font-size: 21px;
+
+          line-height: 1.25;
 
           font-weight: 600;
 
-          letter-spacing:
-            -0.02em;
-
         }
 
 
-        .recent-services-header p {
-
-          margin:
-            4px 0 0;
-
-          color: #50575b;
-
-          font-size: 8px;
-
-        }
-
-
-        /* ==========================================
+        /* =====================================================
            COUNT
-        ========================================== */
+        ===================================================== */
 
         .recent-services-count {
 
@@ -431,37 +404,9 @@ function RecentServices({ services = [] }) {
 
           gap: 7px;
 
-          padding:
-            7px 10px;
+          color: #e8752a;
 
-          border:
-            1px solid
-            rgba(
-              232,
-              117,
-              42,
-              0.16
-            );
-
-          border-radius: 6px;
-
-          background:
-            rgba(
-              232,
-              117,
-              42,
-              0.045
-            );
-
-        }
-
-
-        .recent-services-count strong {
-
-          color:
-            #e8752a;
-
-          font-size: 10px;
+          font-size: 15px;
 
           font-weight: 600;
 
@@ -470,121 +415,81 @@ function RecentServices({ services = [] }) {
 
         .recent-services-count span {
 
-          color:
-            #555d61;
+          color: #626a6e;
 
-          font-size: 5px;
+          font-size: 10px;
 
           font-weight: 700;
 
           letter-spacing:
-            0.13em;
+            0.1em;
 
         }
 
 
-        /* ==========================================
+        /* =====================================================
            LIST
-        ========================================== */
+        ===================================================== */
 
         .recent-services-list {
-
-          padding: 11px;
 
           display: flex;
 
           flex-direction: column;
 
-          gap: 6px;
-
         }
 
 
-        /* ==========================================
-           SERVICE CARD
-        ========================================== */
+        /* =====================================================
+           SERVICE ROW
+        ===================================================== */
 
-        .recent-service-card {
-
-          position: relative;
+        .recent-service-row {
 
           display: flex;
 
           align-items: center;
 
-          gap: 10px;
-
-          min-height: 65px;
+          gap: 15px;
 
           padding:
-            10px 11px;
+            18px 20px;
 
-          border:
+          border-bottom:
             1px solid #252a2c;
-
-          border-radius: 8px;
 
           background: #111314;
 
           transition:
-            border-color 0.2s ease,
             background 0.2s ease,
-            transform 0.2s ease;
+            border-color 0.2s ease;
 
         }
 
 
-        .recent-service-card:hover {
+        .recent-service-row:last-child {
+
+          border-bottom: none;
+
+        }
+
+
+        .recent-service-row:hover {
 
           background: #151819;
 
-          border-color:
-            rgba(
-              232,
-              117,
-              42,
-              0.2
-            );
-
-          transform:
-            translateX(2px);
-
         }
 
 
-        /* ==========================================
-           NUMBER
-        ========================================== */
-
-        .recent-service-number {
-
-          width: 23px;
-
-          flex-shrink: 0;
-
-          color: #3f464a;
-
-          font-family:
-            monospace;
-
-          font-size: 7px;
-
-          text-align: center;
-
-        }
-
-
-        /* ==========================================
-           ICON
-        ========================================== */
+        /* =====================================================
+           SERVICE ICON
+        ===================================================== */
 
         .recent-service-icon {
 
-          width: 32px;
+          width: 42px;
 
-          height: 32px;
-
-          flex-shrink: 0;
+          height: 42px;
 
           display: flex;
 
@@ -592,7 +497,7 @@ function RecentServices({ services = [] }) {
 
           justify-content: center;
 
-          border-radius: 7px;
+          flex-shrink: 0;
 
           color: #e8752a;
 
@@ -601,7 +506,7 @@ function RecentServices({ services = [] }) {
               232,
               117,
               42,
-              0.055
+              0.065
             );
 
           border:
@@ -610,45 +515,79 @@ function RecentServices({ services = [] }) {
               232,
               117,
               42,
-              0.12
+              0.14
             );
+
+          border-radius: 9px;
 
         }
 
 
-        /* ==========================================
-           DETAILS
-        ========================================== */
+        /* =====================================================
+           MAIN
+        ===================================================== */
 
-        .recent-service-details {
-
-          min-width: 0;
+        .recent-service-main {
 
           flex: 1;
 
+          min-width: 0;
+
         }
 
 
-        .recent-service-details h3 {
+        .recent-service-top {
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: space-between;
+
+          gap: 10px;
+
+        }
+
+
+        .recent-service-top h4 {
 
           margin: 0;
 
-          overflow: hidden;
+          color: #cdd1d2;
 
-          text-overflow:
-            ellipsis;
+          font-size: 16px;
 
-          white-space:
-            nowrap;
-
-          color: #b9bec0;
-
-          font-size: 9px;
+          line-height: 1.4;
 
           font-weight: 600;
 
+          overflow: hidden;
+
+          text-overflow: ellipsis;
+
+          white-space: nowrap;
+
         }
 
+
+        .recent-service-number {
+
+          color: #41494d;
+
+          font-family:
+            monospace;
+
+          font-size: 10px;
+
+          letter-spacing:
+            0.08em;
+
+        }
+
+
+        /* =====================================================
+           META
+        ===================================================== */
 
         .recent-service-meta {
 
@@ -658,9 +597,13 @@ function RecentServices({ services = [] }) {
 
           flex-wrap: wrap;
 
-          gap: 11px;
+          gap: 15px;
 
-          margin-top: 5px;
+          margin-top: 6px;
+
+          color: #697175;
+
+          font-size: 13px;
 
         }
 
@@ -671,48 +614,53 @@ function RecentServices({ services = [] }) {
 
           align-items: center;
 
-          gap: 4px;
-
-          color: #50585c;
-
-          font-size: 6px;
+          gap: 5px;
 
         }
 
 
         .recent-service-meta svg {
 
-          color: #454c50;
-
-        }
-
-
-        .recent-service-meta
-        .service-center {
-
-          padding-left: 9px;
-
-          border-left:
-            1px solid #292e31;
-
-          color: #454c50;
-
-        }
-
-
-        /* ==========================================
-           COST
-        ========================================== */
-
-        .recent-service-cost {
+          color: #555e62;
 
           flex-shrink: 0;
 
-          min-width: 80px;
+        }
+
+
+        /* =====================================================
+           DESCRIPTION
+        ===================================================== */
+
+        .recent-service-description {
+
+          margin:
+            6px 0 0;
+
+          color: #626a6e;
+
+          font-size: 13px;
+
+          line-height: 1.5;
+
+          overflow: hidden;
+
+          text-overflow: ellipsis;
+
+          white-space: nowrap;
+
+        }
+
+
+        /* =====================================================
+           COST
+        ===================================================== */
+
+        .recent-service-cost {
+
+          min-width: 110px;
 
           text-align: right;
-
-          padding-left: 12px;
 
         }
 
@@ -721,44 +669,55 @@ function RecentServices({ services = [] }) {
 
           display: block;
 
-          color: #41484c;
+          margin-bottom: 4px;
 
-          font-size: 5px;
+          color: #555e62;
+
+          font-size: 9px;
 
           font-weight: 700;
 
           letter-spacing:
-            0.14em;
+            0.12em;
 
         }
 
 
         .recent-service-cost strong {
 
-          display: block;
+          display: inline-flex;
 
-          margin-top: 4px;
+          align-items: center;
 
-          color: #e8752a;
+          justify-content: flex-end;
 
-          font-size: 10px;
+          gap: 1px;
 
-          font-weight: 500;
+          color: #d5d9da;
+
+          font-size: 16px;
+
+          font-weight: 600;
 
         }
 
 
-        /* ==========================================
-           ARROW
-        ========================================== */
+        .recent-service-cost strong svg {
 
-        .recent-service-arrow {
+          color: #e8752a;
 
-          width: 27px;
+        }
 
-          height: 27px;
 
-          flex-shrink: 0;
+        /* =====================================================
+           ACTION
+        ===================================================== */
+
+        .recent-service-action {
+
+          width: 35px;
+
+          height: 35px;
 
           display: flex;
 
@@ -766,21 +725,25 @@ function RecentServices({ services = [] }) {
 
           justify-content: center;
 
+          flex-shrink: 0;
+
+          color: #555e62;
+
           border:
             1px solid #292e31;
 
-          border-radius: 6px;
-
-          color: #4e565a;
+          border-radius: 7px;
 
           transition:
-            all 0.2s ease;
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease;
 
         }
 
 
-        .recent-service-card:hover
-        .recent-service-arrow {
+        .recent-service-row:hover
+        .recent-service-action {
 
           color: #e8752a;
 
@@ -789,19 +752,27 @@ function RecentServices({ services = [] }) {
               232,
               117,
               42,
-              0.22
+              0.28
+            );
+
+          background:
+            rgba(
+              232,
+              117,
+              42,
+              0.04
             );
 
         }
 
 
-        /* ==========================================
+        /* =====================================================
            EMPTY STATE
-        ========================================== */
+        ===================================================== */
 
         .recent-services-empty {
 
-          min-height: 145px;
+          min-height: 190px;
 
           display: flex;
 
@@ -809,28 +780,26 @@ function RecentServices({ services = [] }) {
 
           justify-content: center;
 
-          gap: 12px;
+          flex-direction: column;
 
-          padding: 25px;
+          text-align: center;
+
+          padding: 30px;
 
         }
 
 
         .recent-empty-icon {
 
-          width: 42px;
+          width: 50px;
 
-          height: 42px;
-
-          flex-shrink: 0;
+          height: 50px;
 
           display: flex;
 
           align-items: center;
 
           justify-content: center;
-
-          border-radius: 8px;
 
           color: #e8752a;
 
@@ -839,7 +808,7 @@ function RecentServices({ services = [] }) {
               232,
               117,
               42,
-              0.055
+              0.06
             );
 
           border:
@@ -848,19 +817,22 @@ function RecentServices({ services = [] }) {
               232,
               117,
               42,
-              0.12
+              0.14
             );
+
+          border-radius: 10px;
 
         }
 
 
-        .recent-services-empty h3 {
+        .recent-services-empty h4 {
 
-          margin: 0;
+          margin:
+            15px 0 0;
 
-          color: #999fa2;
+          color: #c4c9ca;
 
-          font-size: 10px;
+          font-size: 17px;
 
           font-weight: 600;
 
@@ -869,40 +841,27 @@ function RecentServices({ services = [] }) {
 
         .recent-services-empty p {
 
+          max-width: 480px;
+
           margin:
-            4px 0 0;
+            6px 0 0;
 
-          color: #4e565a;
+          color: #626a6e;
 
-          font-size: 7px;
+          font-size: 14px;
 
           line-height: 1.6;
 
         }
 
 
-        /* ==========================================
-           MOBILE
-        ========================================== */
+        /* =====================================================
+           TABLET
+        ===================================================== */
 
-        @media (max-width: 650px) {
+        @media (max-width: 800px) {
 
-          .recent-services-header {
-
-            align-items:
-              flex-start;
-
-          }
-
-
-          .recent-service-number {
-
-            display: none;
-
-          }
-
-
-          .recent-service-card {
+          .recent-service-row {
 
             align-items:
               flex-start;
@@ -912,41 +871,131 @@ function RecentServices({ services = [] }) {
 
           .recent-service-cost {
 
-            min-width: auto;
+            min-width: 90px;
+
+          }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+          .recent-services-header {
+
+            padding:
+              18px;
 
           }
 
 
-          .recent-service-arrow {
+          .recent-services-title h3 {
 
-            display: none;
+            font-size: 19px;
+
+          }
+
+
+          .recent-services-count {
+
+            font-size: 13px;
+
+          }
+
+
+          .recent-services-list {
+
+            gap: 0;
+
+          }
+
+
+          .recent-service-row {
+
+            display: grid;
+
+            grid-template-columns:
+              40px
+              1fr
+              auto;
+
+            gap: 11px;
+
+            padding:
+              16px;
+
+          }
+
+
+          .recent-service-icon {
+
+            width: 40px;
+
+            height: 40px;
+
+          }
+
+
+          .recent-service-top h4 {
+
+            font-size: 15px;
 
           }
 
 
           .recent-service-meta {
 
-            gap: 6px;
+            font-size: 12px;
+
+            gap: 9px;
 
           }
 
 
-          .recent-service-meta
-          .service-center {
+          .recent-service-description {
 
-            width: 100%;
-
-            padding-left: 0;
-
-            border-left: none;
+            font-size: 12px;
 
           }
 
 
-          .recent-services-empty {
+          .recent-service-cost {
 
-            align-items:
-              flex-start;
+            grid-column: 2 / 3;
+
+            min-width: 0;
+
+            text-align: left;
+
+            margin-top: 3px;
+
+          }
+
+
+          .recent-service-cost span {
+
+            display: inline;
+
+            margin-right: 6px;
+
+          }
+
+
+          .recent-service-cost strong {
+
+            font-size: 14px;
+
+          }
+
+
+          .recent-service-action {
+
+            grid-column: 3;
+
+            grid-row: 1;
 
           }
 
@@ -954,7 +1003,7 @@ function RecentServices({ services = [] }) {
 
       `}</style>
 
-    </section>
+    </div>
 
   );
 }
