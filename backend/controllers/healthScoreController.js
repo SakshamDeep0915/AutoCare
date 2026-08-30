@@ -4,54 +4,113 @@ const FuelExpense = require("../models/FuelExpense");
 
 
 // =====================================================
-// Get Vehicle Health Score
+// HELPERS
 // =====================================================
 
-exports.getVehicleHealthScore = async (req, res) => {
+const clamp = (value, min, max) => {
+  return Math.min(
+    Math.max(value, min),
+    max
+  );
+};
+
+
+const round = (value, decimals = 2) => {
+  const factor = Math.pow(
+    10,
+    decimals
+  );
+
+  return (
+    Math.round(
+      (value + Number.EPSILON) *
+        factor
+    ) / factor
+  );
+};
+
+
+// =====================================================
+// GET VEHICLE HEALTH SCORE
+// =====================================================
+
+exports.getVehicleHealthScore = async (
+  req,
+  res
+) => {
+
   try {
-    const userId = req.user.id;
-    const { vehicleId } = req.params;
+
+    const userId =
+      req.user.id;
+
+    const {
+      vehicleId,
+    } = req.params;
 
 
     // ===================================================
-    // Find Vehicle
+    // FIND VEHICLE
     // ===================================================
 
-    const vehicle = await Vehicle.findOne({
-      _id: vehicleId,
-      user: userId,
-    });
+    const vehicle =
+      await Vehicle.findOne({
+
+        _id: vehicleId,
+
+        user: userId,
+
+      });
+
 
     if (!vehicle) {
+
       return res.status(404).json({
+
         success: false,
-        message: "Vehicle not found",
+
+        message:
+          "Vehicle not found",
+
       });
+
     }
 
 
     // ===================================================
-    // Get Service History
+    // SERVICE HISTORY
     // ===================================================
 
-    const services = await Service.find({
-      vehicle: vehicleId,
-      user: userId,
-    }).sort({
-      serviceDate: -1,
-    });
+    const services =
+      await Service.find({
+
+        vehicle: vehicleId,
+
+        user: userId,
+
+      }).sort({
+
+        serviceDate: -1,
+
+      });
 
 
     // ===================================================
-    // Get Fuel History
+    // FUEL HISTORY
     // ===================================================
 
-    const fuelRecords = await FuelExpense.find({
-      vehicle: vehicleId,
-      user: userId,
-    }).sort({
-      odometer: 1,
-    });
+    const fuelRecords =
+      await FuelExpense.find({
+
+        vehicle: vehicleId,
+
+        user: userId,
+
+      }).sort({
+
+        odometer: 1,
+
+      });
 
 
     // ===================================================
@@ -62,27 +121,227 @@ exports.getVehicleHealthScore = async (req, res) => {
 
 
     if (services.length === 0) {
-      maintenanceScore = 10;
+
+      // No service history means we have
+      // limited evidence of maintenance.
+
+      maintenanceScore = 12;
+
     } else {
 
-      const latestService = services[0];
+      const latestService =
+        services[0];
+
+
+      const currentOdometer =
+        Number(
+          vehicle.odometer
+        ) || 0;
+
+
+      const serviceOdometer =
+        Number(
+          latestService.odometer
+        ) || 0;
+
 
       const distanceSinceService =
-        Number(vehicle.odometer) -
-        Number(latestService.odometer);
+        Math.max(
+          0,
+          currentOdometer -
+            serviceOdometer
+        );
 
 
-      if (distanceSinceService >= 5000) {
-        maintenanceScore = 10;
+      // -------------------------------------------------
+      // More granular maintenance scoring
+      // -------------------------------------------------
+
+      if (
+        distanceSinceService <= 1000
+      ) {
+
+        maintenanceScore = 30;
+
       }
 
-      else if (distanceSinceService >= 4000) {
+      else if (
+        distanceSinceService <= 2000
+      ) {
+
+        maintenanceScore = 29;
+
+      }
+
+      else if (
+        distanceSinceService <= 3000
+      ) {
+
+        maintenanceScore = 28;
+
+      }
+
+      else if (
+        distanceSinceService <= 4000
+      ) {
+
+        maintenanceScore = 26;
+
+      }
+
+      else if (
+        distanceSinceService <= 5000
+      ) {
+
+        maintenanceScore = 23;
+
+      }
+
+      else if (
+        distanceSinceService <= 6000
+      ) {
+
         maintenanceScore = 20;
+
+      }
+
+      else if (
+        distanceSinceService <= 7500
+      ) {
+
+        maintenanceScore = 17;
+
+      }
+
+      else if (
+        distanceSinceService <= 10000
+      ) {
+
+        maintenanceScore = 14;
+
+      }
+
+      else if (
+        distanceSinceService <= 15000
+      ) {
+
+        maintenanceScore = 10;
+
       }
 
       else {
-        maintenanceScore = 30;
+
+        maintenanceScore = 6;
+
       }
+
+
+      // -------------------------------------------------
+      // Service frequency bonus / penalty
+      // -------------------------------------------------
+
+      if (
+        services.length >= 3
+      ) {
+
+        const recentServices =
+          services.slice(
+            0,
+            3
+          );
+
+
+        const serviceIntervals = [];
+
+
+        for (
+          let i = 0;
+          i <
+            recentServices.length - 1;
+          i++
+        ) {
+
+          const current =
+            Number(
+              recentServices[i]
+                .odometer
+            );
+
+
+          const previous =
+            Number(
+              recentServices[i + 1]
+                .odometer
+            );
+
+
+          const interval =
+            current -
+            previous;
+
+
+          if (
+            interval > 0
+          ) {
+
+            serviceIntervals.push(
+              interval
+            );
+
+          }
+
+        }
+
+
+        if (
+          serviceIntervals.length > 0
+        ) {
+
+          const averageInterval =
+            serviceIntervals.reduce(
+              (
+                sum,
+                value
+              ) =>
+                sum + value,
+              0
+            ) /
+            serviceIntervals.length;
+
+
+          // Consistent servicing improves
+          // the maintenance score slightly.
+
+          if (
+            averageInterval <= 7000
+          ) {
+
+            maintenanceScore +=
+              1;
+
+          }
+
+          else if (
+            averageInterval >= 12000
+          ) {
+
+            maintenanceScore -=
+              2;
+
+          }
+
+        }
+
+      }
+
+
+      maintenanceScore =
+        clamp(
+          maintenanceScore,
+          0,
+          30
+        );
+
     }
 
 
@@ -92,11 +351,13 @@ exports.getVehicleHealthScore = async (req, res) => {
 
     let fuelEfficiencyScore = 25;
 
-    let currentEfficiency = null;
+    let currentEfficiency =
+      null;
 
 
     if (
-      vehicle.fuelType !== "Electric" &&
+      vehicle.fuelType !==
+        "Electric" &&
       fuelRecords.length >= 2
     ) {
 
@@ -105,24 +366,40 @@ exports.getVehicleHealthScore = async (req, res) => {
 
       for (
         let i = 1;
-        i < fuelRecords.length;
+        i <
+          fuelRecords.length;
         i++
       ) {
 
         const previous =
           fuelRecords[i - 1];
 
+
         const current =
           fuelRecords[i];
 
 
+        const previousOdometer =
+          Number(
+            previous.odometer
+          );
+
+
+        const currentOdometer =
+          Number(
+            current.odometer
+          );
+
+
         const distance =
-          Number(current.odometer) -
-          Number(previous.odometer);
+          currentOdometer -
+          previousOdometer;
 
 
         const fuelUsed =
-          Number(current.quantity);
+          Number(
+            current.quantity
+          );
 
 
         if (
@@ -131,9 +408,12 @@ exports.getVehicleHealthScore = async (req, res) => {
         ) {
 
           efficiencyRecords.push(
-            distance / fuelUsed
+            distance /
+              fuelUsed
           );
+
         }
+
       }
 
 
@@ -149,38 +429,122 @@ exports.getVehicleHealthScore = async (req, res) => {
 
         const averageEfficiency =
           efficiencyRecords.reduce(
-            (sum, value) =>
+            (
+              sum,
+              value
+            ) =>
               sum + value,
             0
           ) /
           efficiencyRecords.length;
 
 
+        // -------------------------------------------------
+        // Compare current efficiency with historical
+        // average.
+        // -------------------------------------------------
+
+        const efficiencyRatio =
+          averageEfficiency > 0
+            ? currentEfficiency /
+              averageEfficiency
+            : 1;
+
+
         if (
-          currentEfficiency >=
-          averageEfficiency * 0.95
+          efficiencyRatio >= 1.10
         ) {
-          fuelEfficiencyScore = 25;
+
+          fuelEfficiencyScore =
+            25;
+
         }
 
         else if (
-          currentEfficiency >=
-          averageEfficiency * 0.85
+          efficiencyRatio >= 1.05
         ) {
-          fuelEfficiencyScore = 20;
+
+          fuelEfficiencyScore =
+            24;
+
         }
 
         else if (
-          currentEfficiency >=
-          averageEfficiency * 0.70
+          efficiencyRatio >= 1.00
         ) {
-          fuelEfficiencyScore = 15;
+
+          fuelEfficiencyScore =
+            23;
+
+        }
+
+        else if (
+          efficiencyRatio >= 0.95
+        ) {
+
+          fuelEfficiencyScore =
+            21;
+
+        }
+
+        else if (
+          efficiencyRatio >= 0.90
+        ) {
+
+          fuelEfficiencyScore =
+            19;
+
+        }
+
+        else if (
+          efficiencyRatio >= 0.85
+        ) {
+
+          fuelEfficiencyScore =
+            17;
+
+        }
+
+        else if (
+          efficiencyRatio >= 0.80
+        ) {
+
+          fuelEfficiencyScore =
+            14;
+
+        }
+
+        else if (
+          efficiencyRatio >= 0.70
+        ) {
+
+          fuelEfficiencyScore =
+            11;
+
         }
 
         else {
-          fuelEfficiencyScore = 8;
+
+          fuelEfficiencyScore =
+            7;
+
         }
+
       }
+
+    }
+
+
+    // Electric vehicles do not use
+    // conventional fuel efficiency data.
+
+    if (
+      vehicle.fuelType ===
+      "Electric"
+    ) {
+
+      fuelEfficiencyScore =
+        25;
 
     }
 
@@ -192,7 +556,9 @@ exports.getVehicleHealthScore = async (req, res) => {
     let expenseScore = 20;
 
 
-    const today = new Date();
+    const today =
+      new Date();
+
 
     const currentMonthStart =
       new Date(
@@ -210,37 +576,55 @@ exports.getVehicleHealthScore = async (req, res) => {
       );
 
 
-    // Service expenses
+    // ===================================================
+    // SERVICE EXPENSES
+    // ===================================================
+
     const serviceExpenses =
       await Service.find({
+
         vehicle: vehicleId,
+
         user: userId,
 
         serviceDate: {
+
           $gte:
             previousThreeMonthsStart,
+
         },
+
       }).select(
         "cost serviceDate"
       );
 
 
-    // Fuel expenses
+    // ===================================================
+    // FUEL EXPENSES
+    // ===================================================
+
     const fuelExpenses =
       await FuelExpense.find({
+
         vehicle: vehicleId,
+
         user: userId,
 
         fuelDate: {
+
           $gte:
             previousThreeMonthsStart,
+
         },
+
       }).select(
         "totalCost fuelDate"
       );
 
 
-    let currentMonthExpense = 0;
+    let currentMonthExpense =
+      0;
+
 
     const previousMonthlyExpenses = [
       0,
@@ -249,7 +633,10 @@ exports.getVehicleHealthScore = async (req, res) => {
     ];
 
 
-    // Service expenses
+    // ===================================================
+    // SERVICE EXPENSE CALCULATION
+    // ===================================================
+
     serviceExpenses.forEach(
       (service) => {
 
@@ -260,7 +647,9 @@ exports.getVehicleHealthScore = async (req, res) => {
 
 
         const cost =
-          Number(service.cost) || 0;
+          Number(
+            service.cost
+          ) || 0;
 
 
         if (
@@ -271,9 +660,7 @@ exports.getVehicleHealthScore = async (req, res) => {
           currentMonthExpense +=
             cost;
 
-        }
-
-        else {
+        } else {
 
           const monthDifference =
             (
@@ -297,12 +684,17 @@ exports.getVehicleHealthScore = async (req, res) => {
             ] += cost;
 
           }
+
         }
+
       }
     );
 
 
-    // Fuel expenses
+    // ===================================================
+    // FUEL EXPENSE CALCULATION
+    // ===================================================
+
     fuelExpenses.forEach(
       (fuel) => {
 
@@ -326,9 +718,7 @@ exports.getVehicleHealthScore = async (req, res) => {
           currentMonthExpense +=
             cost;
 
-        }
-
-        else {
+        } else {
 
           const monthDifference =
             (
@@ -352,42 +742,113 @@ exports.getVehicleHealthScore = async (req, res) => {
             ] += cost;
 
           }
+
         }
+
       }
     );
 
 
     const previousAverage =
       previousMonthlyExpenses.reduce(
-        (sum, value) =>
+        (
+          sum,
+          value
+        ) =>
           sum + value,
         0
       ) / 3;
 
 
+    // ---------------------------------------------------
+    // Expense ratio
+    // ---------------------------------------------------
+
     if (
-      previousAverage > 0 &&
-      currentMonthExpense >
-        previousAverage * 1.5
+      previousAverage <= 0
     ) {
 
-      expenseScore = 8;
+      // No historical baseline.
+      // Keep a neutral-high score.
 
-    }
+      expenseScore = 18;
 
-    else if (
-      previousAverage > 0 &&
-      currentMonthExpense >
-        previousAverage * 1.25
-    ) {
+    } else {
 
-      expenseScore = 14;
+      const expenseRatio =
+        currentMonthExpense /
+        previousAverage;
 
-    }
 
-    else {
+      if (
+        expenseRatio <= 0.70
+      ) {
 
-      expenseScore = 20;
+        expenseScore = 20;
+
+      }
+
+      else if (
+        expenseRatio <= 0.85
+      ) {
+
+        expenseScore = 19;
+
+      }
+
+      else if (
+        expenseRatio <= 1.00
+      ) {
+
+        expenseScore = 18;
+
+      }
+
+      else if (
+        expenseRatio <= 1.10
+      ) {
+
+        expenseScore = 17;
+
+      }
+
+      else if (
+        expenseRatio <= 1.20
+      ) {
+
+        expenseScore = 16;
+
+      }
+
+      else if (
+        expenseRatio <= 1.30
+      ) {
+
+        expenseScore = 14;
+
+      }
+
+      else if (
+        expenseRatio <= 1.50
+      ) {
+
+        expenseScore = 12;
+
+      }
+
+      else if (
+        expenseRatio <= 1.75
+      ) {
+
+        expenseScore = 9;
+
+      }
+
+      else {
+
+        expenseScore = 6;
+
+      }
 
     }
 
@@ -396,7 +857,9 @@ exports.getVehicleHealthScore = async (req, res) => {
     // 4. INSURANCE SCORE - 25
     // ===================================================
 
-    let insuranceScore = 25;
+    let insuranceScore =
+      25;
+
 
     let insuranceDaysRemaining =
       null;
@@ -409,10 +872,31 @@ exports.getVehicleHealthScore = async (req, res) => {
       const todayDate =
         new Date();
 
+
       const expiryDate =
         new Date(
           vehicle.insuranceExpiry
         );
+
+
+      // Remove time-of-day from both
+      // dates so repeated requests on
+      // the same date give the same result.
+
+      todayDate.setHours(
+        0,
+        0,
+        0,
+        0
+      );
+
+
+      expiryDate.setHours(
+        0,
+        0,
+        0,
+        0
+      );
 
 
       const difference =
@@ -423,7 +907,12 @@ exports.getVehicleHealthScore = async (req, res) => {
       insuranceDaysRemaining =
         Math.ceil(
           difference /
-            (1000 * 60 * 60 * 24)
+            (
+              1000 *
+              60 *
+              60 *
+              24
+            )
         );
 
 
@@ -436,10 +925,34 @@ exports.getVehicleHealthScore = async (req, res) => {
       }
 
       else if (
+        insuranceDaysRemaining <= 7
+      ) {
+
+        insuranceScore = 6;
+
+      }
+
+      else if (
+        insuranceDaysRemaining <= 15
+      ) {
+
+        insuranceScore = 9;
+
+      }
+
+      else if (
         insuranceDaysRemaining <= 30
       ) {
 
-        insuranceScore = 10;
+        insuranceScore = 12;
+
+      }
+
+      else if (
+        insuranceDaysRemaining <= 60
+      ) {
+
+        insuranceScore = 16;
 
       }
 
@@ -447,7 +960,15 @@ exports.getVehicleHealthScore = async (req, res) => {
         insuranceDaysRemaining <= 90
       ) {
 
-        insuranceScore = 18;
+        insuranceScore = 20;
+
+      }
+
+      else if (
+        insuranceDaysRemaining <= 180
+      ) {
+
+        insuranceScore = 23;
 
       }
 
@@ -461,71 +982,108 @@ exports.getVehicleHealthScore = async (req, res) => {
 
 
     // ===================================================
-    // TOTAL HEALTH SCORE
+    // FINAL SCORE
     // ===================================================
 
-    const healthScore =
-      Math.round(
-        maintenanceScore +
-        fuelEfficiencyScore +
-        expenseScore +
-        insuranceScore
+    let healthScore =
+      maintenanceScore +
+      fuelEfficiencyScore +
+      expenseScore +
+      insuranceScore;
+
+
+    // Ensure score is always between 0 and 100.
+
+    healthScore =
+      clamp(
+        Math.round(
+          healthScore
+        ),
+        0,
+        100
       );
 
 
     // ===================================================
-    // Status
+    // STATUS
     // ===================================================
 
-    let status = "";
-    let statusColor = "";
+    let status =
+      "";
+
+    let statusColor =
+      "";
 
 
-    if (healthScore >= 90) {
+    if (
+      healthScore >= 90
+    ) {
 
-      status = "Excellent";
-      statusColor = "green";
+      status =
+        "Excellent";
 
-    }
-
-    else if (healthScore >= 75) {
-
-      status = "Good";
-      statusColor = "green";
-
-    }
-
-    else if (healthScore >= 60) {
-
-      status = "Fair";
-      statusColor = "yellow";
+      statusColor =
+        "green";
 
     }
 
-    else if (healthScore >= 40) {
+    else if (
+      healthScore >= 75
+    ) {
 
-      status = "Needs Attention";
-      statusColor = "orange";
+      status =
+        "Good";
+
+      statusColor =
+        "green";
+
+    }
+
+    else if (
+      healthScore >= 60
+    ) {
+
+      status =
+        "Fair";
+
+      statusColor =
+        "yellow";
+
+    }
+
+    else if (
+      healthScore >= 40
+    ) {
+
+      status =
+        "Needs Attention";
+
+      statusColor =
+        "orange";
 
     }
 
     else {
 
-      status = "Critical";
-      statusColor = "red";
+      status =
+        "Critical";
+
+      statusColor =
+        "red";
 
     }
 
 
     // ===================================================
-    // Recommendations
+    // RECOMMENDATIONS
     // ===================================================
 
-    const recommendations = [];
+    const recommendations =
+      [];
 
 
     if (
-      maintenanceScore < 30
+      maintenanceScore < 25
     ) {
 
       recommendations.push(
@@ -536,7 +1094,7 @@ exports.getVehicleHealthScore = async (req, res) => {
 
 
     if (
-      fuelEfficiencyScore < 25
+      fuelEfficiencyScore < 20
     ) {
 
       recommendations.push(
@@ -547,7 +1105,7 @@ exports.getVehicleHealthScore = async (req, res) => {
 
 
     if (
-      expenseScore < 20
+      expenseScore < 16
     ) {
 
       recommendations.push(
@@ -568,8 +1126,22 @@ exports.getVehicleHealthScore = async (req, res) => {
     }
 
 
+    // If everything is healthy, provide
+    // a positive recommendation.
+
+    if (
+      recommendations.length === 0
+    ) {
+
+      recommendations.push(
+        "Continue regular maintenance and monitor your vehicle health."
+      );
+
+    }
+
+
     // ===================================================
-    // Response
+    // RESPONSE
     // ===================================================
 
     res.status(200).json({
@@ -577,73 +1149,105 @@ exports.getVehicleHealthScore = async (req, res) => {
       success: true,
 
       vehicle: {
-        id: vehicle._id,
-        brand: vehicle.brand,
-        model: vehicle.model,
+
+        id:
+          vehicle._id,
+
+        brand:
+          vehicle.brand,
+
+        model:
+          vehicle.model,
+
         registrationNumber:
           vehicle.registrationNumber,
+
       },
+
 
       healthScore,
 
+
       status,
 
+
       statusColor,
+
 
       breakdown: {
 
         maintenance: {
+
           score:
             maintenanceScore,
-          maxScore: 30,
+
+          maxScore:
+            30,
+
         },
+
 
         fuelEfficiency: {
+
           score:
             fuelEfficiencyScore,
-          maxScore: 25,
+
+          maxScore:
+            25,
 
           currentEfficiency:
-            currentEfficiency
-              ? Number(
-                  currentEfficiency.toFixed(
-                    2
-                  )
+            currentEfficiency !==
+            null
+              ? round(
+                  currentEfficiency,
+                  2
                 )
               : null,
+
         },
 
+
         expenses: {
+
           score:
             expenseScore,
-          maxScore: 20,
+
+          maxScore:
+            20,
 
           currentMonthExpense:
-            Number(
-              currentMonthExpense.toFixed(
-                2
-              )
+            round(
+              currentMonthExpense,
+              2
             ),
 
           previousAverage:
-            Number(
-              previousAverage.toFixed(
-                2
-              )
+            round(
+              previousAverage,
+              2
             ),
+
         },
 
+
         insurance: {
+
           score:
             insuranceScore,
-          maxScore: 25,
+
+          maxScore:
+            25,
 
           daysRemaining:
             insuranceDaysRemaining,
+
         },
+
       },
 
+
       recommendations,
+
     });
 
   } catch (error) {
@@ -652,6 +1256,7 @@ exports.getVehicleHealthScore = async (req, res) => {
       "Health Score Error:",
       error
     );
+
 
     res.status(500).json({
 
@@ -662,6 +1267,9 @@ exports.getVehicleHealthScore = async (req, res) => {
 
       error:
         error.message,
+
     });
+
   }
+
 };
