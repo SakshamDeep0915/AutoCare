@@ -30,11 +30,9 @@ function ServiceHistory() {
 
   const navigate = useNavigate();
 
-  const [services, setServices] =
-    useState([]);
+  const [services, setServices] = useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
 
   // ==================================================
@@ -45,8 +43,7 @@ function ServiceHistory() {
 
     try {
 
-      const res =
-        await getServices(vehicleId);
+      const res = await getServices(vehicleId);
 
       setServices(
         res.data.services || []
@@ -56,9 +53,7 @@ function ServiceHistory() {
 
       console.error(error);
 
-      alert(
-        "Failed to load service history"
-      );
+      alert("Failed to load service history");
 
     } finally {
 
@@ -104,9 +99,7 @@ function ServiceHistory() {
 
       console.error(error);
 
-      alert(
-        "Failed to delete service"
-      );
+      alert("Failed to delete service");
 
     }
 
@@ -141,7 +134,6 @@ function ServiceHistory() {
           </div>
 
         </main>
-
       </>
 
     );
@@ -163,7 +155,7 @@ function ServiceHistory() {
 
 
   // ==================================================
-  // MAIN
+  // MAIN UI
   // ==================================================
 
   return (
@@ -405,9 +397,7 @@ function ServiceHistory() {
 
                   <div className="list-title">
 
-                    <Wrench
-                      size={20}
-                    />
+                    <Wrench size={20} />
 
                     <h2>
                       Maintenance records
@@ -465,8 +455,7 @@ function ServiceHistory() {
                         </div>
 
                         {index !==
-                          services.length -
-                            1 && (
+                          services.length - 1 && (
 
                           <div className="timeline-line"></div>
 
@@ -495,9 +484,7 @@ function ServiceHistory() {
                             </div>
 
                             <h3>
-                              {
-                                service.serviceType
-                              }
+                              {service.serviceType}
                             </h3>
 
                           </div>
@@ -513,9 +500,7 @@ function ServiceHistory() {
                               title="Edit service"
                             >
 
-                              <Pencil
-                                size={16}
-                              />
+                              <Pencil size={16} />
 
                               <span>
                                 Edit
@@ -534,9 +519,7 @@ function ServiceHistory() {
                               title="Delete service"
                             >
 
-                              <Trash2
-                                size={16}
-                              />
+                              <Trash2 size={16} />
 
                               <span>
                                 Delete
@@ -560,9 +543,7 @@ function ServiceHistory() {
 
                             <div className="detail-icon">
 
-                              <MapPin
-                                size={17}
-                              />
+                              <MapPin size={17} />
 
                             </div>
 
@@ -573,9 +554,7 @@ function ServiceHistory() {
                               </span>
 
                               <strong>
-                                {
-                                  service.serviceCenter
-                                }
+                                {service.serviceCenter}
                               </strong>
 
                             </div>
@@ -589,9 +568,7 @@ function ServiceHistory() {
 
                             <div className="detail-icon">
 
-                              <CalendarDays
-                                size={17}
-                              />
+                              <CalendarDays size={17} />
 
                             </div>
 
@@ -627,9 +604,7 @@ function ServiceHistory() {
 
                             <div className="detail-icon">
 
-                              <Gauge
-                                size={17}
-                              />
+                              <Gauge size={17} />
 
                             </div>
 
@@ -659,9 +634,7 @@ function ServiceHistory() {
 
                             <div className="detail-icon">
 
-                              <IndianRupee
-                                size={17}
-                              />
+                              <IndianRupee size={17} />
 
                             </div>
 
@@ -687,7 +660,7 @@ function ServiceHistory() {
                         </div>
 
 
-                        {/* DESCRIPTION */}
+                        {/* NOTES */}
 
                         {service.description && (
 
@@ -695,9 +668,7 @@ function ServiceHistory() {
 
                             <div className="description-icon">
 
-                              <FileText
-                                size={17}
-                              />
+                              <FileText size={17} />
 
                             </div>
 
@@ -708,9 +679,7 @@ function ServiceHistory() {
                               </span>
 
                               <p>
-                                {
-                                  service.description
-                                }
+                                {service.description}
                               </p>
 
                             </div>
@@ -824,7 +793,7 @@ function ServiceHistory() {
 
           align-items: center;
 
-          gap: 9px;
+          gap: 10px;
 
           padding: 0;
 
@@ -834,9 +803,9 @@ function ServiceHistory() {
 
           border: none;
 
-          color: #737b7f;
+          color: #858d91;
 
-          font-size: 14px;
+          font-size: 15px;
 
           font-weight: 500;
 
@@ -869,7 +838,7 @@ function ServiceHistory() {
 
           gap: 35px;
 
-          margin-bottom: 38px;
+          margin-bottom: 40px;
 
         }
 
@@ -880,24 +849,24 @@ function ServiceHistory() {
 
           align-items: center;
 
-          gap: 10px;
+          gap: 11px;
 
-          color: #70787c;
+          color: #858d91;
 
-          font-size: 11px;
+          font-size: 12px;
 
           font-weight: 700;
 
           letter-spacing: 0.18em;
 
-          margin-bottom: 14px;
+          margin-bottom: 15px;
 
         }
 
 
         .history-kicker span {
 
-          width: 26px;
+          width: 28px;
 
           height: 2px;
 
@@ -910,33 +879,33 @@ function ServiceHistory() {
 
           margin: 0;
 
-          color: #f1f1f1;
+          color: #f5f5f5;
 
           font-size:
             clamp(
-              2.7rem,
-              4.5vw,
-              3.8rem
+              3rem,
+              4.8vw,
+              4rem
             );
 
           line-height: 1;
 
           letter-spacing: -0.055em;
 
-          font-weight: 650;
+          font-weight: 700;
 
         }
 
 
         .history-header p {
 
-          max-width: 600px;
+          max-width: 650px;
 
-          margin: 15px 0 0;
+          margin: 17px 0 0;
 
-          color: #737b7f;
+          color: #858d91;
 
-          font-size: 15px;
+          font-size: 16px;
 
           line-height: 1.7;
 
@@ -944,7 +913,7 @@ function ServiceHistory() {
 
 
         /* ==================================================
-           ADD BUTTON
+           ADD SERVICE
         ================================================== */
 
         .add-service-button {
@@ -953,13 +922,15 @@ function ServiceHistory() {
 
           align-items: center;
 
-          gap: 9px;
+          justify-content: center;
+
+          gap: 10px;
 
           flex-shrink: 0;
 
-          padding: 13px 18px;
+          padding: 14px 20px;
 
-          border-radius: 9px;
+          border-radius: 10px;
 
           background: #e8752a;
 
@@ -967,7 +938,7 @@ function ServiceHistory() {
 
           text-decoration: none;
 
-          font-size: 13px;
+          font-size: 14px;
 
           font-weight: 700;
 
@@ -1003,13 +974,15 @@ function ServiceHistory() {
 
           background: #131617;
 
-          border: 1px solid #292e31;
+          border:
+            1px solid #292e31;
 
-          border-radius: 12px;
+          border-radius: 13px;
 
-          padding: 21px 25px;
+          padding:
+            23px 27px;
 
-          margin-bottom: 28px;
+          margin-bottom: 30px;
 
         }
 
@@ -1020,7 +993,7 @@ function ServiceHistory() {
 
           align-items: center;
 
-          gap: 13px;
+          gap: 14px;
 
           min-width: 0;
 
@@ -1029,9 +1002,9 @@ function ServiceHistory() {
 
         .summary-icon {
 
-          width: 42px;
+          width: 45px;
 
-          height: 42px;
+          height: 45px;
 
           flex-shrink: 0;
 
@@ -1041,7 +1014,7 @@ function ServiceHistory() {
 
           justify-content: center;
 
-          border-radius: 9px;
+          border-radius: 10px;
 
           background:
             rgba(
@@ -1051,7 +1024,8 @@ function ServiceHistory() {
               0.07
             );
 
-          border: 1px solid
+          border:
+            1px solid
             rgba(
               232,
               117,
@@ -1068,9 +1042,9 @@ function ServiceHistory() {
 
           display: block;
 
-          color: #687075;
+          color: #727a7e;
 
-          font-size: 10px;
+          font-size: 11px;
 
           font-weight: 700;
 
@@ -1085,9 +1059,9 @@ function ServiceHistory() {
 
           margin-top: 5px;
 
-          color: #d0d4d5;
+          color: #e0e3e4;
 
-          font-size: 17px;
+          font-size: 19px;
 
           font-weight: 600;
 
@@ -1098,26 +1072,28 @@ function ServiceHistory() {
 
           width: 1px;
 
-          height: 43px;
+          height: 45px;
 
           background: #292e31;
 
-          margin: 0 28px;
+          margin:
+            0 30px;
 
         }
 
 
         /* ==================================================
-           LIST
+           SERVICE LIST
         ================================================== */
 
         .service-list-section {
 
           background: #131617;
 
-          border: 1px solid #292e31;
+          border:
+            1px solid #292e31;
 
-          border-radius: 13px;
+          border-radius: 14px;
 
           overflow: hidden;
 
@@ -1134,9 +1110,11 @@ function ServiceHistory() {
 
           gap: 20px;
 
-          padding: 25px 28px;
+          padding:
+            27px 29px;
 
-          border-bottom: 1px solid #292e31;
+          border-bottom:
+            1px solid #292e31;
 
         }
 
@@ -1147,7 +1125,7 @@ function ServiceHistory() {
 
           align-items: center;
 
-          gap: 11px;
+          gap: 12px;
 
         }
 
@@ -1163,37 +1141,40 @@ function ServiceHistory() {
 
           margin: 0;
 
-          color: #e0e3e4;
+          color: #e5e7e8;
 
-          font-size: 19px;
+          font-size: 21px;
 
-          font-weight: 600;
+          font-weight: 650;
 
         }
 
 
         .list-header p {
 
-          margin: 6px 0 0;
+          margin:
+            7px 0 0;
 
-          color: #687075;
+          color: #727a7e;
 
-          font-size: 13px;
+          font-size: 14px;
 
         }
 
 
         .record-count {
 
-          padding: 7px 11px;
+          padding:
+            8px 12px;
 
-          border: 1px solid #303538;
+          border:
+            1px solid #303538;
 
-          border-radius: 7px;
+          border-radius: 8px;
 
-          color: #7b8387;
+          color: #858d91;
 
-          font-size: 11px;
+          font-size: 12px;
 
           font-weight: 600;
 
@@ -1205,18 +1186,27 @@ function ServiceHistory() {
 
 
         /* ==================================================
-           RECORD
+           SERVICE RECORD
         ================================================== */
+
+        .service-list {
+
+          padding: 5px 0;
+
+        }
+
 
         .service-record {
 
           display: grid;
 
-          grid-template-columns: 82px 1fr;
+          grid-template-columns:
+            88px 1fr;
 
-          min-height: 245px;
+          min-height: 255px;
 
-          border-bottom: 1px solid #25292b;
+          border-bottom:
+            1px solid #25292b;
 
           transition:
             background 0.2s ease;
@@ -1256,16 +1246,16 @@ function ServiceHistory() {
 
           justify-content: center;
 
-          padding-top: 31px;
+          padding-top: 32px;
 
         }
 
 
         .timeline-number {
 
-          width: 36px;
+          width: 39px;
 
-          height: 36px;
+          height: 39px;
 
           display: flex;
 
@@ -1277,11 +1267,12 @@ function ServiceHistory() {
 
           background: #101213;
 
-          border: 1px solid #303438;
+          border:
+            1px solid #303438;
 
-          color: #72797d;
+          color: #858d91;
 
-          font-size: 10px;
+          font-size: 11px;
 
           font-family: monospace;
 
@@ -1295,7 +1286,7 @@ function ServiceHistory() {
 
 
         .service-record:first-child
-          .timeline-number {
+        .timeline-number {
 
           border-color:
             rgba(
@@ -1324,7 +1315,7 @@ function ServiceHistory() {
 
           width: 1px;
 
-          top: 67px;
+          top: 72px;
 
           bottom: 0;
 
@@ -1340,8 +1331,8 @@ function ServiceHistory() {
         .record-content {
 
           padding:
-            31px 30px
-            31px 5px;
+            33px 31px
+            33px 5px;
 
         }
 
@@ -1365,26 +1356,26 @@ function ServiceHistory() {
 
           align-items: center;
 
-          gap: 7px;
+          gap: 8px;
 
-          color: #687075;
+          color: #727a7e;
 
-          font-size: 10px;
+          font-size: 11px;
 
           font-weight: 700;
 
           letter-spacing: 0.16em;
 
-          margin-bottom: 8px;
+          margin-bottom: 9px;
 
         }
 
 
         .record-status-dot {
 
-          width: 6px;
+          width: 7px;
 
-          height: 6px;
+          height: 7px;
 
           border-radius: 50%;
 
@@ -1406,11 +1397,11 @@ function ServiceHistory() {
 
           margin: 0;
 
-          color: #e5e7e8;
+          color: #f0f1f2;
 
-          font-size: 23px;
+          font-size: 27px;
 
-          font-weight: 600;
+          font-weight: 650;
 
           letter-spacing: -0.025em;
 
@@ -1418,14 +1409,14 @@ function ServiceHistory() {
 
 
         /* ==================================================
-           ACTIONS
+           ACTION BUTTONS
         ================================================== */
 
         .record-actions {
 
           display: flex;
 
-          gap: 8px;
+          gap: 9px;
 
         }
 
@@ -1436,13 +1427,14 @@ function ServiceHistory() {
 
           align-items: center;
 
-          gap: 7px;
+          gap: 8px;
 
-          padding: 9px 12px;
+          padding:
+            10px 13px;
 
-          border-radius: 7px;
+          border-radius: 8px;
 
-          font-size: 12px;
+          font-size: 13px;
 
           font-weight: 600;
 
@@ -1450,16 +1442,18 @@ function ServiceHistory() {
 
           text-decoration: none;
 
-          transition: all 0.2s ease;
+          transition:
+            all 0.2s ease;
 
         }
 
 
         .edit-action {
 
-          color: #858d91;
+          color: #90989c;
 
-          border: 1px solid #303538;
+          border:
+            1px solid #303538;
 
           background: #101213;
 
@@ -1483,9 +1477,10 @@ function ServiceHistory() {
 
         .delete-action {
 
-          color: #8b6868;
+          color: #936f6f;
 
-          border: 1px solid
+          border:
+            1px solid
             rgba(
               180,
               70,
@@ -1520,7 +1515,7 @@ function ServiceHistory() {
 
 
         /* ==================================================
-           DETAILS
+           SERVICE DETAILS
         ================================================== */
 
         .record-details {
@@ -1533,16 +1528,18 @@ function ServiceHistory() {
               minmax(0, 1fr)
             );
 
-          gap: 18px;
+          gap: 20px;
 
-          margin-top: 28px;
+          margin-top: 30px;
 
           padding:
-            20px 0;
+            21px 0;
 
-          border-top: 1px solid #25292b;
+          border-top:
+            1px solid #25292b;
 
-          border-bottom: 1px solid #25292b;
+          border-bottom:
+            1px solid #25292b;
 
         }
 
@@ -1553,7 +1550,7 @@ function ServiceHistory() {
 
           align-items: center;
 
-          gap: 11px;
+          gap: 12px;
 
           min-width: 0;
 
@@ -1562,9 +1559,9 @@ function ServiceHistory() {
 
         .detail-icon {
 
-          width: 34px;
+          width: 38px;
 
-          height: 34px;
+          height: 38px;
 
           flex-shrink: 0;
 
@@ -1574,13 +1571,14 @@ function ServiceHistory() {
 
           justify-content: center;
 
-          border-radius: 8px;
+          border-radius: 9px;
 
           background: #101213;
 
-          border: 1px solid #292e31;
+          border:
+            1px solid #292e31;
 
-          color: #737b7f;
+          color: #7b8387;
 
         }
 
@@ -1596,9 +1594,9 @@ function ServiceHistory() {
 
           display: block;
 
-          color: #60686c;
+          color: #687075;
 
-          font-size: 9px;
+          font-size: 10px;
 
           font-weight: 700;
 
@@ -1613,9 +1611,9 @@ function ServiceHistory() {
 
           margin-top: 5px;
 
-          color: #c1c6c8;
+          color: #d0d4d5;
 
-          font-size: 13px;
+          font-size: 15px;
 
           font-weight: 500;
 
@@ -1632,13 +1630,13 @@ function ServiceHistory() {
 
           color: #e8752a;
 
-          font-size: 14px;
+          font-size: 16px;
 
         }
 
 
         /* ==================================================
-           DESCRIPTION
+           NOTES
         ================================================== */
 
         .record-description {
@@ -1647,18 +1645,18 @@ function ServiceHistory() {
 
           align-items: flex-start;
 
-          gap: 11px;
+          gap: 12px;
 
-          margin-top: 19px;
+          margin-top: 20px;
 
         }
 
 
         .description-icon {
 
-          width: 32px;
+          width: 35px;
 
-          height: 32px;
+          height: 35px;
 
           flex-shrink: 0;
 
@@ -1672,9 +1670,10 @@ function ServiceHistory() {
 
           background: #101213;
 
-          border: 1px solid #292e31;
+          border:
+            1px solid #292e31;
 
-          color: #666e72;
+          color: #737b7f;
 
         }
 
@@ -1683,9 +1682,9 @@ function ServiceHistory() {
 
           display: block;
 
-          color: #60686c;
+          color: #687075;
 
-          font-size: 9px;
+          font-size: 10px;
 
           font-weight: 700;
 
@@ -1696,11 +1695,12 @@ function ServiceHistory() {
 
         .record-description p {
 
-          margin: 5px 0 0;
+          margin:
+            6px 0 0;
 
-          color: #858d91;
+          color: #90989c;
 
-          font-size: 13px;
+          font-size: 15px;
 
           line-height: 1.65;
 
@@ -1717,24 +1717,25 @@ function ServiceHistory() {
 
           align-items: center;
 
-          gap: 28px;
+          gap: 30px;
 
-          padding: 60px;
+          padding: 65px;
 
           background: #131617;
 
-          border: 1px solid #292e31;
+          border:
+            1px solid #292e31;
 
-          border-radius: 13px;
+          border-radius: 14px;
 
         }
 
 
         .empty-icon {
 
-          width: 68px;
+          width: 72px;
 
-          height: 68px;
+          height: 72px;
 
           flex-shrink: 0;
 
@@ -1744,7 +1745,7 @@ function ServiceHistory() {
 
           justify-content: center;
 
-          border-radius: 13px;
+          border-radius: 14px;
 
           background:
             rgba(
@@ -1754,7 +1755,8 @@ function ServiceHistory() {
               0.06
             );
 
-          border: 1px solid
+          border:
+            1px solid
             rgba(
               232,
               117,
@@ -1769,9 +1771,9 @@ function ServiceHistory() {
 
         .empty-kicker {
 
-          color: #626a6e;
+          color: #687075;
 
-          font-size: 10px;
+          font-size: 11px;
 
           font-weight: 700;
 
@@ -1782,26 +1784,28 @@ function ServiceHistory() {
 
         .empty-content h2 {
 
-          margin: 8px 0 0;
+          margin:
+            9px 0 0;
 
-          color: #dfe2e3;
+          color: #e5e7e8;
 
-          font-size: 23px;
+          font-size: 25px;
 
-          font-weight: 600;
+          font-weight: 650;
 
         }
 
 
         .empty-content p {
 
-          max-width: 520px;
+          max-width: 540px;
 
-          margin: 8px 0 19px;
+          margin:
+            9px 0 20px;
 
-          color: #747c80;
+          color: #7d8589;
 
-          font-size: 14px;
+          font-size: 15px;
 
           line-height: 1.7;
 
@@ -1816,7 +1820,8 @@ function ServiceHistory() {
 
           gap: 8px;
 
-          padding: 11px 15px;
+          padding:
+            12px 16px;
 
           border-radius: 8px;
 
@@ -1826,7 +1831,7 @@ function ServiceHistory() {
 
           text-decoration: none;
 
-          font-size: 12px;
+          font-size: 13px;
 
           font-weight: 700;
 
@@ -1839,15 +1844,15 @@ function ServiceHistory() {
 
         .history-skeleton-small {
 
-          width: 120px;
+          width: 130px;
 
-          height: 12px;
+          height: 13px;
 
           border-radius: 5px;
 
           background: #191c1e;
 
-          margin-bottom: 28px;
+          margin-bottom: 30px;
 
           animation:
             history-pulse 1.4s infinite;
@@ -1857,9 +1862,9 @@ function ServiceHistory() {
 
         .history-skeleton-title {
 
-          width: 340px;
+          width: 360px;
 
-          height: 50px;
+          height: 54px;
 
           border-radius: 7px;
 
@@ -1873,19 +1878,19 @@ function ServiceHistory() {
 
         .history-skeleton-subtitle {
 
-          width: 500px;
+          width: 520px;
 
           max-width: 90%;
 
-          height: 14px;
+          height: 15px;
 
           border-radius: 5px;
 
           background: #191c1e;
 
-          margin-top: 15px;
+          margin-top: 16px;
 
-          margin-bottom: 40px;
+          margin-bottom: 42px;
 
           animation:
             history-pulse 1.4s infinite;
@@ -1895,15 +1900,16 @@ function ServiceHistory() {
 
         .history-skeleton-card {
 
-          height: 255px;
+          height: 270px;
 
-          border-radius: 13px;
+          border-radius: 14px;
 
           background: #131617;
 
-          border: 1px solid #202426;
+          border:
+            1px solid #202426;
 
-          margin-bottom: 16px;
+          margin-bottom: 17px;
 
           animation:
             history-pulse 1.4s infinite;
@@ -1971,7 +1977,7 @@ function ServiceHistory() {
           .service-history-container {
 
             padding:
-              26px 16px
+              28px 16px
               55px;
 
           }
@@ -1983,14 +1989,14 @@ function ServiceHistory() {
 
             align-items: flex-start;
 
-            gap: 22px;
+            gap: 23px;
 
           }
 
 
           .history-header h1 {
 
-            font-size: 2.55rem;
+            font-size: 2.7rem;
 
           }
 
@@ -2015,9 +2021,9 @@ function ServiceHistory() {
 
             grid-template-columns: 1fr;
 
-            gap: 18px;
+            gap: 19px;
 
-            padding: 19px;
+            padding: 20px;
 
           }
 
@@ -2035,9 +2041,24 @@ function ServiceHistory() {
           }
 
 
+          .summary-item span {
+
+            font-size: 10px;
+
+          }
+
+
+          .summary-item strong {
+
+            font-size: 18px;
+
+          }
+
+
           .service-record {
 
-            grid-template-columns: 48px 1fr;
+            grid-template-columns:
+              50px 1fr;
 
           }
 
@@ -2045,8 +2066,8 @@ function ServiceHistory() {
           .record-content {
 
             padding:
-              26px 15px
-              26px 0;
+              28px 15px
+              28px 0;
 
           }
 
@@ -2055,14 +2076,14 @@ function ServiceHistory() {
 
             flex-direction: column;
 
-            gap: 17px;
+            gap: 18px;
 
           }
 
 
           .record-content h3 {
 
-            font-size: 20px;
+            font-size: 22px;
 
           }
 
@@ -2080,6 +2101,8 @@ function ServiceHistory() {
 
             justify-content: center;
 
+            font-size: 12px;
+
           }
 
 
@@ -2087,21 +2110,28 @@ function ServiceHistory() {
 
             grid-template-columns: 1fr;
 
-            gap: 15px;
+            gap: 16px;
+
+          }
+
+
+          .detail-item span {
+
+            font-size: 10px;
 
           }
 
 
           .detail-item strong {
 
-            font-size: 14px;
+            font-size: 15px;
 
           }
 
 
           .record-description p {
 
-            font-size: 13px;
+            font-size: 14px;
 
           }
 
@@ -2112,7 +2142,8 @@ function ServiceHistory() {
 
             align-items: flex-start;
 
-            padding: 38px 25px;
+            padding:
+              40px 25px;
 
           }
 
