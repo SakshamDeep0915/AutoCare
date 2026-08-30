@@ -12,10 +12,6 @@ import {
   Wrench,
   History,
   Sparkles,
-  Plus,
-  Clock3,
-  MapPin,
-  FileText,
   Bot,
   Droplets,
 } from "lucide-react";
@@ -31,11 +27,9 @@ function VehicleDetails() {
 
   const navigate = useNavigate();
 
-  const [vehicle, setVehicle] =
-    useState(null);
+  const [vehicle, setVehicle] = useState(null);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
 
   // =====================================================
@@ -51,20 +45,15 @@ function VehicleDetails() {
 
     try {
 
-      const res =
-        await getVehicleById(id);
+      const res = await getVehicleById(id);
 
-      setVehicle(
-        res.data.vehicle
-      );
+      setVehicle(res.data.vehicle);
 
     } catch (err) {
 
       console.error(err);
 
-      alert(
-        "Failed to load vehicle"
-      );
+      alert("Failed to load vehicle");
 
     } finally {
 
@@ -126,7 +115,7 @@ function VehicleDetails() {
           <div className="vehicle-not-found">
 
             <div className="not-found-icon">
-              <Car size={24} />
+              <Car size={28} />
             </div>
 
             <span>
@@ -138,17 +127,15 @@ function VehicleDetails() {
             </h2>
 
             <p>
-              We couldn't find the vehicle
-              associated with this record.
+              We couldn't find the vehicle associated
+              with this record.
             </p>
 
             <button
-              onClick={() =>
-                navigate("/dashboard")
-              }
+              onClick={() => navigate("/dashboard")}
               className="not-found-button"
             >
-              <ArrowLeft size={15} />
+              <ArrowLeft size={17} />
               Back to dashboard
             </button>
 
@@ -193,13 +180,11 @@ function VehicleDetails() {
           <div className="vehicle-details-topbar">
 
             <button
-              onClick={() =>
-                navigate("/dashboard")
-              }
+              onClick={() => navigate("/dashboard")}
               className="vehicle-back-button"
             >
 
-              <ArrowLeft size={15} />
+              <ArrowLeft size={18} />
 
               Back to dashboard
 
@@ -223,13 +208,11 @@ function VehicleDetails() {
 
           <section className="vehicle-hero">
 
-
             <div className="vehicle-hero-main">
-
 
               <div className="vehicle-icon-box">
 
-                <Car size={30} />
+                <Car size={34} />
 
               </div>
 
@@ -308,7 +291,6 @@ function VehicleDetails() {
 
           <section className="vehicle-info-section">
 
-
             <div className="section-heading">
 
               <div>
@@ -332,23 +314,22 @@ function VehicleDetails() {
 
             <div className="vehicle-info-grid">
 
-
               <InfoCard
-                icon={<CalendarDays size={17} />}
+                icon={<CalendarDays size={20} />}
                 title="Model year"
                 value={vehicle.year}
               />
 
 
               <InfoCard
-                icon={<Fuel size={17} />}
+                icon={<Fuel size={20} />}
                 title="Fuel type"
                 value={vehicle.fuelType}
               />
 
 
               <InfoCard
-                icon={<Gauge size={17} />}
+                icon={<Gauge size={20} />}
                 title="Current odometer"
                 value={`${Number(
                   vehicle.odometer || 0
@@ -357,7 +338,7 @@ function VehicleDetails() {
 
 
               <InfoCard
-                icon={<ShieldCheck size={17} />}
+                icon={<ShieldCheck size={20} />}
                 title="Insurance expiry"
                 value={
                   vehicle.insuranceExpiry
@@ -407,7 +388,7 @@ function VehicleDetails() {
 
               <div className="health-ai-label">
 
-                <Sparkles size={13} />
+                <Sparkles size={16} />
 
                 AI POWERED
 
@@ -432,7 +413,6 @@ function VehicleDetails() {
           ================================================= */}
 
           <section className="action-section">
-
 
             <div className="section-heading">
 
@@ -461,7 +441,7 @@ function VehicleDetails() {
               {/* ADD SERVICE */}
 
               <ActionCard
-                icon={<Wrench size={19} />}
+                icon={<Wrench size={21} />}
                 title="Add service"
                 description="Record a new maintenance or repair."
                 primary
@@ -476,7 +456,7 @@ function VehicleDetails() {
               {/* SERVICE HISTORY */}
 
               <ActionCard
-                icon={<History size={19} />}
+                icon={<History size={21} />}
                 title="Service history"
                 description="Review your complete maintenance timeline."
                 onClick={() =>
@@ -490,7 +470,7 @@ function VehicleDetails() {
               {/* AI REPORT */}
 
               <ActionCard
-                icon={<Bot size={19} />}
+                icon={<Bot size={21} />}
                 title="AI vehicle analysis"
                 description="Generate an intelligent health assessment."
                 ai
@@ -505,7 +485,7 @@ function VehicleDetails() {
               {/* ADD FUEL */}
 
               <ActionCard
-                icon={<Droplets size={19} />}
+                icon={<Droplets size={21} />}
                 title="Add fuel"
                 description="Record your latest fuel transaction."
                 onClick={() =>
@@ -519,7 +499,7 @@ function VehicleDetails() {
               {/* FUEL HISTORY */}
 
               <ActionCard
-                icon={<Fuel size={19} />}
+                icon={<Fuel size={21} />}
                 title="Fuel history"
                 description="Track fuel usage and spending."
                 onClick={() =>
@@ -574,7 +554,7 @@ function VehicleDetails() {
 
               <div className="footer-info-icon">
 
-                <ShieldCheck size={17} />
+                <ShieldCheck size={20} />
 
               </div>
 
@@ -673,7 +653,6 @@ function VehicleDetails() {
           background-size: 75px 75px;
 
           mask-image:
-
             linear-gradient(
               to bottom,
               black,
@@ -695,7 +674,6 @@ function VehicleDetails() {
           right: -250px;
 
           background:
-
             radial-gradient(
               circle,
               rgba(
@@ -716,13 +694,13 @@ function VehicleDetails() {
 
         .vehicle-details-container {
 
-          max-width: 1180px;
+          max-width: 1250px;
 
           margin: 0 auto;
 
           padding:
-            28px 30px
-            70px;
+            34px 34px
+            80px;
 
           position: relative;
 
@@ -743,7 +721,7 @@ function VehicleDetails() {
 
           justify-content: space-between;
 
-          margin-bottom: 35px;
+          margin-bottom: 42px;
 
         }
 
@@ -753,7 +731,7 @@ function VehicleDetails() {
 
           align-items: center;
 
-          gap: 8px;
+          gap: 10px;
 
           border: none;
 
@@ -761,14 +739,15 @@ function VehicleDetails() {
 
           padding: 0;
 
-          color: #555c60;
+          color: #777f84;
 
-          font-size: 10px;
+          font-size: 14px;
+
+          font-weight: 500;
 
           cursor: pointer;
 
-          transition:
-            color 0.2s ease;
+          transition: color 0.2s ease;
 
         }
 
@@ -784,23 +763,23 @@ function VehicleDetails() {
 
           align-items: center;
 
-          gap: 6px;
+          gap: 8px;
 
-          color: #4b5256;
+          color: #687075;
 
-          font-size: 7px;
+          font-size: 11px;
 
           font-weight: 700;
 
-          letter-spacing: 0.18em;
+          letter-spacing: 0.16em;
 
         }
 
         .vehicle-record-status span {
 
-          width: 5px;
+          width: 7px;
 
-          height: 5px;
+          height: 7px;
 
           border-radius: 50%;
 
@@ -830,11 +809,11 @@ function VehicleDetails() {
 
           justify-content: space-between;
 
-          gap: 30px;
+          gap: 35px;
 
           padding:
-            30px 0
-            34px;
+            34px 0
+            40px;
 
           border-bottom: 1px solid #282d2f;
 
@@ -846,15 +825,15 @@ function VehicleDetails() {
 
           align-items: center;
 
-          gap: 17px;
+          gap: 20px;
 
         }
 
         .vehicle-icon-box {
 
-          width: 64px;
+          width: 72px;
 
-          height: 64px;
+          height: 72px;
 
           display: flex;
 
@@ -864,12 +843,11 @@ function VehicleDetails() {
 
           flex-shrink: 0;
 
-          border-radius: 13px;
+          border-radius: 15px;
 
           color: #e8752a;
 
           background:
-
             rgba(
               232,
               117,
@@ -889,15 +867,15 @@ function VehicleDetails() {
 
         .vehicle-kicker {
 
-          color: #555c60;
+          color: #687075;
 
-          font-size: 7px;
+          font-size: 11px;
 
           font-weight: 700;
 
-          letter-spacing: 0.2em;
+          letter-spacing: 0.19em;
 
-          margin-bottom: 8px;
+          margin-bottom: 10px;
 
         }
 
@@ -909,14 +887,14 @@ function VehicleDetails() {
 
           font-size:
             clamp(
-              2.3rem,
+              2.5rem,
               4.5vw,
-              3.7rem
+              4rem
             );
 
-          line-height: 0.95;
+          line-height: 1;
 
-          letter-spacing: -0.06em;
+          letter-spacing: -0.055em;
 
           font-weight: 650;
 
@@ -936,25 +914,25 @@ function VehicleDetails() {
 
           align-items: center;
 
-          gap: 8px;
+          gap: 10px;
 
-          margin-top: 11px;
+          margin-top: 13px;
 
-          color: #656c70;
+          color: #777f84;
 
-          font-size: 8px;
+          font-size: 12px;
 
           font-weight: 600;
 
-          letter-spacing: 0.12em;
+          letter-spacing: 0.1em;
 
         }
 
         .vehicle-registration i {
 
-          width: 3px;
+          width: 4px;
 
-          height: 3px;
+          height: 4px;
 
           border-radius: 50%;
 
@@ -973,15 +951,15 @@ function VehicleDetails() {
 
           align-items: center;
 
-          gap: 9px;
+          gap: 11px;
 
           padding:
-            11px 14px;
+            14px 17px;
 
           border:
             1px solid #292e31;
 
-          border-radius: 9px;
+          border-radius: 10px;
 
           background: #121516;
 
@@ -989,9 +967,9 @@ function VehicleDetails() {
 
         .hero-status-dot {
 
-          width: 7px;
+          width: 8px;
 
-          height: 7px;
+          height: 8px;
 
           border-radius: 50%;
 
@@ -1012,13 +990,13 @@ function VehicleDetails() {
 
           display: block;
 
-          color: #4b5256;
+          color: #687075;
 
-          font-size: 6px;
+          font-size: 10px;
 
           font-weight: 700;
 
-          letter-spacing: 0.16em;
+          letter-spacing: 0.14em;
 
         }
 
@@ -1026,11 +1004,11 @@ function VehicleDetails() {
 
           display: block;
 
-          margin-top: 3px;
+          margin-top: 4px;
 
-          color: #999fa2;
+          color: #b7bdc0;
 
-          font-size: 9px;
+          font-size: 13px;
 
           font-weight: 500;
 
@@ -1045,7 +1023,7 @@ function VehicleDetails() {
         .health-section,
         .action-section {
 
-          margin-top: 42px;
+          margin-top: 48px;
 
         }
 
@@ -1057,7 +1035,7 @@ function VehicleDetails() {
 
           justify-content: space-between;
 
-          margin-bottom: 17px;
+          margin-bottom: 20px;
 
         }
 
@@ -1067,25 +1045,25 @@ function VehicleDetails() {
 
           align-items: center;
 
-          gap: 8px;
+          gap: 9px;
 
-          color: #4e5559;
+          color: #687075;
 
-          font-size: 7px;
+          font-size: 11px;
 
           font-weight: 700;
 
-          letter-spacing: 0.18em;
+          letter-spacing: 0.17em;
 
-          margin-bottom: 8px;
+          margin-bottom: 9px;
 
         }
 
         .section-kicker span {
 
-          width: 20px;
+          width: 24px;
 
-          height: 1px;
+          height: 2px;
 
           background: #e8752a;
 
@@ -1095,13 +1073,13 @@ function VehicleDetails() {
 
           margin: 0;
 
-          color: #cdd1d2;
+          color: #d9ddde;
 
-          font-size: 17px;
+          font-size: 24px;
 
           font-weight: 600;
 
-          letter-spacing: -0.02em;
+          letter-spacing: -0.025em;
 
         }
 
@@ -1120,7 +1098,7 @@ function VehicleDetails() {
               minmax(0, 1fr)
             );
 
-          gap: 10px;
+          gap: 13px;
 
         }
 
@@ -1131,15 +1109,15 @@ function VehicleDetails() {
 
         .vehicle-info-card {
 
-          min-height: 108px;
+          min-height: 128px;
 
-          padding: 17px;
+          padding: 20px;
 
           background: #131617;
 
           border: 1px solid #292e31;
 
-          border-radius: 10px;
+          border-radius: 11px;
 
           transition:
             border-color 0.2s ease,
@@ -1164,9 +1142,9 @@ function VehicleDetails() {
 
         .vehicle-info-icon {
 
-          width: 31px;
+          width: 38px;
 
-          height: 31px;
+          height: 38px;
 
           display: flex;
 
@@ -1174,7 +1152,7 @@ function VehicleDetails() {
 
           justify-content: center;
 
-          border-radius: 7px;
+          border-radius: 8px;
 
           color: #e8752a;
 
@@ -1194,7 +1172,7 @@ function VehicleDetails() {
               0.12
             );
 
-          margin-bottom: 13px;
+          margin-bottom: 15px;
 
         }
 
@@ -1202,13 +1180,13 @@ function VehicleDetails() {
 
           display: block;
 
-          color: #4e5559;
+          color: #687075;
 
-          font-size: 6px;
+          font-size: 11px;
 
           font-weight: 700;
 
-          letter-spacing: 0.14em;
+          letter-spacing: 0.12em;
 
         }
 
@@ -1216,13 +1194,13 @@ function VehicleDetails() {
 
           display: block;
 
-          color: #aeb3b5;
+          color: #c3c8ca;
 
-          font-size: 11px;
+          font-size: 15px;
 
           font-weight: 500;
 
-          margin-top: 5px;
+          margin-top: 6px;
 
           overflow: hidden;
 
@@ -1239,7 +1217,7 @@ function VehicleDetails() {
 
         .health-heading {
 
-          margin-bottom: 15px;
+          margin-bottom: 18px;
 
         }
 
@@ -1249,15 +1227,15 @@ function VehicleDetails() {
 
           align-items: center;
 
-          gap: 5px;
+          gap: 7px;
 
           color: #e8752a;
 
-          font-size: 7px;
+          font-size: 11px;
 
           font-weight: 700;
 
-          letter-spacing: 0.13em;
+          letter-spacing: 0.12em;
 
         }
 
@@ -1267,9 +1245,9 @@ function VehicleDetails() {
 
           border: 1px solid #292e31;
 
-          border-radius: 12px;
+          border-radius: 13px;
 
-          padding: 5px;
+          padding: 7px;
 
           overflow: hidden;
 
@@ -1290,7 +1268,7 @@ function VehicleDetails() {
               minmax(0, 1fr)
             );
 
-          gap: 9px;
+          gap: 12px;
 
         }
 
@@ -1301,7 +1279,7 @@ function VehicleDetails() {
 
         .vehicle-action-card {
 
-          min-height: 155px;
+          min-height: 185px;
 
           display: flex;
 
@@ -1311,9 +1289,9 @@ function VehicleDetails() {
 
           justify-content: space-between;
 
-          padding: 17px;
+          padding: 20px;
 
-          border-radius: 10px;
+          border-radius: 11px;
 
           border: 1px solid #292e31;
 
@@ -1389,9 +1367,9 @@ function VehicleDetails() {
 
         .action-icon {
 
-          width: 36px;
+          width: 42px;
 
-          height: 36px;
+          height: 42px;
 
           display: flex;
 
@@ -1399,7 +1377,7 @@ function VehicleDetails() {
 
           justify-content: center;
 
-          border-radius: 8px;
+          border-radius: 9px;
 
           color: #e8752a;
 
@@ -1447,7 +1425,7 @@ function VehicleDetails() {
 
           margin-top: auto;
 
-          padding-top: 22px;
+          padding-top: 26px;
 
         }
 
@@ -1455,9 +1433,9 @@ function VehicleDetails() {
 
           margin: 0;
 
-          color: #cdd1d2;
+          color: #d1d5d6;
 
-          font-size: 11px;
+          font-size: 15px;
 
           font-weight: 600;
 
@@ -1471,13 +1449,13 @@ function VehicleDetails() {
 
         .action-content p {
 
-          margin: 5px 0 0;
+          margin: 7px 0 0;
 
-          color: #565d61;
+          color: #747c80;
 
-          font-size: 8px;
+          font-size: 12px;
 
-          line-height: 1.5;
+          line-height: 1.55;
 
         }
 
@@ -1488,7 +1466,7 @@ function VehicleDetails() {
               11,
               13,
               14,
-              0.65
+              0.72
             );
 
         }
@@ -1497,17 +1475,11 @@ function VehicleDetails() {
 
           position: absolute;
 
-          right: 15px;
+          right: 17px;
 
-          top: 15px;
+          top: 17px;
 
-          color: #454c50;
-
-        }
-
-        .vehicle-action-card {
-
-          position: relative;
+          color: #60686c;
 
         }
 
@@ -1526,9 +1498,9 @@ function VehicleDetails() {
               minmax(0, 1fr)
             );
 
-          gap: 10px;
+          gap: 13px;
 
-          margin-top: 25px;
+          margin-top: 30px;
 
         }
 
@@ -1536,23 +1508,23 @@ function VehicleDetails() {
 
           display: flex;
 
-          gap: 12px;
+          gap: 15px;
 
-          padding: 18px;
+          padding: 21px;
 
           background: #101213;
 
           border: 1px solid #24292b;
 
-          border-radius: 10px;
+          border-radius: 11px;
 
         }
 
         .footer-info-icon {
 
-          width: 33px;
+          width: 38px;
 
-          height: 33px;
+          height: 38px;
 
           flex-shrink: 0;
 
@@ -1562,13 +1534,13 @@ function VehicleDetails() {
 
           justify-content: center;
 
-          border-radius: 7px;
+          border-radius: 8px;
 
           background: #171a1b;
 
           border: 1px solid #2a2f31;
 
-          color: #656c70;
+          color: #747c80;
 
         }
 
@@ -1576,13 +1548,13 @@ function VehicleDetails() {
 
           display: block;
 
-          color: #464d51;
+          color: #626a6e;
 
-          font-size: 6px;
+          font-size: 10px;
 
           font-weight: 700;
 
-          letter-spacing: 0.16em;
+          letter-spacing: 0.14em;
 
         }
 
@@ -1590,25 +1562,25 @@ function VehicleDetails() {
 
           display: block;
 
-          color: #888f93;
+          color: #aeb4b7;
 
-          font-size: 9px;
+          font-size: 14px;
 
           font-weight: 500;
 
-          margin-top: 4px;
+          margin-top: 5px;
 
         }
 
         .footer-info-card p {
 
-          margin: 4px 0 0;
+          margin: 6px 0 0;
 
-          color: #4d5458;
+          color: #687075;
 
-          font-size: 8px;
+          font-size: 12px;
 
-          line-height: 1.5;
+          line-height: 1.55;
 
         }
 
@@ -1635,9 +1607,9 @@ function VehicleDetails() {
 
         .not-found-icon {
 
-          width: 55px;
+          width: 64px;
 
-          height: 55px;
+          height: 64px;
 
           display: flex;
 
@@ -1645,7 +1617,7 @@ function VehicleDetails() {
 
           justify-content: center;
 
-          border-radius: 11px;
+          border-radius: 12px;
 
           color: #e8752a;
 
@@ -1669,35 +1641,35 @@ function VehicleDetails() {
 
         .vehicle-not-found > span {
 
-          color: #4e5559;
+          color: #687075;
 
-          font-size: 7px;
+          font-size: 11px;
 
           font-weight: 700;
 
-          letter-spacing: 0.18em;
+          letter-spacing: 0.17em;
 
-          margin-top: 17px;
+          margin-top: 18px;
 
         }
 
         .vehicle-not-found h2 {
 
-          margin: 7px 0 0;
+          margin: 8px 0 0;
 
           color: #d3d6d7;
 
-          font-size: 22px;
+          font-size: 26px;
 
         }
 
         .vehicle-not-found p {
 
-          color: #555c60;
+          color: #687075;
 
-          font-size: 10px;
+          font-size: 14px;
 
-          margin: 7px 0 18px;
+          margin: 8px 0 20px;
 
         }
 
@@ -1707,19 +1679,19 @@ function VehicleDetails() {
 
           align-items: center;
 
-          gap: 7px;
+          gap: 8px;
 
           border: 1px solid #303538;
 
           background: #141718;
 
-          color: #8b9194;
+          color: #aeb4b7;
 
-          padding: 9px 13px;
+          padding: 11px 16px;
 
-          border-radius: 7px;
+          border-radius: 8px;
 
-          font-size: 9px;
+          font-size: 13px;
 
           cursor: pointer;
 
@@ -1732,15 +1704,15 @@ function VehicleDetails() {
 
         .vehicle-skeleton-back {
 
-          width: 100px;
+          width: 140px;
 
-          height: 10px;
+          height: 14px;
 
           background: #171a1b;
 
-          border-radius: 5px;
+          border-radius: 6px;
 
-          margin-bottom: 45px;
+          margin-bottom: 50px;
 
           animation:
             vehicle-pulse 1.3s infinite;
@@ -1749,13 +1721,13 @@ function VehicleDetails() {
 
         .vehicle-skeleton-header {
 
-          width: 350px;
+          width: 400px;
 
-          height: 45px;
+          height: 55px;
 
           background: #171a1b;
 
-          border-radius: 7px;
+          border-radius: 8px;
 
           animation:
             vehicle-pulse 1.3s infinite;
@@ -1764,17 +1736,17 @@ function VehicleDetails() {
 
         .vehicle-skeleton-subtitle {
 
-          width: 230px;
+          width: 260px;
 
-          height: 10px;
+          height: 13px;
 
           background: #171a1b;
 
-          border-radius: 5px;
+          border-radius: 6px;
 
-          margin-top: 15px;
+          margin-top: 17px;
 
-          margin-bottom: 40px;
+          margin-bottom: 45px;
 
           animation:
             vehicle-pulse 1.3s infinite;
@@ -1791,19 +1763,19 @@ function VehicleDetails() {
               1fr
             );
 
-          gap: 10px;
+          gap: 13px;
 
         }
 
         .vehicle-skeleton-grid div {
 
-          height: 110px;
+          height: 125px;
 
           background: #131617;
 
           border: 1px solid #202426;
 
-          border-radius: 10px;
+          border-radius: 11px;
 
           animation:
             vehicle-pulse 1.3s infinite;
@@ -1862,8 +1834,8 @@ function VehicleDetails() {
           .vehicle-details-container {
 
             padding:
-              22px 15px
-              50px;
+              24px 17px
+              55px;
 
           }
 
@@ -1873,11 +1845,27 @@ function VehicleDetails() {
 
           }
 
+          .vehicle-details-topbar {
+
+            margin-bottom: 30px;
+
+          }
+
+          .vehicle-back-button {
+
+            font-size: 13px;
+
+          }
+
           .vehicle-hero {
 
             align-items: flex-start;
 
             flex-direction: column;
+
+            padding:
+              28px 0
+              32px;
 
           }
 
@@ -1889,21 +1877,43 @@ function VehicleDetails() {
 
           .vehicle-icon-box {
 
-            width: 52px;
+            width: 58px;
 
-            height: 52px;
+            height: 58px;
 
           }
 
           .vehicle-hero h1 {
 
-            font-size: 2.3rem;
+            font-size: 2.35rem;
+
+          }
+
+          .vehicle-registration {
+
+            font-size: 11px;
+
+            flex-wrap: wrap;
 
           }
 
           .vehicle-hero-status {
 
             width: 100%;
+
+            box-sizing: border-box;
+
+          }
+
+          .section-heading h2 {
+
+            font-size: 21px;
+
+          }
+
+          .section-kicker {
+
+            font-size: 10px;
 
           }
 
@@ -1922,7 +1932,21 @@ function VehicleDetails() {
 
           .vehicle-action-card {
 
-            min-height: 145px;
+            min-height: 165px;
+
+            padding: 17px;
+
+          }
+
+          .action-content h3 {
+
+            font-size: 14px;
+
+          }
+
+          .action-content p {
+
+            font-size: 11px;
 
           }
 
@@ -1940,6 +1964,12 @@ function VehicleDetails() {
           .action-grid {
 
             grid-template-columns: 1fr;
+
+          }
+
+          .vehicle-hero h1 {
+
+            font-size: 2rem;
 
           }
 
@@ -2035,7 +2065,7 @@ function ActionCard({
 
 
       <ArrowRight
-        size={13}
+        size={17}
         className="action-arrow"
       />
 
@@ -2054,8 +2084,8 @@ function ActivityIcon() {
   return (
 
     <svg
-      width="17"
-      height="17"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
