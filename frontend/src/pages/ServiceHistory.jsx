@@ -25,6 +25,7 @@ import {
 
 
 function ServiceHistory() {
+
   const { vehicleId } = useParams();
 
   const navigate = useNavigate();
@@ -41,7 +42,9 @@ function ServiceHistory() {
   // ==================================================
 
   const fetchServices = async () => {
+
     try {
+
       const res =
         await getServices(vehicleId);
 
@@ -62,11 +65,14 @@ function ServiceHistory() {
       setLoading(false);
 
     }
+
   };
 
 
   useEffect(() => {
+
     fetchServices();
+
   }, []);
 
 
@@ -103,6 +109,7 @@ function ServiceHistory() {
       );
 
     }
+
   };
 
 
@@ -111,7 +118,9 @@ function ServiceHistory() {
   // ==================================================
 
   if (loading) {
+
     return (
+
       <>
         <Navbar />
 
@@ -132,8 +141,11 @@ function ServiceHistory() {
           </div>
 
         </main>
+
       </>
+
     );
+
   }
 
 
@@ -155,7 +167,9 @@ function ServiceHistory() {
   // ==================================================
 
   return (
+
     <>
+
       <Navbar />
 
       <main className="service-history-page">
@@ -176,7 +190,7 @@ function ServiceHistory() {
             className="history-back-button"
           >
 
-            <ArrowLeft size={16} />
+            <ArrowLeft size={18} />
 
             Back to vehicle
 
@@ -218,11 +232,11 @@ function ServiceHistory() {
               className="add-service-button"
             >
 
-              <Plus size={17} />
+              <Plus size={19} />
 
               Add service
 
-              <ArrowRight size={14} />
+              <ArrowRight size={16} />
 
             </Link>
 
@@ -237,11 +251,12 @@ function ServiceHistory() {
 
             <section className="history-summary">
 
+
               <div className="summary-item">
 
                 <div className="summary-icon">
 
-                  <Wrench size={17} />
+                  <Wrench size={20} />
 
                 </div>
 
@@ -267,7 +282,7 @@ function ServiceHistory() {
 
                 <div className="summary-icon">
 
-                  <IndianRupee size={17} />
+                  <IndianRupee size={20} />
 
                 </div>
 
@@ -293,7 +308,7 @@ function ServiceHistory() {
 
                 <div className="summary-icon">
 
-                  <Clock3 size={17} />
+                  <Clock3 size={20} />
 
                 </div>
 
@@ -339,7 +354,7 @@ function ServiceHistory() {
 
               <div className="empty-icon">
 
-                <FileText size={26} />
+                <FileText size={30} />
 
               </div>
 
@@ -365,7 +380,7 @@ function ServiceHistory() {
                   className="empty-add-button"
                 >
 
-                  <Plus size={16} />
+                  <Plus size={18} />
 
                   Add first service
 
@@ -383,6 +398,7 @@ function ServiceHistory() {
 
             <section className="service-list-section">
 
+
               <div className="list-header">
 
                 <div>
@@ -390,7 +406,7 @@ function ServiceHistory() {
                   <div className="list-title">
 
                     <Wrench
-                      size={17}
+                      size={20}
                     />
 
                     <h2>
@@ -498,7 +514,7 @@ function ServiceHistory() {
                             >
 
                               <Pencil
-                                size={14}
+                                size={16}
                               />
 
                               <span>
@@ -519,7 +535,7 @@ function ServiceHistory() {
                             >
 
                               <Trash2
-                                size={14}
+                                size={16}
                               />
 
                               <span>
@@ -545,7 +561,7 @@ function ServiceHistory() {
                             <div className="detail-icon">
 
                               <MapPin
-                                size={14}
+                                size={17}
                               />
 
                             </div>
@@ -574,7 +590,7 @@ function ServiceHistory() {
                             <div className="detail-icon">
 
                               <CalendarDays
-                                size={14}
+                                size={17}
                               />
 
                             </div>
@@ -612,7 +628,7 @@ function ServiceHistory() {
                             <div className="detail-icon">
 
                               <Gauge
-                                size={14}
+                                size={17}
                               />
 
                             </div>
@@ -644,7 +660,7 @@ function ServiceHistory() {
                             <div className="detail-icon">
 
                               <IndianRupee
-                                size={14}
+                                size={17}
                               />
 
                             </div>
@@ -680,7 +696,7 @@ function ServiceHistory() {
                             <div className="description-icon">
 
                               <FileText
-                                size={14}
+                                size={17}
                               />
 
                             </div>
@@ -732,6 +748,7 @@ function ServiceHistory() {
         ================================================== */
 
         .service-history-page {
+
           min-height: 100vh;
 
           background: #0b0d0e;
@@ -741,9 +758,12 @@ function ServiceHistory() {
           position: relative;
 
           overflow: hidden;
+
         }
 
+
         .service-history-page::before {
+
           content: "";
 
           position: fixed;
@@ -769,6 +789,7 @@ function ServiceHistory() {
             );
 
           pointer-events: none;
+
         }
 
 
@@ -777,17 +798,19 @@ function ServiceHistory() {
         ================================================== */
 
         .service-history-container {
-          max-width: 1180px;
+
+          max-width: 1280px;
 
           margin: 0 auto;
 
           padding:
-            35px 30px
-            70px;
+            40px 38px
+            80px;
 
           position: relative;
 
           z-index: 2;
+
         }
 
 
@@ -796,32 +819,39 @@ function ServiceHistory() {
         ================================================== */
 
         .history-back-button {
+
           display: inline-flex;
 
           align-items: center;
 
-          gap: 8px;
+          gap: 9px;
 
           padding: 0;
 
-          margin-bottom: 35px;
+          margin-bottom: 40px;
 
           background: transparent;
 
           border: none;
 
-          color: #555b5f;
+          color: #737b7f;
 
-          font-size: 11px;
+          font-size: 14px;
+
+          font-weight: 500;
 
           cursor: pointer;
 
           transition:
             color 0.2s ease;
+
         }
 
+
         .history-back-button:hover {
+
           color: #e8752a;
+
         }
 
 
@@ -830,53 +860,63 @@ function ServiceHistory() {
         ================================================== */
 
         .history-header {
+
           display: flex;
 
           align-items: flex-end;
 
           justify-content: space-between;
 
-          gap: 30px;
+          gap: 35px;
 
-          margin-bottom: 32px;
+          margin-bottom: 38px;
+
         }
 
+
         .history-kicker {
+
           display: flex;
 
           align-items: center;
 
-          gap: 9px;
+          gap: 10px;
 
-          color: #62686c;
+          color: #70787c;
 
-          font-size: 8px;
+          font-size: 11px;
 
           font-weight: 700;
 
-          letter-spacing: 0.2em;
+          letter-spacing: 0.18em;
 
-          margin-bottom: 13px;
+          margin-bottom: 14px;
+
         }
+
 
         .history-kicker span {
-          width: 23px;
 
-          height: 1px;
+          width: 26px;
+
+          height: 2px;
 
           background: #e8752a;
+
         }
 
+
         .history-header h1 {
+
           margin: 0;
 
           color: #f1f1f1;
 
           font-size:
             clamp(
-              2.2rem,
-              4vw,
-              3.3rem
+              2.7rem,
+              4.5vw,
+              3.8rem
             );
 
           line-height: 1;
@@ -884,18 +924,22 @@ function ServiceHistory() {
           letter-spacing: -0.055em;
 
           font-weight: 650;
+
         }
 
+
         .history-header p {
-          max-width: 540px;
 
-          margin: 13px 0 0;
+          max-width: 600px;
 
-          color: #5f666a;
+          margin: 15px 0 0;
 
-          font-size: 12px;
+          color: #737b7f;
+
+          font-size: 15px;
 
           line-height: 1.7;
+
         }
 
 
@@ -904,15 +948,16 @@ function ServiceHistory() {
         ================================================== */
 
         .add-service-button {
+
           display: inline-flex;
 
           align-items: center;
 
-          gap: 8px;
+          gap: 9px;
 
           flex-shrink: 0;
 
-          padding: 12px 16px;
+          padding: 13px 18px;
 
           border-radius: 9px;
 
@@ -922,20 +967,24 @@ function ServiceHistory() {
 
           text-decoration: none;
 
-          font-size: 10px;
+          font-size: 13px;
 
           font-weight: 700;
 
           transition:
             background 0.2s ease,
             transform 0.2s ease;
+
         }
 
+
         .add-service-button:hover {
+
           background: #f08a45;
 
           transform:
             translateY(-1px);
+
         }
 
 
@@ -944,6 +993,7 @@ function ServiceHistory() {
         ================================================== */
 
         .history-summary {
+
           display: grid;
 
           grid-template-columns:
@@ -957,25 +1007,31 @@ function ServiceHistory() {
 
           border-radius: 12px;
 
-          padding: 18px 22px;
+          padding: 21px 25px;
 
-          margin-bottom: 25px;
+          margin-bottom: 28px;
+
         }
 
+
         .summary-item {
+
           display: flex;
 
           align-items: center;
 
-          gap: 11px;
+          gap: 13px;
 
           min-width: 0;
+
         }
 
-        .summary-icon {
-          width: 36px;
 
-          height: 36px;
+        .summary-icon {
+
+          width: 42px;
+
+          height: 42px;
 
           flex-shrink: 0;
 
@@ -985,7 +1041,7 @@ function ServiceHistory() {
 
           justify-content: center;
 
-          border-radius: 8px;
+          border-radius: 9px;
 
           background:
             rgba(
@@ -1000,52 +1056,63 @@ function ServiceHistory() {
               232,
               117,
               42,
-              0.13
+              0.15
             );
 
           color: #e8752a;
+
         }
 
+
         .summary-item span {
+
           display: block;
 
-          color: #4e5458;
+          color: #687075;
 
-          font-size: 7px;
+          font-size: 10px;
 
           font-weight: 700;
 
-          letter-spacing: 0.16em;
+          letter-spacing: 0.15em;
+
         }
+
 
         .summary-item strong {
+
           display: block;
 
-          margin-top: 4px;
+          margin-top: 5px;
 
-          color: #b8bdc0;
+          color: #d0d4d5;
 
-          font-size: 13px;
+          font-size: 17px;
 
           font-weight: 600;
+
         }
 
+
         .summary-divider {
+
           width: 1px;
 
-          height: 35px;
+          height: 43px;
 
           background: #292e31;
 
-          margin: 0 25px;
+          margin: 0 28px;
+
         }
 
 
         /* ==================================================
-           LIST SECTION
+           LIST
         ================================================== */
 
         .service-list-section {
+
           background: #131617;
 
           border: 1px solid #292e31;
@@ -1053,9 +1120,12 @@ function ServiceHistory() {
           border-radius: 13px;
 
           overflow: hidden;
+
         }
 
+
         .list-header {
+
           display: flex;
 
           align-items: center;
@@ -1064,64 +1134,73 @@ function ServiceHistory() {
 
           gap: 20px;
 
-          padding: 21px 24px;
+          padding: 25px 28px;
 
           border-bottom: 1px solid #292e31;
+
         }
 
+
         .list-title {
+
           display: flex;
 
           align-items: center;
 
-          gap: 9px;
+          gap: 11px;
+
         }
+
 
         .list-title svg {
+
           color: #e8752a;
+
         }
 
+
         .list-title h2 {
+
           margin: 0;
 
-          color: #d5d8d9;
+          color: #e0e3e4;
+
+          font-size: 19px;
+
+          font-weight: 600;
+
+        }
+
+
+        .list-header p {
+
+          margin: 6px 0 0;
+
+          color: #687075;
 
           font-size: 13px;
 
-          font-weight: 600;
         }
 
-        .list-header p {
-          margin: 5px 0 0;
-
-          color: #4f5559;
-
-          font-size: 9px;
-        }
 
         .record-count {
-          padding: 6px 9px;
 
-          border: 1px solid #2d3235;
+          padding: 7px 11px;
 
-          border-radius: 6px;
+          border: 1px solid #303538;
 
-          color: #666d71;
+          border-radius: 7px;
 
-          font-size: 8px;
+          color: #7b8387;
+
+          font-size: 11px;
+
+          font-weight: 600;
 
           text-transform: uppercase;
 
-          letter-spacing: 0.1em;
-        }
+          letter-spacing: 0.09em;
 
-
-        /* ==================================================
-           SERVICE LIST
-        ================================================== */
-
-        .service-list {
-          padding: 5px 0;
         }
 
 
@@ -1130,23 +1209,30 @@ function ServiceHistory() {
         ================================================== */
 
         .service-record {
+
           display: grid;
 
-          grid-template-columns: 75px 1fr;
+          grid-template-columns: 82px 1fr;
 
-          min-height: 220px;
+          min-height: 245px;
 
           border-bottom: 1px solid #25292b;
 
           transition:
             background 0.2s ease;
+
         }
+
 
         .service-record:last-child {
+
           border-bottom: none;
+
         }
 
+
         .service-record:hover {
+
           background:
             rgba(
               255,
@@ -1154,6 +1240,7 @@ function ServiceHistory() {
               255,
               0.012
             );
+
         }
 
 
@@ -1162,19 +1249,23 @@ function ServiceHistory() {
         ================================================== */
 
         .record-timeline {
+
           position: relative;
 
           display: flex;
 
           justify-content: center;
 
-          padding-top: 28px;
+          padding-top: 31px;
+
         }
 
-        .timeline-number {
-          width: 31px;
 
-          height: 31px;
+        .timeline-number {
+
+          width: 36px;
+
+          height: 36px;
 
           display: flex;
 
@@ -1182,25 +1273,30 @@ function ServiceHistory() {
 
           justify-content: center;
 
-          border-radius: 8px;
+          border-radius: 9px;
 
           background: #101213;
 
           border: 1px solid #303438;
 
-          color: #62686c;
+          color: #72797d;
 
-          font-size: 8px;
+          font-size: 10px;
 
           font-family: monospace;
+
+          font-weight: 600;
 
           position: relative;
 
           z-index: 2;
+
         }
+
 
         .service-record:first-child
           .timeline-number {
+
           border-color:
             rgba(
               232,
@@ -1218,18 +1314,22 @@ function ServiceHistory() {
               42,
               0.06
             );
+
         }
 
+
         .timeline-line {
+
           position: absolute;
 
           width: 1px;
 
-          top: 58px;
+          top: 67px;
 
           bottom: 0;
 
           background: #292e31;
+
         }
 
 
@@ -1238,43 +1338,53 @@ function ServiceHistory() {
         ================================================== */
 
         .record-content {
+
           padding:
-            27px 25px
-            27px 5px;
+            31px 30px
+            31px 5px;
+
         }
 
+
         .record-top {
+
           display: flex;
 
           align-items: flex-start;
 
           justify-content: space-between;
 
-          gap: 20px;
+          gap: 25px;
+
         }
 
+
         .record-type {
+
           display: flex;
 
           align-items: center;
 
-          gap: 6px;
+          gap: 7px;
 
-          color: #555b5f;
+          color: #687075;
 
-          font-size: 7px;
+          font-size: 10px;
 
           font-weight: 700;
 
-          letter-spacing: 0.17em;
+          letter-spacing: 0.16em;
 
-          margin-bottom: 7px;
+          margin-bottom: 8px;
+
         }
 
-        .record-status-dot {
-          width: 5px;
 
-          height: 5px;
+        .record-status-dot {
+
+          width: 6px;
+
+          height: 6px;
 
           border-radius: 50%;
 
@@ -1288,18 +1398,22 @@ function ServiceHistory() {
               42,
               0.5
             );
+
         }
 
+
         .record-content h3 {
+
           margin: 0;
 
-          color: #e0e2e3;
+          color: #e5e7e8;
 
-          font-size: 18px;
+          font-size: 23px;
 
           font-weight: 600;
 
           letter-spacing: -0.025em;
+
         }
 
 
@@ -1308,23 +1422,27 @@ function ServiceHistory() {
         ================================================== */
 
         .record-actions {
+
           display: flex;
 
-          gap: 6px;
+          gap: 8px;
+
         }
 
+
         .record-action {
+
           display: inline-flex;
 
           align-items: center;
 
-          gap: 6px;
+          gap: 7px;
 
-          padding: 7px 9px;
+          padding: 9px 12px;
 
           border-radius: 7px;
 
-          font-size: 9px;
+          font-size: 12px;
 
           font-weight: 600;
 
@@ -1333,17 +1451,23 @@ function ServiceHistory() {
           text-decoration: none;
 
           transition: all 0.2s ease;
+
         }
 
+
         .edit-action {
-          color: #777e82;
+
+          color: #858d91;
 
           border: 1px solid #303538;
 
           background: #101213;
+
         }
 
+
         .edit-action:hover {
+
           color: #e8752a;
 
           border-color:
@@ -1353,10 +1477,13 @@ function ServiceHistory() {
               42,
               0.3
             );
+
         }
 
+
         .delete-action {
-          color: #6d5959;
+
+          color: #8b6868;
 
           border: 1px solid
             rgba(
@@ -1373,9 +1500,12 @@ function ServiceHistory() {
               70,
               0.025
             );
+
         }
 
+
         .delete-action:hover {
+
           color: #e77777;
 
           border-color:
@@ -1385,6 +1515,7 @@ function ServiceHistory() {
               80,
               0.3
             );
+
         }
 
 
@@ -1393,6 +1524,7 @@ function ServiceHistory() {
         ================================================== */
 
         .record-details {
+
           display: grid;
 
           grid-template-columns:
@@ -1401,32 +1533,38 @@ function ServiceHistory() {
               minmax(0, 1fr)
             );
 
-          gap: 15px;
+          gap: 18px;
 
-          margin-top: 25px;
+          margin-top: 28px;
 
           padding:
-            17px 0;
+            20px 0;
 
           border-top: 1px solid #25292b;
 
           border-bottom: 1px solid #25292b;
+
         }
 
+
         .detail-item {
+
           display: flex;
 
           align-items: center;
 
-          gap: 9px;
+          gap: 11px;
 
           min-width: 0;
+
         }
 
-        .detail-icon {
-          width: 30px;
 
-          height: 30px;
+        .detail-icon {
+
+          width: 34px;
+
+          height: 34px;
 
           flex-shrink: 0;
 
@@ -1436,39 +1574,48 @@ function ServiceHistory() {
 
           justify-content: center;
 
-          border-radius: 7px;
+          border-radius: 8px;
 
           background: #101213;
 
           border: 1px solid #292e31;
 
-          color: #62686c;
+          color: #737b7f;
+
         }
+
 
         .detail-item > div:last-child {
+
           min-width: 0;
+
         }
 
+
         .detail-item span {
+
           display: block;
 
-          color: #4c5256;
+          color: #60686c;
 
-          font-size: 6px;
+          font-size: 9px;
 
           font-weight: 700;
 
-          letter-spacing: 0.13em;
+          letter-spacing: 0.12em;
+
         }
 
+
         .detail-item strong {
+
           display: block;
 
-          margin-top: 4px;
+          margin-top: 5px;
 
-          color: #a9aeb0;
+          color: #c1c6c8;
 
-          font-size: 10px;
+          font-size: 13px;
 
           font-weight: 500;
 
@@ -1477,10 +1624,16 @@ function ServiceHistory() {
           overflow: hidden;
 
           text-overflow: ellipsis;
+
         }
 
+
         .cost-item strong {
+
           color: #e8752a;
+
+          font-size: 14px;
+
         }
 
 
@@ -1489,19 +1642,23 @@ function ServiceHistory() {
         ================================================== */
 
         .record-description {
+
           display: flex;
 
           align-items: flex-start;
 
-          gap: 10px;
+          gap: 11px;
 
-          margin-top: 17px;
+          margin-top: 19px;
+
         }
 
-        .description-icon {
-          width: 29px;
 
-          height: 29px;
+        .description-icon {
+
+          width: 32px;
+
+          height: 32px;
 
           flex-shrink: 0;
 
@@ -1511,35 +1668,42 @@ function ServiceHistory() {
 
           justify-content: center;
 
-          border-radius: 7px;
+          border-radius: 8px;
 
           background: #101213;
 
           border: 1px solid #292e31;
 
-          color: #555b5f;
+          color: #666e72;
+
         }
 
+
         .record-description span {
+
           display: block;
 
-          color: #4c5256;
+          color: #60686c;
 
-          font-size: 6px;
+          font-size: 9px;
 
           font-weight: 700;
 
-          letter-spacing: 0.13em;
+          letter-spacing: 0.12em;
+
         }
 
+
         .record-description p {
-          margin: 4px 0 0;
 
-          color: #666d71;
+          margin: 5px 0 0;
 
-          font-size: 10px;
+          color: #858d91;
 
-          line-height: 1.6;
+          font-size: 13px;
+
+          line-height: 1.65;
+
         }
 
 
@@ -1548,25 +1712,29 @@ function ServiceHistory() {
         ================================================== */
 
         .empty-service-state {
+
           display: flex;
 
           align-items: center;
 
-          gap: 25px;
+          gap: 28px;
 
-          padding: 55px;
+          padding: 60px;
 
           background: #131617;
 
           border: 1px solid #292e31;
 
           border-radius: 13px;
+
         }
 
-        .empty-icon {
-          width: 62px;
 
-          height: 62px;
+        .empty-icon {
+
+          width: 68px;
+
+          height: 68px;
 
           flex-shrink: 0;
 
@@ -1595,50 +1763,62 @@ function ServiceHistory() {
             );
 
           color: #e8752a;
+
         }
 
-        .empty-kicker {
-          color: #555b5f;
 
-          font-size: 7px;
+        .empty-kicker {
+
+          color: #626a6e;
+
+          font-size: 10px;
 
           font-weight: 700;
 
-          letter-spacing: 0.17em;
+          letter-spacing: 0.16em;
+
         }
+
 
         .empty-content h2 {
-          margin: 7px 0 0;
 
-          color: #d5d8d9;
+          margin: 8px 0 0;
 
-          font-size: 20px;
+          color: #dfe2e3;
+
+          font-size: 23px;
 
           font-weight: 600;
+
         }
+
 
         .empty-content p {
-          max-width: 480px;
 
-          margin: 7px 0 17px;
+          max-width: 520px;
 
-          color: #5c6367;
+          margin: 8px 0 19px;
 
-          font-size: 11px;
+          color: #747c80;
+
+          font-size: 14px;
 
           line-height: 1.7;
+
         }
 
+
         .empty-add-button {
+
           display: inline-flex;
 
           align-items: center;
 
-          gap: 7px;
+          gap: 8px;
 
-          padding: 9px 13px;
+          padding: 11px 15px;
 
-          border-radius: 7px;
+          border-radius: 8px;
 
           background: #e8752a;
 
@@ -1646,9 +1826,10 @@ function ServiceHistory() {
 
           text-decoration: none;
 
-          font-size: 9px;
+          font-size: 12px;
 
           font-weight: 700;
+
         }
 
 
@@ -1657,37 +1838,8 @@ function ServiceHistory() {
         ================================================== */
 
         .history-skeleton-small {
-          width: 100px;
 
-          height: 10px;
-
-          border-radius: 5px;
-
-          background: #191c1e;
-
-          margin-bottom: 25px;
-
-          animation:
-            history-pulse 1.4s infinite;
-        }
-
-        .history-skeleton-title {
-          width: 300px;
-
-          height: 42px;
-
-          border-radius: 7px;
-
-          background: #191c1e;
-
-          animation:
-            history-pulse 1.4s infinite;
-        }
-
-        .history-skeleton-subtitle {
-          width: 470px;
-
-          max-width: 90%;
+          width: 120px;
 
           height: 12px;
 
@@ -1695,16 +1847,55 @@ function ServiceHistory() {
 
           background: #191c1e;
 
-          margin-top: 13px;
-
-          margin-bottom: 35px;
+          margin-bottom: 28px;
 
           animation:
             history-pulse 1.4s infinite;
+
         }
 
+
+        .history-skeleton-title {
+
+          width: 340px;
+
+          height: 50px;
+
+          border-radius: 7px;
+
+          background: #191c1e;
+
+          animation:
+            history-pulse 1.4s infinite;
+
+        }
+
+
+        .history-skeleton-subtitle {
+
+          width: 500px;
+
+          max-width: 90%;
+
+          height: 14px;
+
+          border-radius: 5px;
+
+          background: #191c1e;
+
+          margin-top: 15px;
+
+          margin-bottom: 40px;
+
+          animation:
+            history-pulse 1.4s infinite;
+
+        }
+
+
         .history-skeleton-card {
-          height: 230px;
+
+          height: 255px;
 
           border-radius: 13px;
 
@@ -1712,11 +1903,13 @@ function ServiceHistory() {
 
           border: 1px solid #202426;
 
-          margin-bottom: 15px;
+          margin-bottom: 16px;
 
           animation:
             history-pulse 1.4s infinite;
+
         }
+
 
         @keyframes history-pulse {
 
@@ -1739,23 +1932,31 @@ function ServiceHistory() {
         @media (max-width: 900px) {
 
           .history-summary {
+
             grid-template-columns:
               repeat(
                 3,
                 1fr
               );
+
           }
+
 
           .summary-divider {
+
             display: none;
+
           }
 
+
           .record-details {
+
             grid-template-columns:
               repeat(
                 2,
                 minmax(0, 1fr)
               );
+
           }
 
         }
@@ -1768,34 +1969,61 @@ function ServiceHistory() {
         @media (max-width: 650px) {
 
           .service-history-container {
+
             padding:
-              25px 16px
-              50px;
+              26px 16px
+              55px;
+
           }
 
+
           .history-header {
+
             flex-direction: column;
 
             align-items: flex-start;
 
-            gap: 20px;
+            gap: 22px;
+
           }
 
+
+          .history-header h1 {
+
+            font-size: 2.55rem;
+
+          }
+
+
+          .history-header p {
+
+            font-size: 14px;
+
+          }
+
+
           .add-service-button {
+
             width: 100%;
 
             justify-content: center;
+
           }
+
 
           .history-summary {
+
             grid-template-columns: 1fr;
 
-            gap: 17px;
+            gap: 18px;
 
-            padding: 17px;
+            padding: 19px;
+
           }
 
+
           .summary-divider {
+
             display: block;
 
             width: 100%;
@@ -1803,59 +2031,100 @@ function ServiceHistory() {
             height: 1px;
 
             margin: 0;
+
           }
+
 
           .service-record {
-            grid-template-columns: 45px 1fr;
+
+            grid-template-columns: 48px 1fr;
+
           }
+
 
           .record-content {
+
             padding:
-              25px 15px
-              25px 0;
+              26px 15px
+              26px 0;
+
           }
+
 
           .record-top {
+
             flex-direction: column;
 
-            gap: 15px;
+            gap: 17px;
+
           }
+
+
+          .record-content h3 {
+
+            font-size: 20px;
+
+          }
+
 
           .record-actions {
+
             width: 100%;
+
           }
 
+
           .record-action {
+
             flex: 1;
 
             justify-content: center;
+
           }
+
 
           .record-details {
+
             grid-template-columns: 1fr;
 
-            gap: 13px;
+            gap: 15px;
+
           }
 
+
+          .detail-item strong {
+
+            font-size: 14px;
+
+          }
+
+
+          .record-description p {
+
+            font-size: 13px;
+
+          }
+
+
           .empty-service-state {
+
             flex-direction: column;
 
             align-items: flex-start;
 
-            padding: 35px 25px;
-          }
+            padding: 38px 25px;
 
-          .empty-icon {
-            width: 50px;
-
-            height: 50px;
           }
 
         }
 
       `}</style>
+
     </>
+
   );
+
 }
+
 
 export default ServiceHistory;
