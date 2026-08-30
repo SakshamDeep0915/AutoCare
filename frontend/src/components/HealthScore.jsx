@@ -9,7 +9,6 @@ import {
   RefreshCw,
   CheckCircle,
   AlertTriangle,
-  Gauge,
 } from "lucide-react";
 
 import API from "../services/api";
@@ -36,14 +35,19 @@ function HealthScore({ vehicleId }) {
     try {
 
       setLoading(true);
+
       setError("");
+
 
       const res =
         await API.get(
           `/health-score/${vehicleId}`
         );
 
-      setData(res.data);
+
+      setData(
+        res.data
+      );
 
     } catch (err) {
 
@@ -51,6 +55,7 @@ function HealthScore({ vehicleId }) {
         "Health Score Error:",
         err
       );
+
 
       setError(
         err.response?.data?.message ||
@@ -62,6 +67,7 @@ function HealthScore({ vehicleId }) {
       setLoading(false);
 
     }
+
   };
 
 
@@ -72,7 +78,9 @@ function HealthScore({ vehicleId }) {
   useEffect(() => {
 
     if (vehicleId) {
+
       fetchHealthScore();
+
     }
 
   }, [vehicleId]);
@@ -86,66 +94,25 @@ function HealthScore({ vehicleId }) {
 
     return (
 
-      <div className="health-score-container">
+      <div className="vehicle-health-card">
 
-        <div className="health-score-header">
+        <div className="vehicle-health-loading">
 
-          <div className="health-score-title">
+          <RefreshCw
+            className="vehicle-health-spin"
+            size={32}
+          />
 
-            <div className="health-score-icon">
-
-              <Activity size={17} />
-
-            </div>
-
-            <div>
-
-              <span className="health-kicker">
-                VEHICLE DIAGNOSTICS
-              </span>
-
-              <h2>
-                Health score
-              </h2>
-
-            </div>
-
-          </div>
+          <span>
+            Calculating vehicle health...
+          </span>
 
         </div>
-
-
-        <div className="health-loading">
-
-          <div className="health-loading-circle">
-
-            <RefreshCw
-              size={18}
-              className="animate-spin"
-            />
-
-          </div>
-
-          <div>
-
-            <strong>
-              Calculating vehicle health
-            </strong>
-
-            <span>
-              Analyzing maintenance, fuel and insurance data...
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <HealthScoreStyles />
 
       </div>
 
     );
+
   }
 
 
@@ -157,24 +124,24 @@ function HealthScore({ vehicleId }) {
 
     return (
 
-      <div className="health-score-container">
+      <div className="vehicle-health-card">
 
-        <div className="health-error">
+        <div className="vehicle-health-error">
 
-          <div className="health-error-icon">
+          <div className="vehicle-health-error-icon">
 
             <AlertTriangle
-              size={18}
+              size={27}
             />
 
           </div>
 
 
-          <div className="health-error-content">
+          <div className="vehicle-health-error-text">
 
-            <span className="health-kicker">
-              DIAGNOSTICS ERROR
-            </span>
+            <strong>
+              Unable to calculate vehicle health
+            </strong>
 
             <p>
               {error}
@@ -185,10 +152,12 @@ function HealthScore({ vehicleId }) {
 
           <button
             onClick={fetchHealthScore}
-            className="health-refresh-button"
+            className="vehicle-health-retry"
           >
 
-            <RefreshCw size={13} />
+            <RefreshCw
+              size={17}
+            />
 
             Retry
 
@@ -196,182 +165,212 @@ function HealthScore({ vehicleId }) {
 
         </div>
 
-
-        <HealthScoreStyles />
-
       </div>
 
     );
+
   }
 
-
-  // =====================================================
-  // NO DATA
-  // =====================================================
 
   if (!data) {
+
     return null;
+
   }
 
 
-  // =====================================================
-  // SCORE
-  // =====================================================
-
   const score =
-    Number(data.healthScore) || 0;
+    Number(
+      data.healthScore
+    ) || 0;
 
 
-  const scorePercentage =
-    Math.min(
-      Math.max(score, 0),
-      100
-    );
+  // =====================================================
+  // SCORE COLOR
+  // =====================================================
 
+  const getScoreColor = () => {
 
-  const circumference = 2 * Math.PI * 53;
+    if (score >= 80) {
 
-  const dashOffset =
-    circumference -
-    (scorePercentage / 100) *
-      circumference;
+      return "#f97316";
 
+    }
 
-  const getScoreStatus = () => {
+    if (score >= 60) {
 
-    if (score >= 90)
-      return "EXCELLENT";
+      return "#fb923c";
 
-    if (score >= 75)
-      return "GOOD";
+    }
 
-    if (score >= 60)
-      return "FAIR";
-
-    if (score >= 40)
-      return "ATTENTION";
-
-    return "CRITICAL";
+    return "#ef4444";
 
   };
 
 
-  const scoreStatus =
-    getScoreStatus();
+  const scoreColor =
+    getScoreColor();
 
 
   // =====================================================
-  // MAIN
+  // CONDITION ICON
   // =====================================================
+
+  const getConditionIcon = () => {
+
+    if (score >= 80) {
+
+      return (
+        <CheckCircle
+          size={28}
+        />
+      );
+
+    }
+
+    return (
+      <AlertTriangle
+        size={28}
+      />
+    );
+
+  };
+
+
+  // =====================================================
+  // BREAKDOWN DATA
+  // =====================================================
+
+  const breakdown = [
+
+    {
+      key: "maintenance",
+      icon: <Wrench size={23} />,
+      title: "Maintenance",
+      score:
+        data.breakdown
+          ?.maintenance
+          ?.score ?? 0,
+      maxScore:
+        data.breakdown
+          ?.maintenance
+          ?.maxScore ?? 30,
+      extra: null,
+    },
+
+    {
+      key: "fuel",
+      icon: <Fuel size={23} />,
+      title: "Fuel Efficiency",
+      score:
+        data.breakdown
+          ?.fuelEfficiency
+          ?.score ?? 0,
+      maxScore:
+        data.breakdown
+          ?.fuelEfficiency
+          ?.maxScore ?? 25,
+      extra:
+        data.breakdown
+          ?.fuelEfficiency
+          ?.currentEfficiency
+          ? `${data.breakdown.fuelEfficiency.currentEfficiency} km/L`
+          : "Not enough data",
+    },
+
+    {
+      key: "expenses",
+      icon: <Wallet size={23} />,
+      title: "Expenses",
+      score:
+        data.breakdown
+          ?.expenses
+          ?.score ?? 0,
+      maxScore:
+        data.breakdown
+          ?.expenses
+          ?.maxScore ?? 20,
+      extra: null,
+    },
+
+    {
+      key: "insurance",
+      icon: <Shield size={23} />,
+      title: "Insurance",
+      score:
+        data.breakdown
+          ?.insurance
+          ?.score ?? 0,
+      maxScore:
+        data.breakdown
+          ?.insurance
+          ?.maxScore ?? 25,
+      extra:
+        data.breakdown
+          ?.insurance
+          ?.daysRemaining !== null &&
+        data.breakdown
+          ?.insurance
+          ?.daysRemaining !== undefined
+          ? data.breakdown
+              .insurance
+              .daysRemaining < 0
+            ? "Expired"
+            : `${data.breakdown.insurance.daysRemaining} days remaining`
+          : "Not available",
+    },
+
+  ];
+
+
+  // =====================================================
+  // RECOMMENDATIONS
+  // =====================================================
+
+  const recommendations =
+    data.recommendations || [];
+
 
   return (
 
-    <div className="health-score-container">
+    <div className="vehicle-health-card">
 
 
       {/* =================================================
-          HEADER
+          HEALTH OVERVIEW
       ================================================= */}
 
-      <div className="health-score-header">
-
-
-        <div className="health-score-title">
-
-          <div className="health-score-icon">
-
-            <Activity size={17} />
-
-          </div>
-
-
-          <div>
-
-            <span className="health-kicker">
-              VEHICLE DIAGNOSTICS
-            </span>
-
-            <h2>
-              Health score
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <button
-          onClick={fetchHealthScore}
-          className="health-refresh-button"
-        >
-
-          <RefreshCw size={13} />
-
-          Refresh
-
-        </button>
-
-      </div>
-
-
-      {/* =================================================
-          SCORE AREA
-      ================================================= */}
-
-      <div className="health-score-main">
+      <div className="health-overview">
 
 
         {/* SCORE RING */}
 
-        <div className="health-ring-wrapper">
+        <div className="health-score-ring">
 
-          <svg
-            width="142"
-            height="142"
-            viewBox="0 0 142 142"
-            className="health-ring"
+          <div
+            className="health-score-ring-fill"
+            style={{
+              background:
+                `conic-gradient(
+                  ${scoreColor}
+                  ${score * 3.6}deg,
+                  #292e31
+                  ${score * 3.6}deg
+                )`,
+            }}
           >
 
-            {/* Background */}
+            <div className="health-score-ring-inner">
 
-            <circle
-              cx="71"
-              cy="71"
-              r="53"
-              fill="none"
-              stroke="#252a2c"
-              strokeWidth="8"
-            />
+              <span className="health-score-number">
+                {score}
+              </span>
 
+              <span className="health-score-total">
+                / 100
+              </span>
 
-            {/* Progress */}
-
-            <circle
-              cx="71"
-              cy="71"
-              r="53"
-              fill="none"
-              stroke="#e8752a"
-              strokeWidth="8"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={dashOffset}
-              transform="rotate(-90 71 71)"
-              className="health-ring-progress"
-            />
-
-          </svg>
-
-
-          <div className="health-ring-content">
-
-            <strong>
-              {score}
-            </strong>
-
-            <span>
-              / 100
-            </span>
+            </div>
 
           </div>
 
@@ -380,34 +379,55 @@ function HealthScore({ vehicleId }) {
 
         {/* STATUS */}
 
-        <div className="health-score-status">
+        <div className="health-status-content">
+
 
           <div className="health-status-label">
 
-            <span></span>
+            <span
+              className="health-status-dot"
+            ></span>
 
             LIVE VEHICLE ASSESSMENT
 
           </div>
 
 
-          <h3>
-            {data.status ||
-              scoreStatus}
+          <div className="health-status-icon">
+
+            <div
+              style={{
+                color: scoreColor,
+              }}
+            >
+
+              {getConditionIcon()}
+
+            </div>
+
+          </div>
+
+
+          <h3
+            style={{
+              color: scoreColor,
+            }}
+          >
+            {data.status}
           </h3>
 
 
-          <p>
+          <p className="health-status-description">
 
-            Your vehicle's overall condition
-            is calculated using maintenance,
-            fuel efficiency, expenses and
-            insurance information.
+            Your vehicle's overall condition is
+            calculated using maintenance, fuel
+            efficiency, expenses and insurance
+            information.
 
           </p>
 
 
-          <div className="health-score-meta">
+          <div className="health-mini-stats">
 
             <div>
 
@@ -416,7 +436,7 @@ function HealthScore({ vehicleId }) {
               </span>
 
               <strong>
-                {scorePercentage}%
+                {score}%
               </strong>
 
             </div>
@@ -429,7 +449,7 @@ function HealthScore({ vehicleId }) {
               </span>
 
               <strong>
-                {scoreStatus}
+                {data.status}
               </strong>
 
             </div>
@@ -445,10 +465,10 @@ function HealthScore({ vehicleId }) {
           BREAKDOWN
       ================================================= */}
 
-      <div className="health-breakdown">
+      <div className="health-breakdown-section">
 
 
-        <div className="health-section-heading">
+        <div className="health-breakdown-heading">
 
           <div>
 
@@ -463,9 +483,8 @@ function HealthScore({ vehicleId }) {
           </div>
 
 
-          <Gauge
-            size={16}
-            className="health-section-heading-icon"
+          <Activity
+            size={25}
           />
 
         </div>
@@ -473,95 +492,19 @@ function HealthScore({ vehicleId }) {
 
         <div className="health-breakdown-grid">
 
+          {breakdown.map(
+            (item) => (
 
-          <ScoreCard
-            icon={
-              <Wrench size={15} />
-            }
-            title="Maintenance"
-            score={
-              data.breakdown
-                .maintenance
-                .score
-            }
-            maxScore={
-              data.breakdown
-                .maintenance
-                .maxScore
-            }
-          />
+            <ScoreCard
+              key={item.key}
+              icon={item.icon}
+              title={item.title}
+              score={item.score}
+              maxScore={item.maxScore}
+              extra={item.extra}
+            />
 
-
-          <ScoreCard
-            icon={
-              <Fuel size={15} />
-            }
-            title="Fuel efficiency"
-            score={
-              data.breakdown
-                .fuelEfficiency
-                .score
-            }
-            maxScore={
-              data.breakdown
-                .fuelEfficiency
-                .maxScore
-            }
-            extra={
-              data.breakdown
-                .fuelEfficiency
-                .currentEfficiency
-                ? `${data.breakdown.fuelEfficiency.currentEfficiency} km/L`
-                : "Not enough data"
-            }
-          />
-
-
-          <ScoreCard
-            icon={
-              <Wallet size={15} />
-            }
-            title="Expenses"
-            score={
-              data.breakdown
-                .expenses
-                .score
-            }
-            maxScore={
-              data.breakdown
-                .expenses
-                .maxScore
-            }
-          />
-
-
-          <ScoreCard
-            icon={
-              <Shield size={15} />
-            }
-            title="Insurance"
-            score={
-              data.breakdown
-                .insurance
-                .score
-            }
-            maxScore={
-              data.breakdown
-                .insurance
-                .maxScore
-            }
-            extra={
-              data.breakdown
-                .insurance
-                .daysRemaining !== null
-                ? data.breakdown
-                    .insurance
-                    .daysRemaining < 0
-                  ? "Expired"
-                  : `${data.breakdown.insurance.daysRemaining} days remaining`
-                : "Not available"
-            }
-          />
+          ))}
 
         </div>
 
@@ -572,12 +515,12 @@ function HealthScore({ vehicleId }) {
           RECOMMENDATIONS
       ================================================= */}
 
-      {data.recommendations &&
-        data.recommendations.length > 0 && (
+      {recommendations.length > 0 && (
 
         <div className="health-recommendations">
 
-          <div className="health-section-heading">
+
+          <div className="health-recommendations-heading">
 
             <div>
 
@@ -593,43 +536,44 @@ function HealthScore({ vehicleId }) {
 
 
             <AlertTriangle
-              size={16}
-              className="health-section-heading-icon"
+              size={25}
             />
 
           </div>
 
 
-          <div className="recommendation-list">
+          <div className="health-recommendations-list">
 
-            {data.recommendations.map(
+            {recommendations.map(
               (
                 recommendation,
                 index
               ) => (
 
-                <div
-                  key={index}
-                  className="recommendation-item"
-                >
+              <div
+                key={index}
+                className="health-recommendation"
+              >
 
-                  <div className="recommendation-number">
+                <span className="health-recommendation-number">
 
-                    {String(
-                      index + 1
-                    ).padStart(2, "0")}
+                  {String(
+                    index + 1
+                  ).padStart(
+                    2,
+                    "0"
+                  )}
 
-                  </div>
+                </span>
 
 
-                  <p>
-                    {recommendation}
-                  </p>
+                <p>
+                  {recommendation}
+                </p>
 
-                </div>
+              </div>
 
-              )
-            )}
+            ))}
 
           </div>
 
@@ -642,29 +586,24 @@ function HealthScore({ vehicleId }) {
           GOOD HEALTH
       ================================================= */}
 
-      {data.recommendations &&
-        data.recommendations.length === 0 && (
+      {recommendations.length === 0 && (
 
-        <div className="health-clear">
+        <div className="health-good-message">
 
-          <div className="health-clear-icon">
-
-            <CheckCircle
-              size={17}
-            />
-
-          </div>
-
+          <CheckCircle
+            size={25}
+          />
 
           <div>
 
             <strong>
-              Vehicle operating normally
+              Excellent vehicle condition
             </strong>
 
-            <span>
-              No immediate issues were detected.
-            </span>
+            <p>
+              No immediate issues were detected
+              with your vehicle.
+            </p>
 
           </div>
 
@@ -673,7 +612,1097 @@ function HealthScore({ vehicleId }) {
       )}
 
 
-      <HealthScoreStyles />
+      {/* =================================================
+          STYLES
+      ================================================= */}
+
+      <style>{`
+
+        /* =================================================
+           MAIN CARD
+        ================================================= */
+
+        .vehicle-health-card {
+
+          width: 100%;
+
+          background: #101213;
+
+          color: #f1f1f1;
+
+          border-radius: 12px;
+
+          overflow: hidden;
+
+        }
+
+
+        /* =================================================
+           OVERVIEW
+        ================================================= */
+
+        .health-overview {
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 55px;
+
+          padding: 48px 45px;
+
+          border-bottom:
+            1px solid #292e31;
+
+        }
+
+
+        /* =================================================
+           SCORE RING
+        ================================================= */
+
+        .health-score-ring {
+
+          width: 190px;
+
+          height: 190px;
+
+          flex-shrink: 0;
+
+        }
+
+
+        .health-score-ring-fill {
+
+          width: 100%;
+
+          height: 100%;
+
+          border-radius: 50%;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          transition:
+            background 0.5s ease;
+
+        }
+
+
+        .health-score-ring-inner {
+
+          width: 156px;
+
+          height: 156px;
+
+          border-radius: 50%;
+
+          background: #101213;
+
+          display: flex;
+
+          flex-direction: column;
+
+          align-items: center;
+
+          justify-content: center;
+
+          box-shadow:
+            inset 0 0 25px
+            rgba(
+              0,
+              0,
+              0,
+              0.35
+            );
+
+        }
+
+
+        .health-score-number {
+
+          color: #f2f2f2;
+
+          font-size: 50px;
+
+          line-height: 1;
+
+          font-weight: 700;
+
+          letter-spacing:
+            -0.05em;
+
+        }
+
+
+        .health-score-total {
+
+          color: #697175;
+
+          font-size: 15px;
+
+          margin-top: 7px;
+
+          font-weight: 600;
+
+        }
+
+
+        /* =================================================
+           STATUS
+        ================================================= */
+
+        .health-status-content {
+
+          flex: 1;
+
+          min-width: 0;
+
+        }
+
+
+        .health-status-label {
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 9px;
+
+          color: #70787c;
+
+          font-size: 11px;
+
+          font-weight: 700;
+
+          letter-spacing:
+            0.17em;
+
+          margin-bottom: 12px;
+
+        }
+
+
+        .health-status-dot {
+
+          width: 7px;
+
+          height: 7px;
+
+          flex-shrink: 0;
+
+          border-radius: 50%;
+
+          background: #e8752a;
+
+          box-shadow:
+            0 0 9px
+            rgba(
+              232,
+              117,
+              42,
+              0.65
+            );
+
+        }
+
+
+        .health-status-icon {
+
+          display: none;
+
+        }
+
+
+        .health-status-content h3 {
+
+          margin: 0;
+
+          font-size: 32px;
+
+          line-height: 1.1;
+
+          font-weight: 700;
+
+          letter-spacing:
+            -0.035em;
+
+        }
+
+
+        .health-status-description {
+
+          max-width: 700px;
+
+          margin: 15px 0 0;
+
+          color: #858d91;
+
+          font-size: 15px;
+
+          line-height: 1.7;
+
+        }
+
+
+        /* =================================================
+           MINI STATS
+        ================================================= */
+
+        .health-mini-stats {
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 45px;
+
+          margin-top: 25px;
+
+          padding-top: 19px;
+
+          border-top:
+            1px solid #292e31;
+
+        }
+
+
+        .health-mini-stats div {
+
+          display: flex;
+
+          flex-direction: column;
+
+          gap: 5px;
+
+        }
+
+
+        .health-mini-stats span {
+
+          color: #555e62;
+
+          font-size: 10px;
+
+          font-weight: 700;
+
+          letter-spacing:
+            0.14em;
+
+        }
+
+
+        .health-mini-stats strong {
+
+          color: #c9ced0;
+
+          font-size: 15px;
+
+          font-weight: 600;
+
+        }
+
+
+        /* =================================================
+           BREAKDOWN
+        ================================================= */
+
+        .health-breakdown-section {
+
+          padding: 32px 45px 38px;
+
+        }
+
+
+        .health-breakdown-heading {
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: space-between;
+
+          margin-bottom: 22px;
+
+        }
+
+
+        .health-breakdown-heading > div span {
+
+          display: block;
+
+          color: #626a6e;
+
+          font-size: 10px;
+
+          font-weight: 700;
+
+          letter-spacing:
+            0.17em;
+
+          margin-bottom: 7px;
+
+        }
+
+
+        .health-breakdown-heading h3 {
+
+          margin: 0;
+
+          color: #d8dcdd;
+
+          font-size: 23px;
+
+          font-weight: 600;
+
+          letter-spacing:
+            -0.025em;
+
+        }
+
+
+        .health-breakdown-heading > svg {
+
+          color: #596166;
+
+        }
+
+
+        .health-breakdown-grid {
+
+          display: grid;
+
+          grid-template-columns:
+            repeat(
+              4,
+              minmax(0, 1fr)
+            );
+
+          gap: 14px;
+
+        }
+
+
+        /* =================================================
+           SCORE CARD
+        ================================================= */
+
+        .health-score-card {
+
+          min-height: 155px;
+
+          padding: 20px;
+
+          border: 1px solid #292e31;
+
+          border-radius: 11px;
+
+          background: #131617;
+
+          transition:
+            border-color 0.2s ease,
+            transform 0.2s ease;
+
+        }
+
+
+        .health-score-card:hover {
+
+          transform:
+            translateY(-2px);
+
+          border-color:
+            rgba(
+              232,
+              117,
+              42,
+              0.3
+            );
+
+        }
+
+
+        .health-score-card-top {
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: space-between;
+
+          gap: 10px;
+
+        }
+
+
+        .health-score-card-icon {
+
+          width: 43px;
+
+          height: 43px;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          border-radius: 9px;
+
+          color: #e8752a;
+
+          background:
+            rgba(
+              232,
+              117,
+              42,
+              0.08
+            );
+
+          border: 1px solid
+            rgba(
+              232,
+              117,
+              42,
+              0.16
+            );
+
+        }
+
+
+        .health-score-card-title {
+
+          flex: 1;
+
+          color: #8f979a;
+
+          font-size: 13px;
+
+          font-weight: 600;
+
+        }
+
+
+        .health-score-card-value {
+
+          color: #d8dcdd;
+
+          font-size: 16px;
+
+          font-weight: 700;
+
+        }
+
+
+        .health-score-card-progress {
+
+          height: 5px;
+
+          width: 100%;
+
+          margin-top: 22px;
+
+          overflow: hidden;
+
+          border-radius: 999px;
+
+          background: #292e31;
+
+        }
+
+
+        .health-score-card-progress span {
+
+          display: block;
+
+          height: 100%;
+
+          border-radius: inherit;
+
+          background: #e8752a;
+
+          transition:
+            width 0.5s ease;
+
+        }
+
+
+        .health-score-card-extra {
+
+          margin-top: 10px;
+
+          color: #626b70;
+
+          font-size: 11px;
+
+          line-height: 1.4;
+
+        }
+
+
+        /* =================================================
+           RECOMMENDATIONS
+        ================================================= */
+
+        .health-recommendations {
+
+          padding:
+            0 45px
+            42px;
+
+        }
+
+
+        .health-recommendations-heading {
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: space-between;
+
+          margin-bottom: 18px;
+
+        }
+
+
+        .health-recommendations-heading span {
+
+          display: block;
+
+          color: #626a6e;
+
+          font-size: 10px;
+
+          font-weight: 700;
+
+          letter-spacing:
+            0.17em;
+
+          margin-bottom: 7px;
+
+        }
+
+
+        .health-recommendations-heading h3 {
+
+          margin: 0;
+
+          color: #d8dcdd;
+
+          font-size: 23px;
+
+          font-weight: 600;
+
+        }
+
+
+        .health-recommendations-heading > svg {
+
+          color: #596166;
+
+        }
+
+
+        .health-recommendations-list {
+
+          display: flex;
+
+          flex-direction: column;
+
+          gap: 10px;
+
+        }
+
+
+        .health-recommendation {
+
+          display: flex;
+
+          align-items: flex-start;
+
+          gap: 16px;
+
+          padding: 17px 19px;
+
+          border:
+            1px solid #292e31;
+
+          border-radius: 9px;
+
+          background: #121415;
+
+        }
+
+
+        .health-recommendation-number {
+
+          color: #e8752a;
+
+          font-family: monospace;
+
+          font-size: 12px;
+
+          font-weight: 700;
+
+          min-width: 25px;
+
+          padding-top: 2px;
+
+        }
+
+
+        .health-recommendation p {
+
+          margin: 0;
+
+          color: #a5abad;
+
+          font-size: 14px;
+
+          line-height: 1.6;
+
+        }
+
+
+        /* =================================================
+           GOOD HEALTH
+        ================================================= */
+
+        .health-good-message {
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 14px;
+
+          margin:
+            0 45px
+            42px;
+
+          padding: 20px;
+
+          border:
+            1px solid
+            rgba(
+              232,
+              117,
+              42,
+              0.2
+            );
+
+          border-radius: 10px;
+
+          background:
+            rgba(
+              232,
+              117,
+              42,
+              0.05
+            );
+
+          color: #e8752a;
+
+        }
+
+
+        .health-good-message strong {
+
+          display: block;
+
+          color: #d8dcdd;
+
+          font-size: 15px;
+
+        }
+
+
+        .health-good-message p {
+
+          margin: 4px 0 0;
+
+          color: #747d81;
+
+          font-size: 13px;
+
+        }
+
+
+        /* =================================================
+           LOADING
+        ================================================= */
+
+        .vehicle-health-loading {
+
+          min-height: 260px;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          gap: 14px;
+
+          color: #929a9e;
+
+          font-size: 15px;
+
+          font-weight: 500;
+
+        }
+
+
+        .vehicle-health-spin {
+
+          color: #f97316;
+
+          animation:
+            vehicle-health-spin
+            1s linear infinite;
+
+        }
+
+
+        @keyframes vehicle-health-spin {
+
+          to {
+            transform: rotate(360deg);
+          }
+
+        }
+
+
+        /* =================================================
+           ERROR
+        ================================================= */
+
+        .vehicle-health-error {
+
+          min-height: 220px;
+
+          padding: 35px;
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 18px;
+
+        }
+
+
+        .vehicle-health-error-icon {
+
+          width: 50px;
+
+          height: 50px;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          flex-shrink: 0;
+
+          border-radius: 10px;
+
+          color: #ef4444;
+
+          background:
+            rgba(
+              239,
+              68,
+              68,
+              0.08
+            );
+
+          border:
+            1px solid
+            rgba(
+              239,
+              68,
+              68,
+              0.2
+            );
+
+        }
+
+
+        .vehicle-health-error-text {
+
+          flex: 1;
+
+        }
+
+
+        .vehicle-health-error-text strong {
+
+          color: #d7dbdc;
+
+          font-size: 16px;
+
+        }
+
+
+        .vehicle-health-error-text p {
+
+          margin: 5px 0 0;
+
+          color: #777f83;
+
+          font-size: 13px;
+
+        }
+
+
+        .vehicle-health-retry {
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 8px;
+
+          padding: 11px 17px;
+
+          border: 1px solid
+            rgba(
+              249,
+              115,
+              22,
+              0.3
+            );
+
+          border-radius: 8px;
+
+          background:
+            rgba(
+              249,
+              115,
+              22,
+              0.08
+            );
+
+          color: #f97316;
+
+          font-size: 13px;
+
+          font-weight: 600;
+
+          cursor: pointer;
+
+        }
+
+
+        /* =================================================
+           TABLET
+        ================================================= */
+
+        @media (max-width: 1000px) {
+
+          .health-overview {
+
+            gap: 35px;
+
+            padding:
+              40px 30px;
+
+          }
+
+
+          .health-breakdown-section {
+
+            padding:
+              30px;
+
+          }
+
+
+          .health-recommendations {
+
+            padding:
+              0 30px
+              35px;
+
+          }
+
+
+          .health-good-message {
+
+            margin:
+              0 30px
+              35px;
+
+          }
+
+
+          .health-breakdown-grid {
+
+            grid-template-columns:
+              repeat(
+                2,
+                minmax(0, 1fr)
+              );
+
+          }
+
+        }
+
+
+        /* =================================================
+           MOBILE
+        ================================================= */
+
+        @media (max-width: 650px) {
+
+          .health-overview {
+
+            flex-direction: column;
+
+            align-items: center;
+
+            text-align: center;
+
+            gap: 28px;
+
+            padding:
+              35px 20px;
+
+          }
+
+
+          .health-score-ring {
+
+            width: 165px;
+
+            height: 165px;
+
+          }
+
+
+          .health-score-ring-inner {
+
+            width: 135px;
+
+            height: 135px;
+
+          }
+
+
+          .health-score-number {
+
+            font-size: 44px;
+
+          }
+
+
+          .health-status-content {
+
+            width: 100%;
+
+          }
+
+
+          .health-status-label {
+
+            justify-content: center;
+
+            font-size: 9px;
+
+          }
+
+
+          .health-status-content h3 {
+
+            font-size: 29px;
+
+          }
+
+
+          .health-status-description {
+
+            font-size: 14px;
+
+          }
+
+
+          .health-mini-stats {
+
+            justify-content: center;
+
+            gap: 35px;
+
+          }
+
+
+          .health-breakdown-section {
+
+            padding:
+              28px 20px
+              32px;
+
+          }
+
+
+          .health-breakdown-grid {
+
+            grid-template-columns: 1fr;
+
+          }
+
+
+          .health-breakdown-heading h3,
+          .health-recommendations-heading h3 {
+
+            font-size: 20px;
+
+          }
+
+
+          .health-recommendations {
+
+            padding:
+              0 20px
+              30px;
+
+          }
+
+
+          .health-recommendation p {
+
+            font-size: 13px;
+
+          }
+
+
+          .health-good-message {
+
+            margin:
+              0 20px
+              30px;
+
+          }
+
+
+          .vehicle-health-error {
+
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            padding: 25px 20px;
+
+          }
+
+        }
+
+      `}</style>
 
     </div>
 
@@ -693,1122 +1722,83 @@ function ScoreCard({
   extra,
 }) {
 
-  const safeScore =
-    Number(score) || 0;
-
-  const safeMax =
-    Number(maxScore) || 1;
-
   const percentage =
-    Math.min(
-      Math.max(
-        (safeScore / safeMax) *
+    maxScore > 0
+      ? Math.min(
           100,
-        0
-      ),
-      100
-    );
+          Math.max(
+            0,
+            (score / maxScore) *
+              100
+          )
+        )
+      : 0;
 
 
   return (
 
-    <div className="health-breakdown-card">
+    <div className="health-score-card">
 
 
-      <div className="health-breakdown-card-top">
+      <div className="health-score-card-top">
 
 
-        <div className="health-breakdown-icon">
+        <div className="health-score-card-icon">
 
           {icon}
 
         </div>
 
 
-        <span>
+        <span className="health-score-card-title">
+
           {title}
+
         </span>
 
 
-        <strong>
+        <strong className="health-score-card-value">
 
-          {safeScore}
-
-          <small>
-            /{safeMax}
-          </small>
+          {score}
+          <span
+            style={{
+              color: "#596166",
+              fontSize: "11px",
+              fontWeight: 500,
+            }}
+          >
+            {" "}
+            / {maxScore}
+          </span>
 
         </strong>
 
       </div>
 
 
-      <div className="health-progress">
+      <div className="health-score-card-progress">
 
-        <div
+        <span
           style={{
             width:
               `${percentage}%`,
           }}
-        />
+        ></span>
 
       </div>
 
 
       {extra && (
 
-        <p className="health-breakdown-extra">
+        <div className="health-score-card-extra">
+
           {extra}
-        </p>
+
+        </div>
 
       )}
 
     </div>
-
-  );
-}
-
-
-// =====================================================
-// STYLES
-// =====================================================
-
-function HealthScoreStyles() {
-
-  return (
-
-    <style>{`
-
-      /* ==========================================
-         MAIN
-      ========================================== */
-
-      .health-score-container {
-
-        width: 100%;
-
-        margin-top: 20px;
-
-        background: #131617;
-
-        border:
-          1px solid #292e31;
-
-        border-radius: 12px;
-
-        overflow: hidden;
-
-      }
-
-
-      /* ==========================================
-         HEADER
-      ========================================== */
-
-      .health-score-header {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: space-between;
-
-        gap: 15px;
-
-        padding:
-          19px 22px;
-
-        border-bottom:
-          1px solid #292e31;
-
-        background: #151819;
-
-      }
-
-
-      .health-score-title {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 10px;
-
-      }
-
-
-      .health-score-icon {
-
-        width: 35px;
-
-        height: 35px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 8px;
-
-        color: #e8752a;
-
-        background:
-          rgba(
-            232,
-            117,
-            42,
-            0.065
-          );
-
-        border:
-          1px solid
-          rgba(
-            232,
-            117,
-            42,
-            0.13
-          );
-
-      }
-
-
-      .health-kicker {
-
-        display: block;
-
-        color: #4d5458;
-
-        font-size: 6px;
-
-        font-weight: 700;
-
-        letter-spacing: 0.18em;
-
-        margin-bottom: 4px;
-
-      }
-
-
-      .health-score-header h2 {
-
-        margin: 0;
-
-        color: #d2d5d6;
-
-        font-size: 14px;
-
-        font-weight: 600;
-
-      }
-
-
-      .health-refresh-button {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 6px;
-
-        padding:
-          7px 10px;
-
-        border:
-          1px solid
-          rgba(
-            232,
-            117,
-            42,
-            0.2
-          );
-
-        border-radius: 6px;
-
-        background:
-          rgba(
-            232,
-            117,
-            42,
-            0.055
-          );
-
-        color: #d77539;
-
-        font-size: 7px;
-
-        font-weight: 600;
-
-        cursor: pointer;
-
-        transition:
-          all 0.2s ease;
-
-      }
-
-
-      .health-refresh-button:hover {
-
-        background:
-          rgba(
-            232,
-            117,
-            42,
-            0.12
-          );
-
-        border-color:
-          rgba(
-            232,
-            117,
-            42,
-            0.35
-          );
-
-      }
-
-
-      /* ==========================================
-         MAIN SCORE
-      ========================================== */
-
-      .health-score-main {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 35px;
-
-        padding:
-          30px 25px;
-
-        border-bottom:
-          1px solid #252a2c;
-
-      }
-
-
-      .health-ring-wrapper {
-
-        position: relative;
-
-        width: 142px;
-
-        height: 142px;
-
-        flex-shrink: 0;
-
-      }
-
-
-      .health-ring {
-
-        display: block;
-
-      }
-
-
-      .health-ring-progress {
-
-        transition:
-          stroke-dashoffset
-          0.9s ease;
-
-      }
-
-
-      .health-ring-content {
-
-        position: absolute;
-
-        inset: 0;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        flex-direction: column;
-
-      }
-
-
-      .health-ring-content strong {
-
-        color: #e3e5e6;
-
-        font-size: 33px;
-
-        line-height: 1;
-
-        font-weight: 600;
-
-        letter-spacing: -0.05em;
-
-      }
-
-
-      .health-ring-content span {
-
-        margin-top: 5px;
-
-        color: #4d5458;
-
-        font-size: 7px;
-
-        letter-spacing: 0.1em;
-
-      }
-
-
-      /* ==========================================
-         STATUS
-      ========================================== */
-
-      .health-score-status {
-
-        max-width: 500px;
-
-      }
-
-
-      .health-status-label {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 6px;
-
-        color: #51585c;
-
-        font-size: 6px;
-
-        font-weight: 700;
-
-        letter-spacing: 0.15em;
-
-      }
-
-
-      .health-status-label span {
-
-        width: 5px;
-
-        height: 5px;
-
-        border-radius: 50%;
-
-        background: #e8752a;
-
-      }
-
-
-      .health-score-status h3 {
-
-        margin:
-          9px 0 0;
-
-        color: #e8752a;
-
-        font-size: 23px;
-
-        font-weight: 600;
-
-        letter-spacing: -0.035em;
-
-      }
-
-
-      .health-score-status p {
-
-        margin:
-          8px 0 0;
-
-        color: #626a6e;
-
-        font-size: 8px;
-
-        line-height: 1.75;
-
-      }
-
-
-      .health-score-meta {
-
-        display: flex;
-
-        gap: 25px;
-
-        margin-top: 15px;
-
-        padding-top: 13px;
-
-        border-top:
-          1px solid #252a2c;
-
-      }
-
-
-      .health-score-meta div {
-
-        display: flex;
-
-        flex-direction: column;
-
-      }
-
-
-      .health-score-meta span {
-
-        color: #454c50;
-
-        font-size: 5px;
-
-        font-weight: 700;
-
-        letter-spacing: 0.14em;
-
-      }
-
-
-      .health-score-meta strong {
-
-        margin-top: 4px;
-
-        color: #949a9d;
-
-        font-size: 9px;
-
-        font-weight: 500;
-
-      }
-
-
-      /* ==========================================
-         BREAKDOWN
-      ========================================== */
-
-      .health-breakdown {
-
-        padding:
-          23px 22px;
-
-      }
-
-
-      .health-section-heading {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: space-between;
-
-        margin-bottom: 13px;
-
-      }
-
-
-      .health-section-heading span {
-
-        display: block;
-
-        color: #4d5458;
-
-        font-size: 5px;
-
-        font-weight: 700;
-
-        letter-spacing: 0.17em;
-
-      }
-
-
-      .health-section-heading h3 {
-
-        margin:
-          4px 0 0;
-
-        color: #aeb3b5;
-
-        font-size: 11px;
-
-        font-weight: 600;
-
-      }
-
-
-      .health-section-heading-icon {
-
-        color: #41484c;
-
-      }
-
-
-      .health-breakdown-grid {
-
-        display: grid;
-
-        grid-template-columns:
-          repeat(
-            4,
-            minmax(0, 1fr)
-          );
-
-        gap: 7px;
-
-      }
-
-
-      .health-breakdown-card {
-
-        padding:
-          13px;
-
-        border:
-          1px solid #292e31;
-
-        border-radius: 8px;
-
-        background: #111314;
-
-        transition:
-          border-color 0.2s ease,
-          background 0.2s ease;
-
-      }
-
-
-      .health-breakdown-card:hover {
-
-        background: #151819;
-
-        border-color:
-          rgba(
-            232,
-            117,
-            42,
-            0.22
-          );
-
-      }
-
-
-      .health-breakdown-card-top {
-
-        display: grid;
-
-        grid-template-columns:
-          auto 1fr auto;
-
-        align-items: center;
-
-        gap: 7px;
-
-      }
-
-
-      .health-breakdown-icon {
-
-        width: 27px;
-
-        height: 27px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 6px;
-
-        color: #e8752a;
-
-        background:
-          rgba(
-            232,
-            117,
-            42,
-            0.055
-          );
-
-        border:
-          1px solid
-          rgba(
-            232,
-            117,
-            42,
-            0.12
-          );
-
-      }
-
-
-      .health-breakdown-card-top span {
-
-        color: #737a7e;
-
-        font-size: 7px;
-
-      }
-
-
-      .health-breakdown-card-top strong {
-
-        color: #b0b5b7;
-
-        font-size: 9px;
-
-        font-weight: 500;
-
-      }
-
-
-      .health-breakdown-card-top small {
-
-        color: #454c50;
-
-        font-size: 6px;
-
-        margin-left: 1px;
-
-      }
-
-
-      .health-progress {
-
-        height: 2px;
-
-        margin-top: 12px;
-
-        overflow: hidden;
-
-        border-radius: 999px;
-
-        background: #252a2c;
-
-      }
-
-
-      .health-progress div {
-
-        height: 100%;
-
-        border-radius: inherit;
-
-        background: #e8752a;
-
-        transition:
-          width 0.8s ease;
-
-      }
-
-
-      .health-breakdown-extra {
-
-        margin:
-          7px 0 0;
-
-        color: #4e565a;
-
-        font-size: 6px;
-
-      }
-
-
-      /* ==========================================
-         RECOMMENDATIONS
-      ========================================== */
-
-      .health-recommendations {
-
-        padding:
-          0 22px 22px;
-
-      }
-
-
-      .recommendation-list {
-
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 5px;
-
-      }
-
-
-      .recommendation-item {
-
-        display: flex;
-
-        align-items: flex-start;
-
-        gap: 10px;
-
-        padding:
-          10px 11px;
-
-        border:
-          1px solid #292e31;
-
-        border-radius: 7px;
-
-        background: #111314;
-
-      }
-
-
-      .recommendation-number {
-
-        color: #e8752a;
-
-        font-family: monospace;
-
-        font-size: 7px;
-
-        padding-top: 1px;
-
-      }
-
-
-      .recommendation-item p {
-
-        margin: 0;
-
-        color: #686f73;
-
-        font-size: 7px;
-
-        line-height: 1.65;
-
-      }
-
-
-      /* ==========================================
-         CLEAR STATE
-      ========================================== */
-
-      .health-clear {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 10px;
-
-        margin:
-          0 22px 22px;
-
-        padding:
-          13px;
-
-        border:
-          1px solid #292e31;
-
-        border-radius: 7px;
-
-        background: #111314;
-
-      }
-
-
-      .health-clear-icon {
-
-        width: 30px;
-
-        height: 30px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 6px;
-
-        color: #e8752a;
-
-        background:
-          rgba(
-            232,
-            117,
-            42,
-            0.06
-          );
-
-      }
-
-
-      .health-clear strong {
-
-        display: block;
-
-        color: #999fa2;
-
-        font-size: 8px;
-
-        font-weight: 600;
-
-      }
-
-
-      .health-clear span {
-
-        display: block;
-
-        color: #4e565a;
-
-        font-size: 6px;
-
-        margin-top: 3px;
-
-      }
-
-
-      /* ==========================================
-         LOADING
-      ========================================== */
-
-      .health-loading {
-
-        min-height: 180px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        gap: 10px;
-
-      }
-
-
-      .health-loading-circle {
-
-        width: 37px;
-
-        height: 37px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 8px;
-
-        color: #e8752a;
-
-        background:
-          rgba(
-            232,
-            117,
-            42,
-            0.06
-          );
-
-      }
-
-
-      .health-loading strong {
-
-        display: block;
-
-        color: #92999c;
-
-        font-size: 9px;
-
-        font-weight: 600;
-
-      }
-
-
-      .health-loading span {
-
-        display: block;
-
-        color: #4c5458;
-
-        font-size: 6px;
-
-        margin-top: 3px;
-
-      }
-
-
-      /* ==========================================
-         ERROR
-      ========================================== */
-
-      .health-error {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 10px;
-
-        padding:
-          20px 22px;
-
-      }
-
-
-      .health-error-icon {
-
-        width: 37px;
-
-        height: 37px;
-
-        flex-shrink: 0;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 8px;
-
-        color: #bd6868;
-
-        background:
-          rgba(
-            180,
-            70,
-            70,
-            0.06
-          );
-
-      }
-
-
-      .health-error-content {
-
-        flex: 1;
-
-      }
-
-
-      .health-error-content p {
-
-        margin: 4px 0 0;
-
-        color: #936464;
-
-        font-size: 7px;
-
-      }
-
-
-      /* ==========================================
-         RESPONSIVE
-      ========================================== */
-
-      @media (max-width: 900px) {
-
-        .health-breakdown-grid {
-
-          grid-template-columns:
-            repeat(
-              2,
-              minmax(0, 1fr)
-            );
-
-        }
-
-      }
-
-
-      @media (max-width: 650px) {
-
-        .health-score-header {
-
-          align-items:
-            flex-start;
-
-        }
-
-
-        .health-score-main {
-
-          flex-direction:
-            column;
-
-          align-items:
-            flex-start;
-
-          padding:
-            25px 20px;
-
-        }
-
-
-        .health-score-status {
-
-          max-width:
-            none;
-
-        }
-
-
-        .health-breakdown {
-
-          padding:
-            20px;
-
-        }
-
-
-        .health-recommendations {
-
-          padding:
-            0 20px 20px;
-
-        }
-
-
-        .health-clear {
-
-          margin:
-            0 20px 20px;
-
-        }
-
-
-        .health-breakdown-grid {
-
-          grid-template-columns:
-            1fr;
-
-        }
-
-
-        .health-error {
-
-          align-items:
-            flex-start;
-
-          flex-wrap: wrap;
-
-        }
-
-
-        .health-refresh-button {
-
-          flex-shrink: 0;
-
-        }
-
-      }
-
-    `}</style>
 
   );
 }
